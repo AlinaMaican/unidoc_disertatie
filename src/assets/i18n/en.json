@@ -1,0 +1,31 @@
+{
+  "navbar": {
+    "boardgames": "Boardgames",
+    "admin": "Administration",
+    "admin.boardgames": "Boardgames",
+    "admin.users": "Users",
+    "support": "Support",
+    "support.carousel": "Carousel",
+    "support.review": "Review",
+    "logout": "Log out",
+    "login": "Log in",
+    "overview": "Overview"
+  },
+  "language.en": "English",
+  "language.ro": "Romanian",
+  "login": {
+    "button": "Log in",
+    "email": "Email",
+    "email.required": "Please enter an email address!",
+    "email.pattern": "Please enter a valid email address!",
+    "enter.email": "enter the email address",
+    "enter.password": "enter the password",
+    "forgot.password": "forgot your password?",
+    "message.user.login.bad.credentials": "Bad credentials!",
+    "password": "Password",
+    "password.required": "Please enter your password!",
+    "remember.me": "remember me",
+    "subtitle": "Log in to your account",
+    "title": "Welcome!"
+  }
+}

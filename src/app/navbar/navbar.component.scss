@@ -1,0 +1,41 @@
+.example-spacer {
+  flex: 1 1 auto;
+}
+.docs-angular-logo{
+  height: 26px;
+  margin: 0 4px 3px 0;
+  vertical-align: middle;
+}
+.docs-button{
+  box-sizing: border-box;
+  position: relative;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  -webkit-tap-highlight-color: transparent;
+  display: inline-block;
+  white-space: nowrap;
+  text-decoration: none;
+  vertical-align: baseline;
+  text-align: center;
+  margin: 0;
+  min-width: 64px;
+  line-height: 36px;
+  padding: 0 16px;
+  border-radius: 4px;
+  overflow: visible;
+}
+
+a:hover{
+  background: rgba(0,0,0,.4);
+  color: #a5d6a7;
+}
+
+a:focus{
+  background: rgba(0,0,0,.4);
+  color: #a5d6a7;
+}

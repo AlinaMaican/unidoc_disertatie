@@ -1,0 +1,55 @@
+<section class="container">
+    <!-- login -->
+    <div class="login">
+
+      <i class="fa fa-sign-in"></i>
+      <strong>{{"login.title" | translate}}</strong>
+      <span>{{"login.subtitle" | translate}}</span>
+
+      <form [formGroup]="userForm">
+          <div class="form">
+            <div class="alert alert-warning" *ngIf="isLoginFailed">
+              {{ "login.message.user.login.bad.credentials" | translate }}
+            </div>
+            <!----------------email-------------------------------------------->
+            <div class="form-row">
+              <i class="fa fa-user"></i>
+              <label for="email" class="form-label">{{"login.email" | translate}}</label>
+              <input type="email" name="email" id="email" class="form-control form-text"
+                     formControlName="email" placeholder="{{'login.enter.email' | translate}}"
+                     [ngClass]="{ 'is-invalid': submitted && f.email.errors }">
+              <div *ngIf="submitted && f.email.errors" class="validation-alert">
+                <div *ngIf="f.email.errors.required">{{'login.email.required' | translate}}</div>
+                <div *ngIf="f.email.errors.pattern">{{'login.email.pattern' | translate}}</div>
+              </div>
+            </div>
+            <!-----------------password-------------------------------------->
+            <div class="form-row">
+              <i class="fa fa-eye"></i>
+              <label for="password" class="form-label">{{'login.password' | translate}}</label>
+              <input type="password" name="password" id="password" class="form-control form-text"
+                     formControlName="password" placeholder="{{'login.enter.password' | translate}}"
+                     [ngClass]="{ 'is-invalid': submitted && f.password.errors }">
+              <div *ngIf="submitted && f.password.errors" class="validation-alert">
+                <div *ngIf="f.password.errors.required">{{'login.password.required' | translate}}</div>
+              </div>
+            </div>
+            <!-----------------------------others---------------------------------->
+            <div class="form-row bottom">
+              <div class="form-check">
+                <input type="checkbox" id="remember" name="remember" value="remember">
+                <label for="remember">{{'login.remember.me' | translate}}</label>
+              </div>
+              <a href="/change-password" class="forgot">{{'login.forgot.password' | translate}}</a>
+            </div>
+            <!--------------------------button--------------------------------->
+            <div class="form-row button-login">
+              <button type="submit" id="login"  class="btn btn-login"
+                      (click)="loginUser()">
+                {{'login.button' | translate }}<i class="fa fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+      </form>
+    </div>
+  </section>

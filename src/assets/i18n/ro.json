@@ -1,0 +1,40 @@
+{
+  "navbar": {
+    "boardgames": "Jocuri",
+    "admin": "Administrare",
+    "admin.boardgames": "Jocuri",
+    "admin.users": "Utilizatori",
+    "support": "Suport",
+    "support.carousel": "Carousel",
+    "support.review": "Pareri",
+    "logout": "Iesire",
+    "login": "Conectare",
+    "overview": "Grafice"
+  },
+  "language.en": "Engleza",
+  "language.ro": "Romana",
+  "login": {
+    "button": "Conectare",
+    "email": "Email",
+    "email.required": "Adresa de email este obligatorie!",
+    "email.pattern": "Adresa de email nu are un format valid!",
+    "enter.email": "introdu adresa de email",
+    "enter.password": "introdu parola",
+    "forgot.password": "ai uitat parola?",
+    "message.user.login.bad.credentials": "Parola/email invalide!",
+    "password": "Parola",
+    "password.required": "Introdu parola!",
+    "remember.me": "tine-ma logat",
+    "subtitle": "Conecteaza-te la contul tau",
+    "title": "Bine ai venit!"
+  },
+  "password": {
+    "change": {
+      "title": "Schimba-ti parola",
+      "password" : "Parola",
+      "renter.password": "Reintrodu parola",
+      "confirm.button": "Salveaza",
+      "match.error": "Parolele nu sunt identice"
+    }
+  }
+}
