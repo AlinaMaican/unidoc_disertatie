@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
-    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
 
@@ -44,26 +43,12 @@ public class AuthController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userLoginModel.getEmail(), userLoginModel.getPassword()));
 
-        Optional<User> user;
-        if (authentication.getName() == null) {
-            throw new BadCredentialsException("User does not exists!");
-        }
-        user = userRepository.findByEmail(authentication.getName());
-        if (user.isEmpty()) {
-            throw new BadCredentialsException("User does not exists!");
-        }
-        if (passwordEncoder.matches(user.get().getPassword(), (String) authentication.getCredentials())) {
-            if(user.get().getIsActive().equals(false)){
-                throw new BadCredentialsException("User is not active");
-            }
-        } else {
-            throw new BadCredentialsException("User does not exists!");
-        }
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtUtils.generateJwtToken(authentication);
 
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-            List<String> roles = userDetails.getAuthorities().stream()
+            List<String> roles = userDetails.getAuthorities()
+                    .stream()
                     .map(GrantedAuthority::getAuthority)
                     .collect(Collectors.toList());
 
@@ -79,7 +64,6 @@ public class AuthController {
 
     @PostMapping("/change_password")
     public ResponseEntity<?> changePassword(@Valid @RequestBody UserChangePasswordModel userChangePasswordModel) {
-
         User user = userRepository.findByEmail(userChangePasswordModel.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with email: " +
                         userChangePasswordModel.getEmail()));
