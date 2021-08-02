@@ -50,7 +50,7 @@ export class UserLoginComponent implements OnInit {
           // this.roles = this.tokenStorage.getUser().roles;
           console.log(this.tokenStorage.getUser().active)
           if(this.tokenStorage.getUser().active){
-            this.router.navigate(["/home"]);
+            this.router.navigate(["/secretary-management"]);
           } else {
             this.router.navigate(["/change-password"]);
           }

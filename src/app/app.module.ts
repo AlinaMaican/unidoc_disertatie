@@ -17,6 +17,8 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
 import { NavbarComponent } from './navbar/navbar.component';
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule} from "@angular/material/icon";
+import { SecretaryListComponent } from './secretary-list/secretary-list.component';
+import {MatTableModule} from "@angular/material/table";
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -43,25 +45,27 @@ export function translationServiceFactory(translate: TranslateService): () => Pr
     UserLoginComponent,
     HomeComponent,
     ChangePasswordComponent,
-    NavbarComponent
+    NavbarComponent,
+    SecretaryListComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    TranslateModule.forRoot({
-      defaultLanguage: 'en',
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
-    }),
-    ReactiveFormsModule,
-    MatToolbarModule,
-    MatIconModule,
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        HttpClientModule,
+        TranslateModule.forRoot({
+            defaultLanguage: 'en',
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+            }
+        }),
+        ReactiveFormsModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatTableModule,
+    ],
   providers: [
     authInterceptorProviders,
     {
