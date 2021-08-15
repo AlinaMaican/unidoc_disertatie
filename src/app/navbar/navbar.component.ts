@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {AppUserAuthModel} from "../model/app-user-auth.model";
+import {TokenStorageService} from "../_services/token-storage.service";
+import {RoleType} from "../type/role.type";
 
 @Component({
   selector: 'app-navbar',
@@ -6,10 +9,27 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
-
-  constructor() { }
+  user : AppUserAuthModel | undefined;
+  isAdmin: boolean = false;
+  isStudent: boolean = false;
+  isSecretary: boolean = false;
+  constructor(private tokenService: TokenStorageService) { }
 
   ngOnInit(): void {
+    this.user = this.tokenService.getUser();
+    switch (this.user.role){
+      case RoleType.ADMIN:
+        this.isAdmin = true;
+        break;
+      case RoleType.STUDENT:
+        this.isStudent = true;
+        break;
+      case RoleType.SECRETARY:
+        this.isSecretary = true;
+        break;
+      default:
+        this.isAdmin = true;
+    }
   }
 
 }

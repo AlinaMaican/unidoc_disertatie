@@ -12,7 +12,8 @@
       <span class="mat-button-focus-overlay"></span>
     </a>
 
-
+    <!-------------Menu items for Admin User---------------------------->
+    <span *ngIf="isAdmin">
     <a mat-button="" routerlinkactive="docs-navbar-header-item-selected"
        class="mat-focus-indicator docs-navbar-hide-small docs-button mat-button mat-button-base ng-star-inserted docs-navbar-header-item-selected"
        tabindex="0" aria-disabled="false" href="/components" wrc_done="true">
@@ -36,6 +37,46 @@
       <span matripple="" class="mat-ripple mat-button-ripple"></span>
       <span class="mat-button-focus-overlay"></span>
     </a>
+    </span>
+
+    <!-------------Menu items for Secretary User---------------------------->
+    <span *ngIf="isSecretary">
+       <a mat-button="" routerlinkactive="docs-navbar-header-item-selected"
+          class="mat-focus-indicator docs-navbar-hide-small docs-button mat-button mat-button-base ng-star-inserted docs-navbar-header-item-selected"
+          tabindex="0" aria-disabled="false" href="/components" wrc_done="true">
+      <span class="mat-button-wrapper">Document management</span>
+      <span matripple="" class="mat-ripple mat-button-ripple"></span>
+      <span class="mat-button-focus-overlay"></span>
+    </a>
+
+    <a mat-button="" routerlinkactive="docs-navbar-header-item-selected"
+       class="mat-focus-indicator docs-navbar-hide-small docs-button mat-button mat-button-base ng-star-inserted docs-navbar-header-item-selected"
+       tabindex="0" aria-disabled="false" href="/components" wrc_done="true">
+      <span class="mat-button-wrapper">Student documents</span>
+      <span matripple="" class="mat-ripple mat-button-ripple"></span>
+      <span class="mat-button-focus-overlay"></span>
+    </a>
+    </span>
+
+    <!-------------Menu items for Student User---------------------------->
+    <span *ngIf="isStudent">
+       <a mat-button="" routerlinkactive="docs-navbar-header-item-selected"
+          class="mat-focus-indicator docs-navbar-hide-small docs-button mat-button mat-button-base ng-star-inserted docs-navbar-header-item-selected"
+          tabindex="0" aria-disabled="false" href="/components" wrc_done="true">
+      <span class="mat-button-wrapper">Required documents</span>
+      <span matripple="" class="mat-ripple mat-button-ripple"></span>
+      <span class="mat-button-focus-overlay"></span>
+    </a>
+
+    <a mat-button="" routerlinkactive="docs-navbar-header-item-selected"
+       class="mat-focus-indicator docs-navbar-hide-small docs-button mat-button mat-button-base ng-star-inserted docs-navbar-header-item-selected"
+       tabindex="0" aria-disabled="false" href="/components" wrc_done="true">
+      <span class="mat-button-wrapper">Created documents</span>
+      <span matripple="" class="mat-ripple mat-button-ripple"></span>
+      <span class="mat-button-focus-overlay"></span>
+    </a>
+    </span>
+
 
 
     <span class="example-spacer"></span>
