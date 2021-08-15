@@ -37,12 +37,12 @@ public class StudentService {
                 .and(studentGenericSpecification.isPropertyLike("last_name", filter.getLastName()))
                 .and(studentGenericSpecification.isNestedPropertyLike("user.email", filter.getEmailAddress()))
                 .and(studentGenericSpecification.isPropertyEqualNumber("secretary_allocation_id", filter.getSecretaryAllocationId()))
-                .and(studentGenericSpecification.isPropertyEqualNumber("learning_type_id", filter.getSecretaryAllocationId()))
-                .and(studentGenericSpecification.isPropertyEqualNumber("university_study_type_id", filter.getSecretaryAllocationId()))
-                .and(studentGenericSpecification.isPropertyEqualNumber("domain_id", filter.getSecretaryAllocationId()))
-                .and(studentGenericSpecification.isPropertyEqualNumber("study_program_id", filter.getSecretaryAllocationId()))
-                .and(studentGenericSpecification.isPropertyEqualNumber("study_year_id", filter.getSecretaryAllocationId()))
-                .and(studentGenericSpecification.isPropertyEqualNumber("study_group_id", filter.getSecretaryAllocationId())));
+                .and(studentGenericSpecification.isPropertyEqualNumber("learning_type_id", filter.getLearningTypeId()))
+                .and(studentGenericSpecification.isPropertyEqualNumber("university_study_type_id", filter.getUniversityStudyId()))
+                .and(studentGenericSpecification.isPropertyEqualNumber("domain_id", filter.getDomainId()))
+                .and(studentGenericSpecification.isPropertyEqualNumber("study_program_id", filter.getStudyProgramId()))
+                .and(studentGenericSpecification.isPropertyEqualNumber("study_year_id", filter.getStudyYearId()))
+                .and(studentGenericSpecification.isPropertyEqualNumber("study_group_id", filter.getStudyGroupId())));
     }
 
     private StudentModel toStudentModel(final Student student) {

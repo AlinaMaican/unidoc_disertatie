@@ -38,30 +38,42 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
 
+    /**
+     * logs in the user
+     *
+     * @param userLoginModel the user credentials for the login
+     * @return error or a response object that contains some required data for the frontend
+     */
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody UserLoginModel userLoginModel) {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(userLoginModel.getEmail(), userLoginModel.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userLoginModel.getEmail(), userLoginModel.getPassword()));
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            String jwt = jwtUtils.generateJwtToken(authentication);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
 
-            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-            List<String> roles = userDetails.getAuthorities()
-                    .stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toList());
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        List<String> roles = userDetails.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
 
-            JwtResponseModel res = JwtResponseModel.builder()
-                    .token(jwt)
-                    .type("Bearer")
-                    .email(userDetails.getEmail())
-                    .roles(roles)
-                    .isActive(userDetails.isActive())
-                    .build();
-            return ResponseEntity.ok(res);
+        JwtResponseModel res = JwtResponseModel.builder()
+                .token(jwt)
+                .type("Bearer")
+                .email(userDetails.getEmail())
+                .roles(roles)
+                .isActive(userDetails.isActive())
+                .build();
+        return ResponseEntity.ok(res);
     }
 
+    /**
+     * changes the password of an existing user
+     *
+     * @param userChangePasswordModel the details of the user
+     * @return true or false depending on the success of the change
+     */
     @PostMapping("/change_password")
     public ResponseEntity<?> changePassword(@Valid @RequestBody UserChangePasswordModel userChangePasswordModel) {
         User user = userRepository.findByEmail(userChangePasswordModel.getEmail())

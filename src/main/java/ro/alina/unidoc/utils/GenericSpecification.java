@@ -148,6 +148,15 @@ public class GenericSpecification <T>{
         return null;
     }
 
+    public Specification<T> isNestedPropertyEqualNumber(final String property, final Long value) {
+        if (checkForNestedProperty(property)) {
+            String[] properties = property.split(NESTED_PROPERTY_DELIMITER);
+            return (root, query, builder)
+                    -> builder.equal(root.get(properties[PARENT]).get(properties[CHILD]), value);
+        }
+        return null;
+    }
+
     private Boolean checkForNestedProperty(final String property) {
         if (!StringUtils.isEmptyOrWhitespace(property)) {
             String[] properties = property.split(NESTED_PROPERTY_DELIMITER);

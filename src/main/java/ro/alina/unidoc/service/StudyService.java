@@ -9,6 +9,7 @@ import ro.alina.unidoc.repository.*;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,10 +23,19 @@ public class StudyService {
     private final StudyProgramRepository studyProgramRepository;
     private final StudyYearRepository studyYearRepository;
     private final StudyGroupRepository studyGroupRepository;
+    private final SecretaryAllocationRepository secretaryAllocationRepository;
 
     public List<StudyModel> getAllLearningTypes(){
         return learningTypeRepository.findAll()
                 .stream()
+                .map(this::toStudyModel)
+                .collect(Collectors.toList());
+    }
+
+    public List<StudyModel> getAllFilteredLearningTypes(final Long secretaryId){
+        return secretaryAllocationRepository.findAllBySecretary_Id(secretaryId)
+                .stream()
+                .map(SecretaryAllocation::getLearningType)
                 .map(this::toStudyModel)
                 .collect(Collectors.toList());
     }
@@ -37,9 +47,25 @@ public class StudyService {
                 .collect(Collectors.toList());
     }
 
+    public List<StudyModel> getAllFilteredUniversityStudyTypes(final Long learningTypeId, final Long secretaryId){
+        return secretaryAllocationRepository.findAllBySecretary_IdAndLearningType_Id(secretaryId, learningTypeId)
+                .stream()
+                .map(SecretaryAllocation::getUniversityStudyType)
+                .map(this::toStudyModel)
+                .collect(Collectors.toList());
+    }
+
     public List<StudyModel> getAllDomains(final Long universityStudyTypeId){
         return domainRepository.findAllByUniversityStudyType_Id(universityStudyTypeId)
                 .stream()
+                .map(this::toStudyModel)
+                .collect(Collectors.toList());
+    }
+
+    public List<StudyModel> getAllFilteredDomains(final Long universityStudyTypeId, final Long secretaryId){
+        return secretaryAllocationRepository.findAllBySecretary_IdAndUniversityStudyType_Id(secretaryId, universityStudyTypeId)
+                .stream()
+                .map(SecretaryAllocation::getDomain)
                 .map(this::toStudyModel)
                 .collect(Collectors.toList());
     }
@@ -51,9 +77,25 @@ public class StudyService {
                 .collect(Collectors.toList());
     }
 
+    public List<StudyModel> getAllFilteredStudyPrograms(final Long domainId, final Long secretaryId){
+        return secretaryAllocationRepository.findAllBySecretary_IdAndDomain_Id(domainId, secretaryId)
+                .stream()
+                .map(SecretaryAllocation::getStudyProgram)
+                .map(this::toStudyModel)
+                .collect(Collectors.toList());
+    }
+
     public List<StudyModel> getAllStudyYears(final Long studyProgramId){
         return studyYearRepository.findAllByStudyProgram_Id(studyProgramId)
                 .stream()
+                .map(this::toStudyModel)
+                .collect(Collectors.toList());
+    }
+
+    public List<StudyModel> getAllFilteredStudyYears(final Long studyProgramId, final Long secretaryId){
+        return secretaryAllocationRepository.findAllBySecretary_IdAndStudyProgram_Id(studyProgramId, secretaryId)
+                .stream()
+                .map(SecretaryAllocation::getStudyProgram)
                 .map(this::toStudyModel)
                 .collect(Collectors.toList());
     }
@@ -104,7 +146,7 @@ public class StudyService {
     private StudyModel toStudyModel(final StudyProgram studyProgram){
         return StudyModel.builder()
                 .id(studyProgram.getId())
-                .value(studyProgram.getName().toString())
+                .value(studyProgram.getName())
                 .build();
     }
 
@@ -118,7 +160,7 @@ public class StudyService {
     private StudyModel toStudyModel(final StudyGroup studyGroup){
         return StudyModel.builder()
                 .id(studyGroup.getId())
-                .value(studyGroup.getName().toString())
+                .value(studyGroup.getName())
                 .build();
     }
 }

@@ -30,13 +30,14 @@ public class StudentController {
 
     /**
      * gets all the students, paginated filtered by study criteria, firstName, lastName
+     *
      * @param pageable object that holds the starting number of the page, the number of rows shown on a page and the sort object
-     * @param filter object that holds the fields the students can be filtered by
+     * @param filter   object that holds the fields the students can be filtered by
      * @return returns the current page with the students
      */
     @GetMapping("/all")
     public ResponseEntity<Page<StudentModel>> getAllStudents(final Pageable pageable,
-                                                             @RequestParam(name="filter", required = false) final StudentFilter filter){
+                                                             @RequestParam(name = "filter", required = false) final StudentFilter filter) {
         return ResponseEntity.ok(studentService.getAllStudents(pageable, Optional.ofNullable(filter)
                 .orElseGet(StudentFilter::new)));
     }
