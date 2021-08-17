@@ -39,9 +39,10 @@ export class TokenStorageService {
     if(!!user) {
       const decodedUser = JSON.parse(user);
       return <AppUserAuthModel>{
+        id: decodedUser["id"],
         active: decodedUser["active"],
         email: decodedUser["email"],
-        role: this.getRole(decodedUser["role"])
+        role: this.getRole(decodedUser["roles"][0])
       };
     }
     return <AppUserAuthModel>{

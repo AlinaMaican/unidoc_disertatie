@@ -4,6 +4,7 @@ import {TokenStorageService} from "../_services/token-storage.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {RegularExpressionUtil} from "../util/regular-expression.util";
 import {Router} from "@angular/router";
+import {RoleType} from "../type/role.type";
 
 @Component({
   selector: 'bg-user-login',
@@ -29,7 +30,6 @@ export class UserLoginComponent implements OnInit {
   ngOnInit(): void {
     if (this.tokenStorage.getToken()) {
       this.isLoggedIn = true;
-      // this.roles = this.tokenStorage.getUser().roles;
     }
   }
 
@@ -41,16 +41,30 @@ export class UserLoginComponent implements OnInit {
       this.authService.login(email, password).subscribe(
         data => {
           this.tokenStorage.saveToken(data.token);
-          console.log(data);
           this.tokenStorage.saveUser(data);
           this.tokenStorage.setUser(this.tokenStorage.getUser());
 
           this.isLoginFailed = false;
           this.isLoggedIn = true;
-          // this.roles = this.tokenStorage.getUser().roles;
-          console.log(this.tokenStorage.getUser().active)
+
           if(this.tokenStorage.getUser().active){
-            this.router.navigate(["/secretary-management"]);
+            if(this.tokenStorage.getUser().role === "STUDENT") {
+              this.authService.getStudent(this.tokenStorage.getUser().id).subscribe(
+                data => {
+                  window.sessionStorage.setItem("student", JSON.stringify(data));
+                  this.router.navigate(["/required-documents"]);
+                }
+              );
+            } else if (this.tokenStorage.getUser().role === "SECRETARY"){
+              this.authService.getSecretary(this.tokenStorage.getUser().id).subscribe(
+                data => {
+                  window.sessionStorage.setItem("secretary", JSON.stringify(data));
+                  this.router.navigate(["/document-management"]);
+                }
+              );
+            } else {
+              this.router.navigate(["/secretary-management"]);
+            }
           } else {
             this.router.navigate(["/change-password"]);
           }

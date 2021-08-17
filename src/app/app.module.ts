@@ -19,6 +19,16 @@ import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule} from "@angular/material/icon";
 import { SecretaryListComponent } from './secretary-list/secretary-list.component';
 import {MatTableModule} from "@angular/material/table";
+import { DocumentManagementComponent } from './document-management/document-management.component';
+import { UploadSecretaryDocumentDialogComponent } from './upload-secretary-document-dialog/upload-secretary-document-dialog.component';
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {NgxMatFileInputModule} from "@angular-material-components/file-input";
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatButtonModule} from "@angular/material/button";
+import {MatInputModule} from "@angular/material/input";
+import {MatNativeDateModule} from "@angular/material/core";
+import { EditSecretaryDocumentDialogComponent } from './edit-secretary-document-dialog/edit-secretary-document-dialog.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -46,7 +56,10 @@ export function translationServiceFactory(translate: TranslateService): () => Pr
     HomeComponent,
     ChangePasswordComponent,
     NavbarComponent,
-    SecretaryListComponent
+    SecretaryListComponent,
+    DocumentManagementComponent,
+    UploadSecretaryDocumentDialogComponent,
+    EditSecretaryDocumentDialogComponent
   ],
     imports: [
         BrowserModule,
@@ -65,6 +78,13 @@ export function translationServiceFactory(translate: TranslateService): () => Pr
         MatToolbarModule,
         MatIconModule,
         MatTableModule,
+        MatFormFieldModule,
+        MatDatepickerModule,
+        NgxMatFileInputModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatInputModule,
+        MatNativeDateModule
     ],
   providers: [
     authInterceptorProviders,

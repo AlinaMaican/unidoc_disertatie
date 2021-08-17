@@ -1,0 +1,57 @@
+<app-navbar class="mat-elevation-z6"></app-navbar>
+<div style="margin:30px;width:60%;">
+  <div>
+    <h1>Document management</h1>
+  </div>
+
+  <div *ngFor="let secretaryAllocation of secretaryAllocations">
+    <div>
+      <h3>{{secretaryAllocation.allocationName}}</h3>
+      <button mat-button (click)="openUploadDialog(secretaryAllocation.allocationId)">Add new document</button>
+      <table mat-table class="mat-elevation-z8 demo-table" [dataSource]="secretaryAllocation.tableData">
+
+        <ng-container matColumnDef="documentName">
+          <th mat-header-cell *matHeaderCellDef>Document name</th>
+          <td mat-cell *matCellDef="let document" class="wider-cell">{{document.name}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef>Description</th>
+          <td mat-cell *matCellDef="let document" class="wider-cell">{{document.description}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="endDateOfUpload">
+          <th mat-header-cell *matHeaderCellDef>End date of upload</th>
+          <td mat-cell *matCellDef="let document" class="wider-cell">{{document.endDateOfUpload | date}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="viewDocument">
+          <th mat-header-cell *matHeaderCellDef>View</th>
+          <td mat-cell *matCellDef="let document" class="action-cell">
+            <mat-icon class="" data-toggle="modal" (click)="openPdf(document.filePathName)"
+                      data-target="#editSecretaryDocument">remove_red_eye
+            </mat-icon>
+          </td>&nbsp;
+        </ng-container>
+
+        <ng-container matColumnDef="edit">
+          <th mat-header-cell *matHeaderCellDef>Edit</th>
+          <td mat-cell *matCellDef="let document" class="action-cell">
+            <mat-icon class="" (click)="prepareEdit(document)" data-toggle="modal"
+                      data-target="#editSecretaryDocument">edit
+            </mat-icon>
+          </td>&nbsp;
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          (click)="clickedRows.add(row)"
+          [class.demo-row-is-clicked]="clickedRows.has(row)"
+          *matRowDef="let row; columns: displayedColumns;"
+        ></tr>
+      </table>
+
+    </div>
+  </div>
+</div>

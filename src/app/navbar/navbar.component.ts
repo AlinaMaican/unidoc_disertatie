@@ -9,15 +9,17 @@ import {RoleType} from "../type/role.type";
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
-  user : AppUserAuthModel | undefined;
+  user: AppUserAuthModel | undefined;
   isAdmin: boolean = false;
   isStudent: boolean = false;
   isSecretary: boolean = false;
-  constructor(private tokenService: TokenStorageService) { }
+
+  constructor(private tokenService: TokenStorageService) {
+  }
 
   ngOnInit(): void {
     this.user = this.tokenService.getUser();
-    switch (this.user.role){
+    switch (this.user.role) {
       case RoleType.ADMIN:
         this.isAdmin = true;
         break;
@@ -32,4 +34,8 @@ export class NavbarComponent implements OnInit {
     }
   }
 
+  logOut(): void{
+    window.sessionStorage.clear();
+    window.location.reload();
+  }
 }
