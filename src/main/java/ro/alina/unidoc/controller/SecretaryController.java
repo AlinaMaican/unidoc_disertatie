@@ -2,8 +2,13 @@ package ro.alina.unidoc.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +21,16 @@ import ro.alina.unidoc.model.filters.StudentDocumentFilter;
 import ro.alina.unidoc.model.property_editor.GenericPropertyEditor;
 import ro.alina.unidoc.service.SecretaryService;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.TimeZone;
 
 
 @Slf4j
@@ -69,12 +82,19 @@ public class SecretaryController {
     /**
      * edits the details of a secretary document
      *
-     * @param secretaryDocumentModel the secretary document details object
      * @return if the edit was a success then true, otherwise false
      */
-    @PatchMapping("/document/edit")
-    public ResponseEntity<Boolean> editSecretaryDocument(@RequestBody SecretaryDocumentModel secretaryDocumentModel) {
-        return ResponseEntity.ok(secretaryService.editSecretaryDocument(secretaryDocumentModel));
+    @PostMapping("/document/edit")
+    public ResponseEntity<Boolean> editSecretaryDocument(@RequestParam(value = "id") String id,
+                                                         @RequestParam(value = "name") String name,
+                                                         @RequestParam(value = "description") String description,
+                                                         @RequestParam(value = "endDateOfUpload")String endDateOfUpload) {
+        return ResponseEntity.ok(secretaryService.editSecretaryDocument(SecretaryDocumentModel.builder()
+                .id(Long.valueOf(id))
+                .endDateOfUpload(LocalDateTime.parse(endDateOfUpload, DateTimeFormatter.ISO_DATE_TIME))
+                .name(name)
+                .description(description)
+                .build()));
     }
 
     /**
@@ -82,14 +102,20 @@ public class SecretaryController {
      *
      * @param file                   the document
      * @param secretaryAllocationId  the secretaryAllocation id
-     * @param secretaryDocumentModel the details of the document
      * @return a success or error message
      */
     @PostMapping("/document/upload")
-    public ResponseEntity<String> uploadSecretaryDocument(@RequestParam("file") MultipartFile file,
-                                                          @RequestParam("secretaryAllocationId") Long secretaryAllocationId,
-                                                          @RequestBody SecretaryDocumentModel secretaryDocumentModel) {
-        return ResponseEntity.ok(secretaryService.uploadSecretaryDocument(file, secretaryDocumentModel, secretaryAllocationId));
+    public ResponseEntity<Object> uploadSecretaryDocument(@RequestPart(value = "file") MultipartFile file,
+                                                          @RequestParam(value = "allocationId") String secretaryAllocationId,
+                                                          @RequestParam(value = "name") String name,
+                                                          @RequestParam(value = "description") String description,
+                                                          @RequestParam(value = "endDateOfUpload")String endDateOfUpload) throws FileAlreadyExistsException {
+       secretaryService.uploadSecretaryDocument(file, SecretaryDocumentModel.builder()
+                .endDateOfUpload(LocalDateTime.parse(endDateOfUpload, DateTimeFormatter.ISO_DATE_TIME))
+                .name(name)
+                .description(description)
+                .build(), Long.valueOf(secretaryAllocationId));
+       return ResponseEntity.ok("{}");
     }
 
     /**
@@ -117,5 +143,22 @@ public class SecretaryController {
     ResponseEntity<Boolean> editStudentDocumentStatus(@PathVariable final Long id,
                                                       @RequestParam(value = "status") final String status) {
         return ResponseEntity.ok(secretaryService.editStudentDocumentStatus(id, status));
+    }
+
+    @RequestMapping(value = "/downloadPdfDocument", method = RequestMethod.GET, produces = "application/pdf")
+    public ResponseEntity<byte[]> getPDF(@RequestParam(value = "filePath") String filePath) {
+        FileInputStream fileStream;
+        try {
+            fileStream = new FileInputStream(new File (filePath));
+            byte[] contents = IOUtils.toByteArray(fileStream);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType("application/pdf"));
+            String filename = "test.pdf";
+            headers.setContentDispositionFormData(filename, filename);
+            return new ResponseEntity<>(contents, headers, HttpStatus.OK);
+        } catch (IOException e) {
+            System.err.println(e);
+        }
+        return null;
     }
 }

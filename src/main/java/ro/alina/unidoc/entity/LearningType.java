@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ro.alina.unidoc.model.type.LearningTypeEnum;
-import ro.alina.unidoc.model.type.StudyYearType;
 
 import javax.persistence.*;
 

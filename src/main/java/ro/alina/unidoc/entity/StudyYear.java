@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ro.alina.unidoc.model.type.StudyYearType;
 
 import javax.persistence.*;
 
@@ -24,6 +23,5 @@ public class StudyYear {
     @JoinColumn(name = "study_program_id")
     private StudyProgram studyProgram;
 
-    @Enumerated(EnumType.STRING)
-    private StudyYearType name;
+    private String name;
 }

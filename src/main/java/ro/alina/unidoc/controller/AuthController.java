@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,14 +15,14 @@ import ro.alina.unidoc.entity.User;
 import ro.alina.unidoc.model.JwtResponseModel;
 import ro.alina.unidoc.model.UserChangePasswordModel;
 import ro.alina.unidoc.model.UserLoginModel;
+import ro.alina.unidoc.repository.SecretaryRepository;
+import ro.alina.unidoc.repository.StudentRepository;
 import ro.alina.unidoc.repository.UserRepository;
 import ro.alina.unidoc.service.UserDetailsImpl;
-import ro.alina.unidoc.service.UserService;
 import ro.alina.unidoc.utils.JwtUtils;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -35,6 +34,8 @@ import java.util.stream.Collectors;
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final StudentRepository studentRepository;
+    private final SecretaryRepository secretaryRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
 
@@ -61,6 +62,7 @@ public class AuthController {
         JwtResponseModel res = JwtResponseModel.builder()
                 .token(jwt)
                 .type("Bearer")
+                .id(userDetails.getId())
                 .email(userDetails.getEmail())
                 .roles(roles)
                 .isActive(userDetails.isActive())
@@ -86,5 +88,15 @@ public class AuthController {
             return ResponseEntity.ok(true);
         }
         return ResponseEntity.ok(false);
+    }
+
+    @GetMapping("/student")
+    public ResponseEntity<?> getStudentByUser(@RequestParam(value="userId") Long userId){
+        return ResponseEntity.ok(studentRepository.findByUserId(userId));
+    }
+
+    @GetMapping("/secretary")
+    public ResponseEntity<?> getSecretaryByUser(@RequestParam(value="userId") Long userId){
+        return ResponseEntity.ok(secretaryRepository.findByUserId(userId));
     }
 }

@@ -1,6 +1,7 @@
 package ro.alina.unidoc.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.EmptyFileException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -19,9 +20,7 @@ import ro.alina.unidoc.repository.*;
 import ro.alina.unidoc.utils.GenericSpecification;
 
 import javax.transaction.Transactional;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -31,7 +30,7 @@ import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 public class SecretaryService {
-    private final static String UPLOAD_FOLDER = "/persistence/secretary/documents/";
+    private final static String UPLOAD_FOLDER = "C:\\Users\\User\\Desktop\\persistence\\secretary\\documents";
 
     private final SecretaryRepository secretaryRepository;
     private final SecretaryAllocationRepository secretaryAllocationRepository;
@@ -92,24 +91,24 @@ public class SecretaryService {
         }
     }
 
-    public String uploadSecretaryDocument(final MultipartFile file, final SecretaryDocumentModel model,
-                                          final Long secretaryAllocationId) {
+    public void uploadSecretaryDocument(final MultipartFile file, final SecretaryDocumentModel model,
+                                        final Long secretaryAllocationId) throws FileAlreadyExistsException {
         if (file.isEmpty()) {
-            return "File is empty!";
+            throw new EmptyFileException();
         }
         try {
             byte[] bytes = file.getBytes();
-            Path path = Paths.get(UPLOAD_FOLDER + secretaryAllocationId + model.getName());
+            Path path = Paths.get(UPLOAD_FOLDER + "\\" + secretaryAllocationId + "\\" + file.getOriginalFilename());
             Files.write(path, bytes);
             secretaryDocumentRepository.save(SecretaryDocument.builder()
                     .name(model.getName())
                     .description(model.getDescription())
-                    .filePathName(UPLOAD_FOLDER + secretaryAllocationId + model.getName())
+                    .secretaryAllocation(secretaryAllocationRepository.getOne(secretaryAllocationId))
+                    .filePathName(UPLOAD_FOLDER + "\\" + secretaryAllocationId + "\\" + file.getOriginalFilename())
                     .endDateOfUpload(model.getEndDateOfUpload())
                     .build());
-            return "File has been successfully uploaded!";
         } catch (Exception e) {
-            return "Error while uploading the file!";
+            throw new FileAlreadyExistsException("lala");
         }
     }
 

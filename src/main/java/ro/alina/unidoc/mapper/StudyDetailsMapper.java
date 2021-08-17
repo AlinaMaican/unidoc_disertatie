@@ -11,7 +11,7 @@ public class StudyDetailsMapper {
                 .universityStudyType(allocation.getUniversityStudyType().getName().toString())
                 .domain(allocation.getDomain().getName().toString())
                 .studyProgram(allocation.getStudyProgram().getName())
-                .studyYear(allocation.getStudyYear().getName().toString())
+                .studyYear(allocation.getStudyYear().getName())
                 .build();
     }
 

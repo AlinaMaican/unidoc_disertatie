@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ro.alina.unidoc.model.type.DomainType;
 
+
 import javax.persistence.*;
 
 @Entity

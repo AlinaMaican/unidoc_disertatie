@@ -1,363 +1,370 @@
 --PASSWORD IS PASSWORD AND IS HASHED
 INSERT INTO users VALUES(nextval('users_seq'), 'ADMIN', 'alina.maican@my.fmi.unibuc.ro', '$2y$12$jbkinGYV9wduwiF4HFHOI.D/Vu6PH.tMPEiaVsYZVbLrIMv7Rou8C', true);
+--PASSWORD IS STUDENT
+INSERT INTO users VALUES(nextval('users_seq'), 'STUDENT', 'student1@my.fmi.unibuc.ro', '$2a$12$ueAAockdrPNZmWfPE5QWvOT.9EFX0tWd4NCrFgaEECQNedH53UroO', true);
+--PASSWORD IS SECRETARY
+INSERT INTO users VALUES(nextval('users_seq'), 'SECRETARY', 'secretary1@my.fmi.unibuc.ro', '$2a$12$x52AC5sK2VYuhh2q7qp/oOQqph1XQJdRwfxekNrj.aeHXdqwt9MUy', true);
 
--- INSERT INTO university_study_type VALUES(nextval('university_study_type_seq'), 'LICENTA');
--- INSERT INTO university_study_type VALUES(nextval('university_study_type_seq'), 'MASTER');
--- INSERT INTO university_study_type VALUES(nextval('university_study_type_seq'), 'DOCTORAT');
+INSERT INTO secretary VALUES(nextval('secretary_seq'), 3, 'DOAMNA', 'SECRETAR1');
+
+------------------------------------------------------------------------------------------------------------------------
+INSERT INTO learning_type VALUES(nextval('learning_type_seq'),'IF');
+INSERT INTO learning_type VALUES(nextval('learning_type_seq'),'ID');
+INSERT INTO learning_type VALUES(nextval('learning_type_seq'),'IFR');
+
+------------------------------------------------------------------------------------------------
+INSERT INTO university_study_type VALUES(nextval('university_study_type_seq'), 1, 'LICENTA');
+INSERT INTO university_study_type VALUES(nextval('university_study_type_seq'), 2, 'LICENTA');
+INSERT INTO university_study_type VALUES(nextval('university_study_type_seq'), 1, 'MASTER');
+INSERT INTO university_study_type VALUES(nextval('university_study_type_seq'), 3, 'MASTER');
+INSERT INTO university_study_type VALUES(nextval('university_study_type_seq'), 1, 'DOCTORAT');
+
+------------------------------------------------------------------------------------------------------------------------
+-- --LICENTA IF
+INSERT INTO domain VALUES(nextval('domain_seq'), 1, 'MATEMATICA');
+INSERT INTO domain VALUES(nextval('domain_seq'), 1, 'INFORMATICA');
+INSERT INTO domain VALUES(nextval('domain_seq'), 1, 'CALCULATOARE SI TEHNOLOGIA INFORMATIEI');
 --
--- --LICENTA
--- INSERT INTO domain VALUES(nextval('domain_seq'), 1, 'MATEMATICA');
--- INSERT INTO domain VALUES(nextval('domain_seq'), 1, 'INFORMATICA');
--- INSERT INTO domain VALUES(nextval('domain_seq'), 1, 'CALCULATOARE SI TEHNOLOGIA INFORMATIEI');
+-- -- LICENTA ID
+INSERT INTO domain VALUES(nextval('domain_seq'), 2, 'INFORMATICA');
+
+-- -- MASTER IF
+INSERT INTO domain VALUES(nextval('domain_seq'), 3, 'MATEMATICA');
+INSERT INTO domain VALUES(nextval('domain_seq'), 3, 'INFORMATICA');
+INSERT INTO domain VALUES(nextval('domain_seq'), 3, 'BIOSTATISTICA');
+
+-- -- MASTER IFR
+INSERT INTO domain VALUES(nextval('domain_seq'), 4, 'INFORMATICA');
 --
--- --MASTER
--- INSERT INTO domain VALUES(nextval('domain_seq'), 2, 'MATEMATICA');
--- INSERT INTO domain VALUES(nextval('domain_seq'), 2, 'INFORMATICA');
--- INSERT INTO domain VALUES(nextval('domain_seq'), 2, 'BIOSTATISTICA');
+-- -- DOCTORAT IF
+INSERT INTO domain VALUES(nextval('domain_seq'), 5, 'MATEMATICA');
+INSERT INTO domain VALUES(nextval('domain_seq'), 5, 'INFORMATICA');
 --
--- --DOCTORAT
--- INSERT INTO domain VALUES(nextval('domain_seq'), 3, 'MATEMATICA');
--- INSERT INTO domain VALUES(nextval('domain_seq'), 3, 'INFORMATICA');
+------------------------------------------------------------------------------------------------------------------------
+-- -- LICENTA IF DOMENIUL MATE
+INSERT INTO study_program VALUES(nextval('study_program_seq'), 1, 'MATEMATICA');
+INSERT INTO study_program VALUES(nextval('study_program_seq'), 1, 'MATEMATICA APLICATA');
+INSERT INTO study_program VALUES(nextval('study_program_seq'), 1, 'MATEMATICA INFORMATICA');
 --
--- -------------------------------------------------------------------------------------------------------------------
--- --LICENTA DOMENIUL MATE
--- INSERT INTO study_program VALUES(nextval('study_program_seq'), 1, 'MATEMATICA');
--- INSERT INTO study_program VALUES(nextval('study_program_seq'), 1, 'MATEMATICA APLICATA');
--- INSERT INTO study_program VALUES(nextval('study_program_seq'), 1, 'MATEMATICA INFORMATICA');
+-- -- LICENTA IF DOMENIUL INFO
+INSERT INTO study_program VALUES(nextval('study_program_seq'), 2, 'INFORMATICA');
 --
--- --LICENTA DOMENIUL INFO
--- INSERT INTO study_program VALUES(nextval('study_program_seq'), 2, 'INFORMATICA');
+-- -- LICENTA IF DOMENIUL CTI
+INSERT INTO study_program VALUES(nextval('study_program_seq'), 3, 'CALCULATOARE SI TEHNOLOGIA INFORMATIEI');
 --
--- --LICENTA DOMENIUL CTI
--- INSERT INTO study_program VALUES(nextval('study_program_seq'), 3, 'CALCULATOARE SI TEHNOLOGIA INFORMATIEI');
+-- -- LICENTA ID DOMENIUL INFO
+INSERT INTO study_program VALUES(nextval('study_program_seq'), 4, 'INFORMATICA');
 --
--- --MASTER DOMENIUL MATE
--- INSERT INTO study_program VALUES(nextval('study_program_seq'), 4, 'STUDII AVANSATE IN MATEMATICA');
--- INSERT INTO study_program VALUES(nextval('study_program_seq'), 4, 'MATEMATICA DIDACTICA');
--- INSERT INTO study_program VALUES(nextval('study_program_seq'), 4, 'PROBABILITATI SI STATISTICA');
+-- -- MASTER IF DOMENIUL MATE
+INSERT INTO study_program VALUES(nextval('study_program_seq'), 5, 'STUDII AVANSATE IN MATEMATICA');
+INSERT INTO study_program VALUES(nextval('study_program_seq'), 5, 'MATEMATICA DIDACTICA');
+INSERT INTO study_program VALUES(nextval('study_program_seq'), 5, 'PROBABILITATI SI STATISTICA');
 --
--- --MASTER DOMENIUL INFORMATICA
--- INSERT INTO study_program VALUES(nextval('study_program_seq'), 5, 'BAZE DE DATE SI TEHNOLOGII SOFTWARE');
--- INSERT INTO study_program VALUES(nextval('study_program_seq'), 5, 'INTELIGENTA ARTIFICIALA');
--- INSERT INTO study_program VALUES(nextval('study_program_seq'), 5, 'INGINERIE SOFTWARE');
--- INSERT INTO study_program VALUES(nextval('study_program_seq'), 5, 'SECURITATE SI LOGICA APLICATA');
--- INSERT INTO study_program VALUES(nextval('study_program_seq'), 5, 'SISTEME DISTRIBUITE');
--- INSERT INTO study_program VALUES(nextval('study_program_seq'), 5, 'DATA SCIENCE');
--- INSERT INTO study_program VALUES(nextval('study_program_seq'), 5, 'PROCESAREA LIMBAJULUI NATURAL');
+-- -- MASTER IF DOMENIUL INFORMATICA
+INSERT INTO study_program VALUES(nextval('study_program_seq'), 6, 'BAZE DE DATE SI TEHNOLOGII SOFTWARE');
+INSERT INTO study_program VALUES(nextval('study_program_seq'), 6, 'INTELIGENTA ARTIFICIALA');
+INSERT INTO study_program VALUES(nextval('study_program_seq'), 6, 'INGINERIE SOFTWARE');
+INSERT INTO study_program VALUES(nextval('study_program_seq'), 6, 'SECURITATE SI LOGICA APLICATA');
+INSERT INTO study_program VALUES(nextval('study_program_seq'), 6, 'SISTEME DISTRIBUITE');
+INSERT INTO study_program VALUES(nextval('study_program_seq'), 6, 'DATA SCIENCE');
+INSERT INTO study_program VALUES(nextval('study_program_seq'), 6, 'PROCESAREA LIMBAJULUI NATURAL');
 --
--- --MASTER DOMENIUL BIOSTATISTICA
--- INSERT INTO study_program VALUES(nextval('study_program_seq'), 6, 'BIOSTATISTICA');
+-- -- MASTER IF DOMENIUL BIOSTATISTICA
+INSERT INTO study_program VALUES(nextval('study_program_seq'), 7, 'BIOSTATISTICA');
 --
--- --DOCTORAT DOMENIUL MATE
--- INSERT INTO study_program VALUES(nextval('study_program_seq'), 7, 'MATEMATICA');
+-- -- MASTER IFR DOMENIUL INFORMATICA
+INSERT INTO study_program VALUES(nextval('study_program_seq'), 8, 'BAZE DE DATE SI TEHNOLOGII SOFTWARE');
 --
--- --DOCTORAT DOMENIUL INFO
--- INSERT INTO study_program VALUES(nextval('study_program_seq'), 8, 'INFORMATICA');
+-- -- DOCTORAT IF DOMENIUL MATE
+INSERT INTO study_program VALUES(nextval('study_program_seq'), 9, 'MATEMATICA');
 --
--- ---------------------------------------------------------------------------------------------------------------------
--- --LICENTA DOMENIUL MATE PROGRAM MATEMATICA
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 1, 'ANUL 1');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 1, 'ANUL 2');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 1, 'ANUL 3');
+-- -- DOCTORAT IF DOMENIUL INFO
+INSERT INTO study_program VALUES(nextval('study_program_seq'), 10, 'INFORMATICA');
 --
--- --LICENTA DOMENIUL MATE PROGRAM MATEMATICA APLICATA
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 2, 'ANUL 2');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 2, 'ANUL 3');
+------------------------------------------------------------------------------------------------------------------------
+-- -- LICENTA IF DOMENIUL MATE PROGRAM MATEMATICA
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 1, 'ANUL 1');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 1, 'ANUL 2');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 1, 'ANUL 3');
 --
--- --LICENTA DOMENIUL MATE PROGRAM MATEMATICA INFORMATICA
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 3, 'ANUL 2');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 3, 'ANUL 3');
+-- -- LICENTA IF DOMENIUL MATE PROGRAM MATEMATICA APLICATA
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 2, 'ANUL 2');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 2, 'ANUL 3');
 --
--- --LICENTA DOMENIUL INFO PROGRAM INFORMATICA
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 4, 'ANUL 1');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 4, 'ANUL 2');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 4, 'ANUL 3');
+-- -- LICENTA IF DOMENIUL MATE PROGRAM MATEMATICA INFORMATICA
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 3, 'ANUL 2');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 3, 'ANUL 3');
 --
--- --LICENTA DOMENIUL CTI PROGRAM CALCULATOARE SI TEHNOLOGIA INFORMATIEI
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 5, 'ANUL 1');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 5, 'ANUL 2');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 5, 'ANUL 3');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 5, 'ANUL 4');
+-- -- LICENTA IF DOMENIUL INFO PROGRAM INFORMATICA
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 4, 'ANUL 1');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 4, 'ANUL 2');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 4, 'ANUL 3');
 --
--- --MASTER DOMENIUL MATE PROGRAM STUDII AVANSATE IN MATEMATICA
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 6, 'ANUL 1');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 6, 'ANUL 2');
+-- -- LICENTA IF DOMENIUL CTI PROGRAM CALCULATOARE SI TEHNOLOGIA INFORMATIEI
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 5, 'ANUL 1');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 5, 'ANUL 2');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 5, 'ANUL 3');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 5, 'ANUL 4');
 --
--- --MASTER DOMENIUL MATE PROGRAM MATEMATICA DIDACTICA
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 7, 'ANUL 1');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 7, 'ANUL 2');
+-- -- LICENTA ID DOMENIUL INFO PROGRAM INFORMATICA
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 6, 'ANUL 1');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 6, 'ANUL 2');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 6, 'ANUL 3');
 --
--- --MASTER DOMENIUL MATE PROGRAM PROBABILITATI SI STATISTICA
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 8, 'ANUL 1');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 8, 'ANUL 2');
+-- -- MASTER IF DOMENIUL MATE PROGRAM STUDII AVANSATE IN MATEMATICA
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 7, 'ANUL 1');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 7, 'ANUL 2');
 --
--- --MASTER DOMENIUL MATE PROGRAM BAZE DE DATE SI TEHNOLOGII SOFTWARE
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 9, 'ANUL 1');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 9, 'ANUL 2');
+-- -- MASTER IF DOMENIUL MATE PROGRAM MATEMATICA DIDACTICA
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 8, 'ANUL 1');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 8, 'ANUL 2');
 --
--- --MASTER DOMENIUL MATE PROGRAM INTELIGENTA ARTIFICIALA
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 10, 'ANUL 1');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 10, 'ANUL 2');
+-- -- MASTER IF DOMENIUL MATE PROGRAM PROBABILITATI SI STATISTICA
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 9, 'ANUL 1');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 9, 'ANUL 2');
 --
--- --MASTER DOMENIUL MATE PROGRAM INGINERIE SOFTWARE
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 11, 'ANUL 1');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 11, 'ANUL 2');
+-- -- MASTER IF DOMENIUL INFO PROGRAM BAZE DE DATE SI TEHNOLOGII SOFTWARE
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 10, 'ANUL 1');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 10, 'ANUL 2');
 --
--- --MASTER DOMENIUL MATE PROGRAM SECURITATE SI LOGICA APLICATA
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 12, 'ANUL 1');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 12, 'ANUL 2');
+-- -- MASTER IF DOMENIUL INFO PROGRAM INTELIGENTA ARTIFICIALA
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 11, 'ANUL 1');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 11, 'ANUL 2');
 --
--- --MASTER DOMENIUL MATE PROGRAM SISTEME DISTRIBUITE
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 13, 'ANUL 1');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 13, 'ANUL 2');
+-- -- MASTER IF DOMENIUL INFO PROGRAM INGINERIE SOFTWARE
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 12, 'ANUL 1');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 12, 'ANUL 2');
 --
--- --MASTER DOMENIUL MATE PROGRAM DATA SCIENCE
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 14, 'ANUL 1');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 14, 'ANUL 2');
+-- -- MASTER IF DOMENIUL INFO PROGRAM SECURITATE SI LOGICA APLICATA
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 13, 'ANUL 1');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 13, 'ANUL 2');
 --
--- --MASTER DOMENIUL MATE PROGRAM PROCESAREA LIMBAJULUI NATURAL
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 15, 'ANUL 1');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 15, 'ANUL 2');
+-- -- MASTER IF DOMENIUL INFO PROGRAM SISTEME DISTRIBUITE
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 14, 'ANUL 1');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 14, 'ANUL 2');
 --
--- --MASTER DOMENIUL BIOSTATISTICA PROGRAM BIOSTATISTICA
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 16, 'ANUL 1');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 16, 'ANUL 2');
+-- -- MASTER IF DOMENIUL INFO PROGRAM DATA SCIENCE
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 15, 'ANUL 1');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 15, 'ANUL 2');
 --
--- --DOCTORAT DOMENIUL MATE
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 17, 'ANUL 1');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 17, 'ANUL 2');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 17, 'ANUL 3');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 17, 'ANUL 4');
+-- -- MASTER IF DOMENIUL INFO PROGRAM PROCESAREA LIMBAJULUI NATURAL
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 16, 'ANUL 1');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 16, 'ANUL 2');
 --
--- --DOCTORAT DOMENIUL INFO
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 18, 'ANUL 1');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 18, 'ANUL 2');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 18, 'ANUL 3');
--- INSERT INTO study_year VALUES(nextval('study_year_seq'), 18, 'ANUL 4');
+-- -- MASTER IF DOMENIUL BIOSTATISTICA PROGRAM BIOSTATISTICA
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 17, 'ANUL 1');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 17, 'ANUL 2');
 --
--- -------------------------------------------------------------------------------------------------------
--- --LICENTA DOMENIUL MATE PROGRAM MATEMATICA
--- INSERT INTO learning_type VALUES(nextval('learning_type_seq'), 1, 'IF');
+-- -- MASTER IFR DOMENIUL INFO PROGRAM BAZE DE DATE SI TEHNOLOGII SOFTWARE
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 18, 'ANUL 1');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 18, 'ANUL 2');
 --
--- --LICENTA DOMENIUL MATE PROGRAM MATEMATICA APLICATA
--- INSERT INTO learning_type VALUES(nextval('learning_type_seq'), 2, 'IF');
+-- -- DOCTORAT IF DOMENIUL MATE
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 19, 'ANUL 1');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 19, 'ANUL 2');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 19, 'ANUL 3');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 19, 'ANUL 4');
 --
--- --LICENTA DOMENIUL MATE PROGRAM MATEMATICA INFORMATICA
--- INSERT INTO learning_type VALUES(nextval('learning_type_seq'), 3, 'IF');
---
--- --LICENTA DOMENIUL INFO PROGRAM INFORMATICA
--- INSERT INTO learning_type VALUES(nextval('learning_type_seq'), 4, 'IF');
--- INSERT INTO learning_type VALUES(nextval('learning_type_seq'), 4, 'ID');
---
--- --LICENTA DOMENIUL CTI PROGRAM CALCULATOARE SI TEHNOLOGIA INFORMATIEI
--- INSERT INTO learning_type VALUES(nextval('learning_type_seq'), 5, 'IF');
---
--- --MASTER DOMENIUL MATE PROGRAM STUDII AVANSATE IN MATEMATICA
--- INSERT INTO learning_type VALUES(nextval('learning_type_seq'), 6, 'IF');
---
--- --MASTER DOMENIUL MATE PROGRAM MATEMATICA DIDACTICA
--- INSERT INTO learning_type VALUES(nextval('learning_type_seq'), 7, 'IF');
---
--- --MASTER DOMENIUL MATE PROGRAM PROBABILITATI SI STATISTICA
--- INSERT INTO learning_type VALUES(nextval('learning_type_seq'), 8, 'IF');
---
--- --MASTER DOMENIUL MATE PROGRAM BAZE DE DATE SI TEHNOLOGII SOFTWARE
--- INSERT INTO learning_type VALUES(nextval('learning_type_seq'), 9, 'IF');
--- INSERT INTO learning_type VALUES(nextval('learning_type_seq'), 9, 'IFR');
---
--- --MASTER DOMENIUL MATE PROGRAM INTELIGENTA ARTIFICIALA
--- INSERT INTO learning_type VALUES(nextval('learning_type_seq'), 10, 'IF');
---
--- --MASTER DOMENIUL MATE PROGRAM INGINERIE SOFTWARE
--- INSERT INTO learning_type VALUES(nextval('learning_type_seq'), 11, 'IF');
---
--- --MASTER DOMENIUL MATE PROGRAM SECURITATE SI LOGICA APLICATA
--- INSERT INTO learning_type VALUES(nextval('learning_type_seq'), 12, 'IF');
---
--- --MASTER DOMENIUL MATE PROGRAM SISTEME DISTRIBUITE
--- INSERT INTO learning_type VALUES(nextval('learning_type_seq'), 13, 'IF');
---
--- --MASTER DOMENIUL MATE PROGRAM DATA SCIENCE
--- INSERT INTO learning_type VALUES(nextval('learning_type_seq'), 14, 'IF');
---
--- --MASTER DOMENIUL MATE PROGRAM PROCESAREA LIMBAJULUI NATURAL
--- INSERT INTO learning_type VALUES(nextval('learning_type_seq'), 15, 'IF');
---
--- --MASTER DOMENIUL BIOSTATISTICA PROGRAM BIOSTATISTICA
--- INSERT INTO learning_type VALUES(nextval('learning_type_seq'), 16, 'IF');
---
--- --DOCTORAT DOMENIUL MATE
--- INSERT INTO learning_type VALUES(nextval('learning_type_seq'), 17, 'IF');
---
--- --DOCTORAT DOMENIUL INFO
--- INSERT INTO learning_type VALUES(nextval('learning_type_seq'), 18, 'IF');
+-- -- DOCTORAT IF DOMENIUL INFO
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 20, 'ANUL 1');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 20, 'ANUL 2');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 20, 'ANUL 3');
+INSERT INTO study_year VALUES(nextval('study_year_seq'), 20, 'ANUL 4');
 --
 -- --------------------------------------------------------------------------------------------------------
--- --LICENTA DOMENIUL MATE PROGRAM MATEMATICA ANUL 1
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 1, '101');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 1, '102');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 1, '103');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 1, '104');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 1, '111');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 1, '112');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 1, '113');
+-- -- LICENTA IF DOMENIUL MATE PROGRAM MATEMATICA ANUL 1
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 1, '101');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 1, '102');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 1, '103');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 1, '104');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 1, '111');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 1, '112');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 1, '113');
 --
--- --LICENTA DOMENIUL MATE PROGRAM MATEMATICA ANUL 2
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 2, '201');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 2, '202');
+-- -- LICENTA IF DOMENIUL MATE PROGRAM MATEMATICA ANUL 2
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 2, '201');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 2, '202');
 --
--- --LICENTA DOMENIUL MATE PROGRAM MATEMATICA ANUL 3
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 3, '301');
+-- -- LICENTA IF DOMENIUL MATE PROGRAM MATEMATICA ANUL 3
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 3, '301');
 --
--- --LICENTA DOMENIUL MATE PROGRAM MATEMATICA APLICATA ANUL 2
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 4, '221');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 4, '222');
+-- -- LICENTA IF DOMENIUL MATE PROGRAM MATEMATICA APLICATA ANUL 2
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 4, '221');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 4, '222');
 --
--- --LICENTA DOMENIUL MATE PROGRAM MATEMATICA APLICATA ANUL 3
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 5, '321');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 5, '322');
+-- -- LICENTA IF DOMENIUL MATE PROGRAM MATEMATICA APLICATA ANUL 3
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 5, '321');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 5, '322');
 --
--- --LICENTA DOMENIUL MATE PROGRAM MATEMATICA INFORMATICA ANUL 2
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 6, '211');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 6, '212');
+-- -- LICENTA IF DOMENIUL MATE PROGRAM MATEMATICA INFORMATICA ANUL 2
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 6, '211');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 6, '212');
 --
--- --LICENTA DOMENIUL MATE PROGRAM MATEMATICA INFORMATICA ANUL 3
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 7, '311');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 7, '312');
+-- -- LICENTA IF DOMENIUL MATE PROGRAM MATEMATICA INFORMATICA ANUL 3
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 7, '311');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 7, '312');
 --
--- --LICENTA DOMENIUL INFO PROGRAM INFORMATICA ANUL 1
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 8, '131');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 8, '132');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 8, '133');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 8, '134');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 8, '141');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 8, '142');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 8, '143');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 8, '144');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 8, '151');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 8, '152');
+-- -- LICENTA IF DOMENIUL INFO PROGRAM INFORMATICA ANUL 1
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 8, '131');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 8, '132');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 8, '133');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 8, '134');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 8, '141');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 8, '142');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 8, '143');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 8, '144');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 8, '151');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 8, '152');
 --
--- --LICENTA DOMENIUL INFO PROGRAM INFORMATICA ANUL 2
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 9, '231');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 9, '232');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 9, '233');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 9, '234');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 9, '241');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 9, '242');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 9, '243');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 9, '244');
+-- -- LICENTA IF DOMENIUL INFO PROGRAM INFORMATICA ANUL 2
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 9, '231');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 9, '232');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 9, '233');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 9, '234');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 9, '241');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 9, '242');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 9, '243');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 9, '244');
 --
--- --LICENTA DOMENIUL INFO PROGRAM INFORMATICA ANUL 3
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 10, '331');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 10, '332');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 10, '333');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 10, '334');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 10, '341');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 10, '342');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 10, '343');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 10, '344');
+-- -- LICENTA IF DOMENIUL INFO PROGRAM INFORMATICA ANUL 3
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 10, '331');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 10, '332');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 10, '333');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 10, '334');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 10, '341');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 10, '342');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 10, '343');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 10, '344');
 --
--- --LICENTA DOMENIUL CTI PROGRAM CALCULATOARE SI TEHNOLOGIA INFORMATIEI ANUL 1
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 11, '161');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 11, '162');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 11, '163');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 11, '164');
+-- -- LICENTA IF DOMENIUL CTI PROGRAM CALCULATOARE SI TEHNOLOGIA INFORMATIEI ANUL 1
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 11, '161');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 11, '162');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 11, '163');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 11, '164');
 --
--- --LICENTA DOMENIUL CTI PROGRAM CALCULATOARE SI TEHNOLOGIA INFORMATIEI ANUL 2
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 12, '251');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 12, '252');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 12, '253');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 12, '254');
+-- -- LICENTA IF DOMENIUL CTI PROGRAM CALCULATOARE SI TEHNOLOGIA INFORMATIEI ANUL 2
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 12, '251');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 12, '252');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 12, '253');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 12, '254');
 --
--- --LICENTA DOMENIUL CTI PROGRAM CALCULATOARE SI TEHNOLOGIA INFORMATIEI ANUL 3
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 13, '351');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 13, '352');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 13, '353');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 13, '354');
+-- -- LICENTA IF DOMENIUL CTI PROGRAM CALCULATOARE SI TEHNOLOGIA INFORMATIEI ANUL 3
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 13, '351');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 13, '352');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 13, '353');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 13, '354');
 --
--- --LICENTA DOMENIUL CTI PROGRAM CALCULATOARE SI TEHNOLOGIA INFORMATIEI ANUL 4
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 14, '451');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 14, '452');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 14, '453');
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 14, '454');
+-- -- LICENTA IF DOMENIUL CTI PROGRAM CALCULATOARE SI TEHNOLOGIA INFORMATIEI ANUL 4
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 14, '451');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 14, '452');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 14, '453');
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 14, '454');
 --
--- --MASTER DOMENIUL MATE PROGRAM STUDII AVANSATE IN MATEMATICA ANUL 1
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 15, '401');
+-- -- LICENTA ID DOMENIUL INFO PROGRAM INFORMATICA ANUL 1
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 15, 'INFO_DIST_1');
 --
--- --MASTER DOMENIUL MATE PROGRAM STUDII AVANSATE IN MATEMATICA ANUL 2
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 16, '501');
+-- -- LICENTA ID DOMENIUL INFO PROGRAM INFORMATICA ANUL 2
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 16, 'INFO_DIST_2');
 --
--- --MASTER DOMENIUL MATE PROGRAM MATEMATICA DIDACTICA ANUL 1
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 17, '402');
+-- -- LICENTA ID DOMENIUL INFO PROGRAM INFORMATICA ANUL 3
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 17, 'INFO_DIST_3');
 --
--- --MASTER DOMENIUL MATE PROGRAM MATEMATICA DIDACTICA ANUL 2
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 18, '502');
+-- -- MASTER IF DOMENIUL MATE PROGRAM STUDII AVANSATE IN MATEMATICA ANUL 1
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 18, '401');
 --
--- --MASTER DOMENIUL MATE PROGRAM PROBABILITATI SI STATISTICA ANUL 1
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 19, '403');
+-- -- MASTER IF DOMENIUL MATE PROGRAM STUDII AVANSATE IN MATEMATICA ANUL 2
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 19, '501');
 --
--- --MASTER DOMENIUL MATE PROGRAM PROBABILITATI SI STATISTICA ANUL 2
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 20, '503');
+-- -- MASTER IF DOMENIUL MATE PROGRAM MATEMATICA DIDACTICA ANUL 1
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 20, '402');
 --
--- --MASTER DOMENIUL MATE PROGRAM BAZE DE DATE SI TEHNOLOGII SOFTWARE ANUL 1
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 21, '405');
+-- -- MASTER IF DOMENIUL MATE PROGRAM MATEMATICA DIDACTICA ANUL 2
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 21, '502');
 --
--- --MASTER DOMENIUL MATE PROGRAM BAZE DE DATE SI TEHNOLOGII SOFTWARE ANUL 2
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 22, '505');
+-- -- MASTER IF DOMENIUL MATE PROGRAM PROBABILITATI SI STATISTICA ANUL 1
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 22, '403');
 --
--- --MASTER DOMENIUL MATE PROGRAM INTELIGENTA ARTIFICIALA ANUL 1
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 23, '407');
+-- -- MASTER IF DOMENIUL MATE PROGRAM PROBABILITATI SI STATISTICA ANUL 2
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 23, '503');
 --
--- --MASTER DOMENIUL MATE PROGRAM INTELIGENTA ARTIFICIALA ANUL 2
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 24, '507');
+-- -- MASTER IF DOMENIUL INFO PROGRAM BAZE DE DATE SI TEHNOLOGII SOFTWARE ANUL 1
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 24, '405');
 --
--- --MASTER DOMENIUL MATE PROGRAM INGINERIE SOFTWARE ANUL 1
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 25, '406');
+-- -- MASTER IF DOMENIUL INFO PROGRAM BAZE DE DATE SI TEHNOLOGII SOFTWARE ANUL 2
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 25, '505');
 --
--- --MASTER DOMENIUL MATE PROGRAM INGINERIE SOFTWARE ANUL 2
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 26, '506');
+-- -- MASTER IF DOMENIUL INFO PROGRAM INTELIGENTA ARTIFICIALA ANUL 1
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 26, '407');
 --
--- --MASTER DOMENIUL MATE PROGRAM SECURITATE SI LOGICA APLICATA ANUL 1
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 27, '410');
+-- -- MASTER IF DOMENIUL INFO PROGRAM INTELIGENTA ARTIFICIALA ANUL 2
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 27, '507');
 --
--- --MASTER DOMENIUL MATE PROGRAM SECURITATE SI LOGICA APLICATA ANUL 2
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 28, '510');
+-- -- MASTER IF DOMENIUL INFO PROGRAM INGINERIE SOFTWARE ANUL 1
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 28, '406');
 --
--- --MASTER DOMENIUL MATE PROGRAM SISTEME DISTRIBUITE ANUL 1
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 29, '408');
+-- -- MASTER IF DOMENIUL INFO PROGRAM INGINERIE SOFTWARE ANUL 2
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 29, '506');
 --
--- --MASTER DOMENIUL MATE PROGRAM SISTEME DISTRIBUITE ANUL 2
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 30, '508');
+-- -- MASTER IF DOMENIUL INFO PROGRAM SECURITATE SI LOGICA APLICATA ANUL 1
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 30, '410');
 --
--- --MASTER DOMENIUL MATE PROGRAM DATA SCIENCE ANUL 1
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 31, '411');
+-- -- MASTER IF DOMENIUL INFO PROGRAM SECURITATE SI LOGICA APLICATA ANUL 2
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 31, '510');
 --
--- --MASTER DOMENIUL MATE PROGRAM DATA SCIENCE ANUL 2
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 32, '511');
+-- -- MASTER IF DOMENIUL INFO PROGRAM SISTEME DISTRIBUITE ANUL 1
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 32, '408');
 --
--- --MASTER DOMENIUL MATE PROGRAM PROCESAREA LIMBAJULUI NATURAL ANUL 1
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 33, '412');
+-- -- MASTER IF DOMENIUL INFO PROGRAM SISTEME DISTRIBUITE ANUL 2
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 33, '508');
 --
--- --MASTER DOMENIUL BIOSTATISTICA PROGRAM BIOSTATISTICA ANUL 1
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 34, 'BIO_1');
+-- -- MASTER IF DOMENIUL INFO PROGRAM DATA SCIENCE ANUL 1
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 34, '411');
 --
--- --MASTER DOMENIUL BIOSTATISTICA PROGRAM BIOSTATISTICA ANUL 2
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 35, 'BIO_2');
+-- -- MASTER IF DOMENIUL INFO PROGRAM DATA SCIENCE ANUL 2
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 35, '511');
 --
--- --DOCTORAT DOMENIUL MATE PROGRAM MATE ANUL 1
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 36, 'DOCT_MATE_1');
--- --DOCTORAT DOMENIUL MATE PROGRAM MATE ANUL 2
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 37, 'DOCT_MATE_2');
--- --DOCTORAT DOMENIUL MATE PROGRAM MATE ANUL 3
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 38, 'DOCT_MATE_3');
--- --DOCTORAT DOMENIUL MATE PROGRAM MATE ANUL 4
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 39, 'DOCT_MATE_4');
+-- -- MASTER IF DOMENIUL INFO PROGRAM PROCESAREA LIMBAJULUI NATURAL ANUL 1
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 36, '412');
 --
--- --DOCTORAT DOMENIUL MATE PROGRAM INFO ANUL 1
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 40, 'DOCT_INFO_1');
--- --DOCTORAT DOMENIUL MATE PROGRAM INFO ANUL 2
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 41, 'DOCT_INFO_2');
--- --DOCTORAT DOMENIUL MATE PROGRAM INFO ANUL 3
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 42, 'DOCT_INFO_3');
--- --DOCTORAT DOMENIUL MATE PROGRAM INFO ANUL 4
--- INSERT INTO study_group VALUES(nextval('study_group_seq'), 43, 'DOCT_INFO_4');
+-- -- MASTER IF DOMENIUL INFO PROGRAM PROCESAREA LIMBAJULUI NATURAL ANUL 2
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 37, '512');
+--
+-- -- MASTER IF DOMENIUL BIOSTATISTICA PROGRAM BIOSTATISTICA ANUL 1
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 38, 'BIO_1');
+--
+-- -- MASTER IF DOMENIUL BIOSTATISTICA PROGRAM BIOSTATISTICA ANUL 2
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 39, 'BIO_2');
+--
+-- -- MASTER ID DOMENIUL INFO PROGRAM BAZE DE DATE SI TEHNOLOGII SOFTWARE ANUL 1
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 40, 'BAZE_IFR_1');
+--
+-- -- MASTER ID DOMENIUL INFO PROGRAM BAZE DE DATE SI TEHNOLOGII SOFTWARE ANUL 2
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 41, 'BAZE_IFR_2');
+--
+-- -- DOCTORAT IF DOMENIUL MATE PROGRAM MATE ANUL 1
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 42, 'DOCT_MATE_1');
+-- -- DOCTORAT IF DOMENIUL MATE PROGRAM MATE ANUL 2
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 43, 'DOCT_MATE_2');
+-- -- DOCTORAT IF DOMENIUL MATE PROGRAM MATE ANUL 3
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 44, 'DOCT_MATE_3');
+-- -- DOCTORAT IF DOMENIUL MATE PROGRAM MATE ANUL 4
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 45, 'DOCT_MATE_4');
+--
+-- -- DOCTORAT IF DOMENIUL MATE PROGRAM INFO ANUL 1
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 46, 'DOCT_INFO_1');
+-- -- DOCTORAT IF DOMENIUL MATE PROGRAM INFO ANUL 2
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 47, 'DOCT_INFO_2');
+-- -- DOCTORAT IF DOMENIUL MATE PROGRAM INFO ANUL 3
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 48, 'DOCT_INFO_3');
+-- -- DOCTORAT IF DOMENIUL MATE PROGRAM INFO ANUL 4
+INSERT INTO study_group VALUES(nextval('study_group_seq'), 49, 'DOCT_INFO_4');
+
+--secretary allocation for IF LICENTA DOMENIUL INFO, SPECIALIZAREA INFO, AN 2
+INSERT INTO secretary_allocation VALUES (nextval('secretary_allocation_seq'), 1, 1, 1, 2, 4, 9);
+
+--STUDENT FROM IF LICENTA DOMENIUL INFO , INFO , AN 2, GRUPA 231
+INSERT INTO STUDENT VALUES(nextval('student_seq'), 2, 1, 29, 9,4,2,1,1,'DOMNU', 'STUDENT1', '2970911340459', 'TR-2019');
+
+--phone numbers for user student 1
+INSERT INTO phone_number VALUES (nextval('phone_number_seq'), 2, '0762261768');
+INSERT INTO phone_number VALUES (nextval('phone_number_seq'), 2, '0769624951');
