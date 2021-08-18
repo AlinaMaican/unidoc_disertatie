@@ -78,7 +78,7 @@ public class StudyService {
     }
 
     public List<StudyModel> getAllFilteredStudyPrograms(final Long domainId, final Long secretaryId){
-        return secretaryAllocationRepository.findAllBySecretary_IdAndDomain_Id(domainId, secretaryId)
+        return secretaryAllocationRepository.findAllBySecretary_IdAndDomain_Id(secretaryId, domainId)
                 .stream()
                 .map(SecretaryAllocation::getStudyProgram)
                 .map(this::toStudyModel)
@@ -93,9 +93,9 @@ public class StudyService {
     }
 
     public List<StudyModel> getAllFilteredStudyYears(final Long studyProgramId, final Long secretaryId){
-        return secretaryAllocationRepository.findAllBySecretary_IdAndStudyProgram_Id(studyProgramId, secretaryId)
+        return secretaryAllocationRepository.findAllBySecretary_IdAndStudyProgram_Id(secretaryId, studyProgramId)
                 .stream()
-                .map(SecretaryAllocation::getStudyProgram)
+                .map(SecretaryAllocation::getStudyYear)
                 .map(this::toStudyModel)
                 .collect(Collectors.toList());
     }

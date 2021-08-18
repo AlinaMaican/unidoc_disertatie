@@ -117,6 +117,16 @@ public class GenericSpecification <T>{
         return null;
     }
 
+    public Specification<T> isNestedNestedPropertyLike(final String property, final String value) {
+        if (!StringUtils.isEmptyOrWhitespace(value) && checkForNestedProperty(property)) {
+            String[] properties = property.split(NESTED_PROPERTY_DELIMITER);
+            return (root, query, builder)
+                    -> builder.like(builder.lower(root.join(properties[PARENT]).join(properties[CHILD]).get(properties[SECOND_CHILD])),
+                    LIKE_WILDCARD + value.toLowerCase() + LIKE_WILDCARD);
+        }
+        return null;
+    }
+
     public Specification<T> isNestedPropertyLike(final String property, final String value) {
         if (!StringUtils.isEmptyOrWhitespace(value) && checkForNestedProperty(property)) {
             String[] properties = property.split(NESTED_PROPERTY_DELIMITER);
@@ -149,7 +159,7 @@ public class GenericSpecification <T>{
     }
 
     public Specification<T> isNestedPropertyEqualNumber(final String property, final Long value) {
-        if (checkForNestedProperty(property)) {
+        if (value != null && checkForNestedProperty(property)) {
             String[] properties = property.split(NESTED_PROPERTY_DELIMITER);
             return (root, query, builder)
                     -> builder.equal(root.get(properties[PARENT]).get(properties[CHILD]), value);

@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,14 +22,12 @@ import ro.alina.unidoc.service.SecretaryService;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
-import java.util.TimeZone;
 
 
 @Slf4j
@@ -45,6 +42,7 @@ public class SecretaryController {
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(SecretaryDocumentModel.class, new GenericPropertyEditor<>(SecretaryDocumentModel.class));
+        binder.registerCustomEditor(StudentDocumentRowModel.class, new GenericPropertyEditor<>(StudentDocumentRowModel.class));
     }
 
     /**
@@ -121,15 +119,12 @@ public class SecretaryController {
     /**
      * gets all of the documents of the students filtered by some conditions
      *
-     * @param pageable the pageable object
-     * @param filter   filter object
-     * @return a list of student documents alng with some student details
+     * @return a list of student documents along with some student details
      */
+    @ModelAttribute
     @GetMapping("/allocation/student/documents")
-    public ResponseEntity<Page<StudentDocumentRowModel>> getAllStudentDocuments(final Pageable pageable,
-                                                                                @RequestParam(name = "filter", required = false) final StudentDocumentFilter filter) {
-        return ResponseEntity.ok(secretaryService.getAllStudentDocuments(pageable, Optional.ofNullable(filter)
-                .orElseGet(StudentDocumentFilter::new)));
+    public ResponseEntity<Page<StudentDocumentRowModel>> getAllStudentDocuments(@ModelAttribute final StudentDocumentFilter filter) {
+        return ResponseEntity.ok(secretaryService.getAllStudentDocuments(filter));
     }
 
     /**
@@ -139,7 +134,7 @@ public class SecretaryController {
      * @param status the new status
      * @return true or false depending on the success of the edit
      */
-    @PatchMapping("/allocation/student/document/{id}")
+    @PostMapping("/allocation/student/document/{id}")
     ResponseEntity<Boolean> editStudentDocumentStatus(@PathVariable final Long id,
                                                       @RequestParam(value = "status") final String status) {
         return ResponseEntity.ok(secretaryService.editStudentDocumentStatus(id, status));

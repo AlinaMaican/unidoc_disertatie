@@ -3,7 +3,9 @@ package ro.alina.unidoc.service;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.EmptyFileException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +24,7 @@ import ro.alina.unidoc.utils.GenericSpecification;
 import javax.transaction.Transactional;
 import java.nio.file.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -112,9 +115,12 @@ public class SecretaryService {
         }
     }
 
-    public Page<StudentDocumentRowModel> getAllStudentDocuments(final Pageable pageable, final StudentDocumentFilter filter) {
+    public Page<StudentDocumentRowModel> getAllStudentDocuments(final StudentDocumentFilter filter) {
         final var specification = getSpecifications(filter);
-        return studentDocumentRepository.findAll(specification, pageable).map(this::toStudentDocumentRowModel);
+
+        var pageReq = PageRequest.of(filter.getPageNumber(), filter.getPageSize(), Sort.by(filter.getColumnName()).descending());
+        return studentDocumentRepository.findAll(specification, pageReq)
+                .map(this::toStudentDocumentRowModel);
     }
 
     public Boolean editStudentDocumentStatus(final Long documentId, final String status) {
@@ -133,9 +139,9 @@ public class SecretaryService {
         return Objects.requireNonNull(studentDocumentGenericSpecification.where(
                 studentDocumentGenericSpecification.isNestedPropertyLike("student.first_name", filter.getFirstName()))
                 .and(studentDocumentGenericSpecification.isNestedPropertyLike("student.last_name", filter.getLastName()))
-                .and(studentDocumentGenericSpecification.isNestedPropertyLike("secretary_document.name", filter.getFileName()))
+                .and(studentDocumentGenericSpecification.isNestedPropertyLike("secretary_document.name", filter.getName()))
                 .and(studentDocumentGenericSpecification.isPropertyEqual("status", filter.getStatus()))
-                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.learning_type_id", filter.getLearningTypeId()))
+                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.learning_type", filter.getLearningTypeId()))
                 .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.university_study_type_id", filter.getUniversityStudyId()))
                 .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.domain_id", filter.getDomainId()))
                 .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.study_program_id", filter.getStudyProgramId()))
@@ -145,7 +151,7 @@ public class SecretaryService {
 
     private StudentDocumentRowModel toStudentDocumentRowModel(final StudentDocument studentDocument) {
         return StudentDocumentRowModel.builder()
-                .fileName(studentDocument.getSecretaryDocument().getFilePathName())
+                .fileName(studentDocument.getSecretaryDocument().getName())
                 .filePath(studentDocument.getFilePathName())
                 .dateOfUpload(studentDocument.getDateOfUpload())
                 .status(studentDocument.getStatus().toString())
