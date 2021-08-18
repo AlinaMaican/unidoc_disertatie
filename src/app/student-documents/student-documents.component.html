@@ -1,0 +1,155 @@
+<app-navbar class="mat-elevation-z6"></app-navbar>
+<div style="margin:30px;width:80%;">
+  <div>
+    <h1>Student documents</h1>
+  </div>
+  <div style="display: inline-block;">
+    <!---learning type filter------>
+    <mat-form-field appearance="fill">
+      <mat-label>Learning type</mat-label>
+      <mat-select (selectionChange)="makeUniversityStudyVisible($event.value)">
+        <mat-option *ngFor="let learningType of learningTypes" [value]="learningType.id">
+          {{learningType.value}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!---university studies filter------>
+    <mat-form-field appearance="fill" class="margin-left hidden-element" id="universityStudyId">
+      <mat-label>University study</mat-label>
+      <mat-select (selectionChange)="makeDomainVisible($event.value)">
+        <mat-option *ngFor="let universityStudy of universityStudies" [value]="universityStudy.id">
+          {{universityStudy.value}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!---domain filter------>
+    <mat-form-field appearance="fill" class="margin-left hidden-element" id="domainId">
+      <mat-label>Domain</mat-label>
+      <mat-select (selectionChange)="makeStudyProgramVisible($event.value)">
+        <mat-option *ngFor="let domain of domains" [value]="domain.id">
+          {{domain.value}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!---study program filter------>
+    <mat-form-field appearance="fill" class="margin-left hidden-element" id="studyProgramId">
+      <mat-label>Study program</mat-label>
+      <mat-select (selectionChange)="makeStudyYearVisible($event.value)">
+        <mat-option *ngFor="let studyProgram of studyPrograms" [value]="studyProgram.id">
+          {{studyProgram.value}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!---study year filter------>
+    <mat-form-field appearance="fill" class="margin-left hidden-element" id="studyYearId">
+      <mat-label>Study year</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let studyYear of studyYears" [value]="studyYear.id">
+          {{studyYear.value}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <table mat-table class="mat-elevation-z8 demo-table" [dataSource]="dataSource" matSort>
+
+    <ng-container matColumnDef="studyGroup">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Study group</th>
+      <td mat-cell *matCellDef="let document" class="wider-cell">{{document.studyGroup}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="studyGroup-filter">
+      <th mat-header-cell *matHeaderCellDef>
+      </th>
+    </ng-container>
+
+    <ng-container matColumnDef="firstName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>First name</th>
+      <td mat-cell *matCellDef="let document" class="wider-cell">{{document.studentModel.firstName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="firstName-filter">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-form-field appearance="fill" style="padding-top: 15px !important;">
+          <input matInput formControlName="name" required>
+        </mat-form-field>
+      </th>
+    </ng-container>
+
+    <ng-container matColumnDef="lastName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Last name</th>
+      <td mat-cell *matCellDef="let document" class="wider-cell">{{document.studentModel.lastName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="lastName-filter">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-form-field appearance="fill" style="padding-top: 15px !important;">
+          <input matInput formControlName="name" required>
+        </mat-form-field>
+      </th>
+    </ng-container>
+
+    <ng-container matColumnDef="fileName">
+      <th mat-header-cell *matHeaderCellDef>File name</th>
+      <td mat-cell *matCellDef="let document" class="wider-cell">{{document.fileName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="fileName-filter">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-form-field appearance="fill" style="padding-top: 15px !important;">
+          <input matInput formControlName="name" required>
+        </mat-form-field>
+      </th>
+    </ng-container>
+
+    <ng-container matColumnDef="dateOfUpload">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Date of upload</th>
+      <td mat-cell *matCellDef="let document" class="wider-cell">{{document.dateOfUpload | date}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="dateOfUpload-filter">
+      <th mat-header-cell *matHeaderCellDef>
+      </th>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <td mat-cell *matCellDef="let document" class="wider-cell">{{document.status}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="status-filter">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-form-field appearance="fill" style="padding-top: 15px !important;">
+          <input matInput formControlName="name" required>
+        </mat-form-field>
+      </th>
+    </ng-container>
+
+    <ng-container matColumnDef="viewDocument">
+      <th mat-header-cell *matHeaderCellDef>View</th>
+      <td mat-cell *matCellDef="let document" class="action-cell">
+        <mat-icon class="" data-toggle="modal" (click)="openPdf(document.filePath)">remove_red_eye
+        </mat-icon>
+      </td>&nbsp;
+    </ng-container>
+
+    <ng-container matColumnDef="viewDocument-filter">
+      <th mat-header-cell *matHeaderCellDef>
+      </th>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-header-row *matHeaderRowDef="displayedColumnFilters"></tr>
+
+    <tr mat-row (click)="clickedRows.add(row)" [class.demo-row-is-clicked]="clickedRows.has(row)"
+      *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator [pageSize]="15" [pageSizeOptions]="[15, 30, 45]">
+  </mat-paginator>
+
+</div>

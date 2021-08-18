@@ -5,6 +5,7 @@ import {HomeComponent} from "./home/home.component";
 import {ChangePasswordComponent} from "./change-password/change-password.component";
 import {SecretaryListComponent} from "./secretary-list/secretary-list.component";
 import {DocumentManagementComponent} from "./document-management/document-management.component";
+import {StudentDocumentsComponent} from "./student-documents/student-documents.component";
 
 const routes: Routes = [
   {path: '', redirectTo:'login', pathMatch: 'full'},
@@ -12,7 +13,8 @@ const routes: Routes = [
   {path: 'home', component: HomeComponent},
   {path: 'change-password', component:ChangePasswordComponent},
   {path: 'secretary-management', component: SecretaryListComponent},
-  {path: 'document-management', component: DocumentManagementComponent}
+  {path: 'document-management', component: DocumentManagementComponent},
+  {path: 'student-documents', component: StudentDocumentsComponent}
 ];
 
 @NgModule({

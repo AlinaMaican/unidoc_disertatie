@@ -29,6 +29,10 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatInputModule} from "@angular/material/input";
 import {MatNativeDateModule} from "@angular/material/core";
 import { EditSecretaryDocumentDialogComponent } from './edit-secretary-document-dialog/edit-secretary-document-dialog.component';
+import { StudentDocumentsComponent } from './student-documents/student-documents.component';
+import {MatSelectModule} from "@angular/material/select";
+import {MatSortModule} from "@angular/material/sort";
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -59,33 +63,37 @@ export function translationServiceFactory(translate: TranslateService): () => Pr
     SecretaryListComponent,
     DocumentManagementComponent,
     UploadSecretaryDocumentDialogComponent,
-    EditSecretaryDocumentDialogComponent
+    EditSecretaryDocumentDialogComponent,
+    StudentDocumentsComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        HttpClientModule,
-        TranslateModule.forRoot({
-            defaultLanguage: 'en',
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [HttpClient]
-            }
-        }),
-        ReactiveFormsModule,
-        MatToolbarModule,
-        MatIconModule,
-        MatTableModule,
-        MatFormFieldModule,
-        MatDatepickerModule,
-        NgxMatFileInputModule,
-        MatDialogModule,
-        MatButtonModule,
-        MatInputModule,
-        MatNativeDateModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    TranslateModule.forRoot({
+      defaultLanguage: 'en',
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    }),
+    ReactiveFormsModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    NgxMatFileInputModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatInputModule,
+    MatNativeDateModule,
+    MatSelectModule,
+    MatSortModule,
+    MatPaginatorModule
+  ],
   providers: [
     authInterceptorProviders,
     {
