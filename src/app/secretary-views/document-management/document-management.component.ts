@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {SecretaryService} from "../_services/secretary.service";
-import {SecretaryAllocationModel} from "../model/secretary-allocation.model";
-import {SecretaryDocumentModel} from "../model/secretary-document.model";
+import {SecretaryService} from "../../_services/secretary.service";
+import {SecretaryAllocationModel} from "../../model/secretary-allocation.model";
+import {SecretaryDocumentModel} from "../../model/secretary-document.model";
 import {MatDialog} from "@angular/material/dialog";
 import {UploadSecretaryDocumentDialogComponent} from "../upload-secretary-document-dialog/upload-secretary-document-dialog.component";
-import {SecretaryDocumentTableDataModel} from "../model/secretary-document-table-data.model";
+import {SecretaryDocumentTableDataModel} from "../../model/secretary-document-table-data.model";
 import {EditSecretaryDocumentDialogComponent} from "../edit-secretary-document-dialog/edit-secretary-document-dialog.component";
 
 @Component({

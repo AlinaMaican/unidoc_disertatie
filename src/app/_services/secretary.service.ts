@@ -55,22 +55,51 @@ export class SecretaryService {
     return this.http.post(SECRETARY_API + 'document/upload', formData);
   }
 
-
-  getStudentDocumentRowModel(): Observable<PageModel<StudentDocumentRowModel>>{
-    let filter : StudentDocumentFilterModel = {};
-    filter.secretaryAllocationId = 1;
-    filter.pageNumber = 0;
-    filter.pageSize = 15;
-    filter.sortDirection = 'ASC';
-    filter.columnName = "name";
+  getStudentDocumentRowModel(filter: StudentDocumentFilterModel): Observable<PageModel<StudentDocumentRowModel>>{
     let params = new HttpParams();
     params = params.append("pageSize", String(filter.pageSize));
     params = params.append("pageNumber", String(filter.pageNumber));
-    params = params.append("secretaryAllocationId", String(filter.secretaryAllocationId));
+    params = params.append("secretaryId", String(filter.secretaryId));
     params = params.append("sortDirection", String(filter.sortDirection));
     params = params.append("columnName", String(filter.columnName));
-
+    params = params.append("learningTypeId", String(filter.learningTypeId));
+    if(filter.universityStudiesId !== undefined) {
+      params = params.append("universityStudyId", String(filter.universityStudiesId));
+    }
+    if(filter.studyProgramId !== undefined) {
+      params = params.append("studyProgramId", String(filter.studyProgramId));
+    }
+    if(filter.domainId !== undefined) {
+      params = params.append("domainId", String(filter.domainId));
+    }
+    if(filter.studyYearId !== undefined) {
+      params = params.append("studyYearId", String(filter.studyYearId));
+    }
+    if(filter.studyGroupId !== undefined) {
+      params = params.append("studyGroupId", String(filter.studyGroupId));
+    }
+    if(filter.status !== undefined) {
+      params = params.append("status", String(filter.status));
+    }
+    if(filter.firstName !== undefined) {
+      params = params.append("firstName", String(filter.firstName));
+    }
+    if(filter.lastName !== undefined) {
+      params = params.append("lastName", String(filter.lastName));
+    }
+    if(filter.name !== undefined) {
+      params = params.append("name", String(filter.name));
+    }
     return this.http.get<PageModel<StudentDocumentRowModel>>(SECRETARY_API + 'allocation/student/documents', {params: params});
+  }
+
+  editStudentDocumentStatus(documentId:number, status: string, comment: string): Observable<any>{
+    const formData: FormData = new FormData();
+    formData.append("status", status);
+    if(comment !== null){
+      formData.append("comment", comment);
+    }
+    return this.http.post(SECRETARY_API + 'allocation/student/document/' + documentId, formData);
   }
 }
 

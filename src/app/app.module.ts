@@ -11,16 +11,16 @@ import {TranslateLoader, TranslateModule, TranslateService} from "@ngx-translate
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {LanguageUtil} from "./util/language.util";
 import {take} from "rxjs/operators";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { HomeComponent } from './home/home.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatIconModule} from "@angular/material/icon";
-import { SecretaryListComponent } from './secretary-list/secretary-list.component';
+import { SecretaryListComponent } from './admin-views/secretary-list/secretary-list.component';
 import {MatTableModule} from "@angular/material/table";
-import { DocumentManagementComponent } from './document-management/document-management.component';
-import { UploadSecretaryDocumentDialogComponent } from './upload-secretary-document-dialog/upload-secretary-document-dialog.component';
+import { DocumentManagementComponent } from './secretary-views/document-management/document-management.component';
+import { UploadSecretaryDocumentDialogComponent } from './secretary-views/upload-secretary-document-dialog/upload-secretary-document-dialog.component';
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {NgxMatFileInputModule} from "@angular-material-components/file-input";
@@ -28,11 +28,14 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MatButtonModule} from "@angular/material/button";
 import {MatInputModule} from "@angular/material/input";
 import {MatNativeDateModule} from "@angular/material/core";
-import { EditSecretaryDocumentDialogComponent } from './edit-secretary-document-dialog/edit-secretary-document-dialog.component';
-import { StudentDocumentsComponent } from './student-documents/student-documents.component';
+import { EditSecretaryDocumentDialogComponent } from './secretary-views/edit-secretary-document-dialog/edit-secretary-document-dialog.component';
+import { StudentDocumentsComponent } from './secretary-views/student-documents/student-documents.component';
 import {MatSelectModule} from "@angular/material/select";
 import {MatSortModule} from "@angular/material/sort";
 import {MatPaginatorModule} from "@angular/material/paginator";
+import { StudentDetailsDialogComponent } from './secretary-views/student-details-dialog/student-details-dialog.component';
+import {MatTooltipModule} from "@angular/material/tooltip";
+import { ChangeStatusStudentDocumentDialogComponent } from './secretary-views/change-status-student-document-dialog/change-status-student-document-dialog.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -64,36 +67,40 @@ export function translationServiceFactory(translate: TranslateService): () => Pr
     DocumentManagementComponent,
     UploadSecretaryDocumentDialogComponent,
     EditSecretaryDocumentDialogComponent,
-    StudentDocumentsComponent
+    StudentDocumentsComponent,
+    StudentDetailsDialogComponent,
+    ChangeStatusStudentDocumentDialogComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    TranslateModule.forRoot({
-      defaultLanguage: 'en',
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
-    }),
-    ReactiveFormsModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatTableModule,
-    MatFormFieldModule,
-    MatDatepickerModule,
-    NgxMatFileInputModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatInputModule,
-    MatNativeDateModule,
-    MatSelectModule,
-    MatSortModule,
-    MatPaginatorModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        HttpClientModule,
+        TranslateModule.forRoot({
+            defaultLanguage: 'en',
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+            }
+        }),
+        ReactiveFormsModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatTableModule,
+        MatFormFieldModule,
+        MatDatepickerModule,
+        NgxMatFileInputModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatInputModule,
+        MatNativeDateModule,
+        MatSelectModule,
+        MatSortModule,
+        MatPaginatorModule,
+        FormsModule,
+        MatTooltipModule
+    ],
   providers: [
     authInterceptorProviders,
     {

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {SecretaryListModel} from "../model/secretary-list.model";
-import {SecretaryService} from "../_services/secretary.service";
+import {SecretaryListModel} from "../../model/secretary-list.model";
+import {SecretaryService} from "../../_services/secretary.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 
 @Component({

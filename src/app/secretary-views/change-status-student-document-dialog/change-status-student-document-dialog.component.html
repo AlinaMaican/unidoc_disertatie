@@ -1,0 +1,21 @@
+<h1 mat-dialog-title>Change the status of this file</h1>
+<div mat-dialog-content>
+  <p>Status</p>
+  <mat-form-field appearance="fill">
+    <mat-select  [(value)]="newStatus">
+      <mat-option [value]="inProgress">IN PROGRESS</mat-option>
+      <mat-option [value]="valid">VALID</mat-option>
+      <mat-option [value]="invalid">INVALID</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div>
+    <p>Leave a comment if needed</p>
+    <mat-form-field appearance="fill">
+      <textarea matInput [(ngModel)]="comment"></textarea>
+    </mat-form-field>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Close</button>
+  <button mat-button cdkFocusInitial (click)="saveDocumentStatus()">Save and notify student</button>
+</div>

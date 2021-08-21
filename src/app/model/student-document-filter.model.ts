@@ -9,7 +9,7 @@ export interface StudentDocumentFilterModel{
   learningTypeId?: number;
   name?: string;
   status?: string;
-  secretaryAllocationId?: number;
+  secretaryId?: number;
   columnName?: string;
   pageSize?: number;
   pageNumber?: number;

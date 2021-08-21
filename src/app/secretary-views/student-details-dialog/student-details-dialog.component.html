@@ -1,0 +1,25 @@
+<h1 mat-dialog-title>Student details</h1>
+  <div mat-dialog-content>
+    <div>
+      <p>First name: <span>{{data.firstName}}</span></p>
+    </div>
+    <div>
+      <p>Last name: <span>{{data.lastName}}</span></p>
+    </div>
+    <div>
+      <p>Email address: <span>{{data.emailAddress}}</span></p>
+    </div>
+    <div>
+      <p>Phone numbers: <span>{{data.phoneNumbers.toString()}}</span></p>
+    </div>
+    <div>
+      <p>CNP: <span>{{data.cnp}}</span></p>
+    </div>
+    <div>
+      <p>Registration number: <span>{{data.registrationNumber}}</span></p>
+    </div>
+
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Close</button>
+  </div>

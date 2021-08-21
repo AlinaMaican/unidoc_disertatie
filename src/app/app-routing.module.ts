@@ -3,9 +3,9 @@ import { RouterModule, Routes } from '@angular/router';
 import {UserLoginComponent} from "./user-login/user-login.component";
 import {HomeComponent} from "./home/home.component";
 import {ChangePasswordComponent} from "./change-password/change-password.component";
-import {SecretaryListComponent} from "./secretary-list/secretary-list.component";
-import {DocumentManagementComponent} from "./document-management/document-management.component";
-import {StudentDocumentsComponent} from "./student-documents/student-documents.component";
+import {SecretaryListComponent} from "./admin-views/secretary-list/secretary-list.component";
+import {DocumentManagementComponent} from "./secretary-views/document-management/document-management.component";
+import {StudentDocumentsComponent} from "./secretary-views/student-documents/student-documents.component";
 
 const routes: Routes = [
   {path: '', redirectTo:'login', pathMatch: 'full'},

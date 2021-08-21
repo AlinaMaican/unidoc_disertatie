@@ -44,4 +44,9 @@ export class StudyService {
                           'studyProgramId': studyProgramId};
     return this.http.get<StudyModel[]>( STUDY_API + 'filteredStudyYears', httpOptions);
   }
+
+  getAllFilteredStudyGroups(studyYearId: number): Observable<StudyModel[]> {
+    httpOptions.params = {'studyYearId': studyYearId};
+    return this.http.get<StudyModel[]>( STUDY_API + 'studyGroups', httpOptions);
+  }
 }
