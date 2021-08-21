@@ -136,8 +136,9 @@ public class SecretaryController {
      */
     @PostMapping("/allocation/student/document/{id}")
     ResponseEntity<Boolean> editStudentDocumentStatus(@PathVariable final Long id,
-                                                      @RequestParam(value = "status") final String status) {
-        return ResponseEntity.ok(secretaryService.editStudentDocumentStatus(id, status));
+                                                      @RequestParam(value = "status") final String status,
+                                                      @RequestParam(value = "comment", required = false) String comment) {
+        return ResponseEntity.ok(secretaryService.editStudentDocumentStatus(id, status, comment));
     }
 
     @RequestMapping(value = "/downloadPdfDocument", method = RequestMethod.GET, produces = "application/pdf")

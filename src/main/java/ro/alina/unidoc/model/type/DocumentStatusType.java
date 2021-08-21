@@ -1,5 +1,5 @@
 package ro.alina.unidoc.model.type;
 
 public enum DocumentStatusType {
-   VALID, IN_PROGRESS, INCOMPLETE;
+   VALID, IN_PROGRESS, INVALID;
 }

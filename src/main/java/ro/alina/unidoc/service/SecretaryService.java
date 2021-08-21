@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.apache.poi.EmptyFileException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ro.alina.unidoc.entity.Notification;
 import ro.alina.unidoc.entity.PhoneNumber;
 import ro.alina.unidoc.entity.SecretaryDocument;
 import ro.alina.unidoc.entity.StudentDocument;
@@ -22,9 +22,12 @@ import ro.alina.unidoc.repository.*;
 import ro.alina.unidoc.utils.GenericSpecification;
 
 import javax.transaction.Transactional;
-import java.nio.file.*;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -41,6 +44,8 @@ public class SecretaryService {
     private final PhoneNumberRepository phoneNumberRepository;
     private final GenericSpecification<StudentDocument> studentDocumentGenericSpecification;
     private final StudentDocumentRepository studentDocumentRepository;
+    private final NotificationRepository notificationRepository;
+    private final NotificationService notificationService;
 
     public List<SecretaryModel> getAllSecretaries() {
         var secretaries = secretaryRepository.findAll();
@@ -117,17 +122,24 @@ public class SecretaryService {
 
     public Page<StudentDocumentRowModel> getAllStudentDocuments(final StudentDocumentFilter filter) {
         final var specification = getSpecifications(filter);
-
         var pageReq = PageRequest.of(filter.getPageNumber(), filter.getPageSize(), Sort.by(filter.getColumnName()).descending());
         return studentDocumentRepository.findAll(specification, pageReq)
                 .map(this::toStudentDocumentRowModel);
     }
 
-    public Boolean editStudentDocumentStatus(final Long documentId, final String status) {
+    public Boolean editStudentDocumentStatus(final Long documentId, final String status, final String comment) {
         try {
             studentDocumentRepository.findById(documentId).ifPresent(document -> {
+
                 document.setStatus(DocumentStatusType.valueOf(status));
                 studentDocumentRepository.save(document);
+                notificationService.sendSimpleMessage(document.getStudent().getUser().getEmail(),
+                        "Document status changed", "The status for the document " + document.getName() + " has changed to " + status);
+                notificationRepository.save(Notification.builder()
+                        .studentDocument(document)
+                        .message(comment)
+                        .date(LocalDateTime.now())
+                        .build());
             });
             return true;
         } catch (Exception e) {
@@ -136,25 +148,28 @@ public class SecretaryService {
     }
 
     private Specification<StudentDocument> getSpecifications(final StudentDocumentFilter filter) {
+        System.out.println(filter.toString());
         return Objects.requireNonNull(studentDocumentGenericSpecification.where(
-                studentDocumentGenericSpecification.isNestedPropertyLike("student.first_name", filter.getFirstName()))
-                .and(studentDocumentGenericSpecification.isNestedPropertyLike("student.last_name", filter.getLastName()))
-                .and(studentDocumentGenericSpecification.isNestedPropertyLike("secretary_document.name", filter.getName()))
-                .and(studentDocumentGenericSpecification.isPropertyEqual("status", filter.getStatus()))
-                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.learning_type", filter.getLearningTypeId()))
-                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.university_study_type_id", filter.getUniversityStudyId()))
-                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.domain_id", filter.getDomainId()))
-                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.study_program_id", filter.getStudyProgramId()))
-                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.study_year_id", filter.getStudyYearId()))
-                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.study_group_id", filter.getStudyGroupId())));
+                studentDocumentGenericSpecification.isNestedPropertyLike("student.firstName", filter.getFirstName()))
+                .and(studentDocumentGenericSpecification.isNestedPropertyLike("student.lastName", filter.getLastName()))
+                .and(studentDocumentGenericSpecification.isNestedPropertyLike("secretaryDocument.name", filter.getName()))
+                .and(studentDocumentGenericSpecification.isStatusEqual("status", filter.getStatus()))
+                .and(studentDocumentGenericSpecification.isNestedNestedPropertyEqualNumber("student.secretaryAllocation.secretary.id", filter.getSecretaryId()))
+                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.learningType.id", filter.getLearningTypeId()))
+                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.universityStudyType.id", filter.getUniversityStudyId()))
+                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.domain.id", filter.getDomainId()))
+                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.studyProgram.id", filter.getStudyProgramId()))
+                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.studyYear.id", filter.getStudyYearId()))
+                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.studyGroup.id", filter.getStudyGroupId())));
     }
 
     private StudentDocumentRowModel toStudentDocumentRowModel(final StudentDocument studentDocument) {
         return StudentDocumentRowModel.builder()
-                .fileName(studentDocument.getSecretaryDocument().getName())
+                .name(studentDocument.getSecretaryDocument().getName())
+                .documentId(studentDocument.getId())
                 .filePath(studentDocument.getFilePathName())
                 .dateOfUpload(studentDocument.getDateOfUpload())
-                .status(studentDocument.getStatus().toString())
+                .status(getStatusToANicerForm(studentDocument.getStatus()))
                 .studyGroupId(studentDocument.getStudent().getStudyGroup().getId())
                 .studyGroup(studentDocument.getStudent().getStudyGroup().getName())
                 .studentModel(StudentModel.builder()
@@ -169,5 +184,18 @@ public class SecretaryService {
                                 .collect(Collectors.toList()))
                         .build())
                 .build();
+    }
+
+    private String getStatusToANicerForm(final DocumentStatusType statusType) {
+        switch (statusType) {
+            case IN_PROGRESS:
+                return "IN PROGRESS";
+            case INVALID:
+                return "INVALID";
+            case VALID:
+                return "VALID";
+            default:
+                throw new IllegalStateException("Unexpected value: " + statusType);
+        }
     }
 }

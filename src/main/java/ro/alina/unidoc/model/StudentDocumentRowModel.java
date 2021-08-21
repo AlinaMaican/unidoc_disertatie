@@ -13,9 +13,10 @@ import java.time.LocalDateTime;
 @Setter
 public class StudentDocumentRowModel {
     private final StudentModel studentModel;
+    private final Long documentId;
     private final String studyGroup;
     private final Long studyGroupId;
-    private final String fileName;
+    private final String name;
     private final String filePath;
     private final LocalDateTime dateOfUpload;
     private final String status;
