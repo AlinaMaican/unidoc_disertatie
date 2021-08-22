@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>Uploaded document details</h1>
+<div mat-dialog-content>
+  <div>
+    <p>Name: <span>{{data.name}}</span></p>
+  </div>
+  <div>
+    <p>Status: <span>{{data.status}}</span></p>
+  </div>
+  <div>
+    <p>Date of upload: <span>{{data.dateOfUpload | date}}</span></p>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Close</button>
+  <button mat-button (click)="openPdf(data.filePathName)">Click here to see the file</button>
+</div>
