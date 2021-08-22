@@ -1,0 +1,38 @@
+<app-navbar class="mat-elevation-z6"></app-navbar>
+<div style="margin:30px;width:60%;">
+  <div>
+    <h1>Required documents</h1>
+  </div>
+  <table mat-table class="mat-elevation-z8 demo-table" [dataSource]="dataSource">
+
+    <ng-container matColumnDef="secretaryDocumentName">
+      <th mat-header-cell *matHeaderCellDef class="centeredText">Document name</th>
+      <td mat-cell *matCellDef="let document" class="wider-cell">{{document.secretaryDocumentName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="endDateOfUpload">
+      <th mat-header-cell *matHeaderCellDef class="centeredText">End date of upload</th>
+      <td mat-cell *matCellDef="let document" class="wider-cell">{{document.endDateOfUpload | date}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="downloadSecretaryDocument">
+      <th mat-header-cell *matHeaderCellDef class="centeredText">Download</th>
+      <td mat-cell *matCellDef="let document" class="wider-cell" [matTooltip]="downloadTooltipMessage"><mat-icon (click)="openPdf(document.secretaryDocumentPathName)">download</mat-icon></td>
+    </ng-container>
+
+    <ng-container matColumnDef="uploadStudentDocument">
+      <th mat-header-cell *matHeaderCellDef class="centeredText">Upload</th>
+      <td mat-cell *matCellDef="let document" class="wider-cell" [matTooltip]="uploadTooltipMessage"><mat-icon (click)="openUploadDialog(document.secretaryDocumentId)">upload</mat-icon></td>
+    </ng-container>
+
+    <ng-container matColumnDef="viewUploadedDocument">
+      <th mat-header-cell *matHeaderCellDef class="centeredText">View details of uploaded file</th>
+      <td mat-cell *matCellDef="let document" class="wider-cell"><mat-icon [matTooltip]="viewUploadedDocumentsTooltipMessage" *ngIf="document.studentDocumentModel!== null" (click)="openViewDocumentDataDialog(document.studentDocumentModel)">remove_red_eye</mat-icon></td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+    <tr mat-row (click)="clickedRows.add(row)" [class.demo-row-is-clicked]="clickedRows.has(row)"
+        *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

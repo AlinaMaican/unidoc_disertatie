@@ -2,6 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {StudentDocumentRowModel} from "../../model/student-document-row.model";
 import {SecretaryService} from "../../_services/secretary.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-change-status-student-document-dialog',
@@ -17,7 +18,8 @@ export class ChangeStatusStudentDocumentDialogComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<ChangeStatusStudentDocumentDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: StudentDocumentRowModel,
-              private secretaryService: SecretaryService) {
+              private secretaryService: SecretaryService,
+              private _snackBar: MatSnackBar) {
     if(this.data.status === 'IN PROGRESS') {
       this.newStatus = 'IN_PROGRESS';
     } else {
@@ -30,12 +32,13 @@ export class ChangeStatusStudentDocumentDialogComponent implements OnInit {
   }
 
   saveDocumentStatus(): void {
-    console.log(this.data.documentId);
-    console.log(this.comment);
-    console.log(this.newStatus);
-    this.secretaryService.editStudentDocumentStatus(this.data.documentId, this.newStatus, this.comment).subscribe(() =>{
-      this.dialogRef.close();
-      location.reload();
+    this.secretaryService.editStudentDocumentStatus(this.data.documentId, this.newStatus, this.comment).subscribe((response) =>{
+      if(response.type === "ERROR"){
+        this.openSnackBar(response.message, "Close", "errorSnackBar")
+      } else {
+        location.reload();
+        this.openSnackBar(response.message, "Close", "successSnackBar");
+      }
     });
   }
 
@@ -43,5 +46,7 @@ export class ChangeStatusStudentDocumentDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-
+  openSnackBar(message: string, action: string, aClass: string) {
+    this._snackBar.open(message, action, {panelClass: [aClass]});
+  }
 }

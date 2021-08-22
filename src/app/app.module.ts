@@ -36,6 +36,11 @@ import {MatPaginatorModule} from "@angular/material/paginator";
 import { StudentDetailsDialogComponent } from './secretary-views/student-details-dialog/student-details-dialog.component';
 import {MatTooltipModule} from "@angular/material/tooltip";
 import { ChangeStatusStudentDocumentDialogComponent } from './secretary-views/change-status-student-document-dialog/change-status-student-document-dialog.component';
+import { RequiredDocumentsComponent } from './student-views/required-documents/required-documents.component';
+import { UploadStudentDocumentDialogComponent } from './student-views/upload-student-document-dialog/upload-student-document-dialog.component';
+import { ViewStudentDocumentDialogComponent } from './student-views/view-student-document-dialog/view-student-document-dialog.component';
+import { CreatedDocumentsComponent } from './student-views/created-documents/created-documents.component';
+import {MatSnackBarModule} from "@angular/material/snack-bar";
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -69,7 +74,11 @@ export function translationServiceFactory(translate: TranslateService): () => Pr
     EditSecretaryDocumentDialogComponent,
     StudentDocumentsComponent,
     StudentDetailsDialogComponent,
-    ChangeStatusStudentDocumentDialogComponent
+    ChangeStatusStudentDocumentDialogComponent,
+    RequiredDocumentsComponent,
+    UploadStudentDocumentDialogComponent,
+    ViewStudentDocumentDialogComponent,
+    CreatedDocumentsComponent
   ],
     imports: [
         BrowserModule,
@@ -99,7 +108,8 @@ export function translationServiceFactory(translate: TranslateService): () => Pr
         MatSortModule,
         MatPaginatorModule,
         FormsModule,
-        MatTooltipModule
+        MatTooltipModule,
+        MatSnackBarModule
     ],
   providers: [
     authInterceptorProviders,

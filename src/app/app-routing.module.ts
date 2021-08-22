@@ -6,6 +6,8 @@ import {ChangePasswordComponent} from "./change-password/change-password.compone
 import {SecretaryListComponent} from "./admin-views/secretary-list/secretary-list.component";
 import {DocumentManagementComponent} from "./secretary-views/document-management/document-management.component";
 import {StudentDocumentsComponent} from "./secretary-views/student-documents/student-documents.component";
+import {RequiredDocumentsComponent} from "./student-views/required-documents/required-documents.component";
+import {CreatedDocumentsComponent} from "./student-views/created-documents/created-documents.component";
 
 const routes: Routes = [
   {path: '', redirectTo:'login', pathMatch: 'full'},
@@ -14,7 +16,9 @@ const routes: Routes = [
   {path: 'change-password', component:ChangePasswordComponent},
   {path: 'secretary-management', component: SecretaryListComponent},
   {path: 'document-management', component: DocumentManagementComponent},
-  {path: 'student-documents', component: StudentDocumentsComponent}
+  {path: 'student-documents', component: StudentDocumentsComponent},
+  {path: 'required-documents', component: RequiredDocumentsComponent},
+  {path: 'created-documents', component: CreatedDocumentsComponent}
 ];
 
 @NgModule({

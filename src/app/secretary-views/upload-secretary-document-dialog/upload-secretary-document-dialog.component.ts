@@ -2,6 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {SecretaryService} from "../../_services/secretary.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-upload-secretary-document-dialog',
@@ -15,7 +16,8 @@ export class UploadSecretaryDocumentDialogComponent{
   constructor(public dialogRef: MatDialogRef<UploadSecretaryDocumentDialogComponent>,
               private secretaryService: SecretaryService,
               private formBuilder: FormBuilder,
-              @Inject(MAT_DIALOG_DATA) public data: number) {
+              @Inject(MAT_DIALOG_DATA) public data: number,
+              private _snackBar: MatSnackBar) {
 
     this.uploadFileForm = this.formBuilder.group({
       name: [null, [Validators.required]],
@@ -29,10 +31,20 @@ export class UploadSecretaryDocumentDialogComponent{
     if (!this.uploadFileForm.valid) {
       return;
     }
-    this.secretaryService.uploadDocument(this.uploadFileForm, this.data).subscribe((message) => {
-      location.reload();
+    this.secretaryService.uploadDocument(this.uploadFileForm, this.data).subscribe((response) => {
+      if(response.type === "ERROR"){
+        this.openSnackBar(response.message, "Close", "errorSnackBar")
+      } else {
+        location.reload();
+        this.openSnackBar(response.message, "Close", "successSnackBar");
+      }
     });
   }
+
+  openSnackBar(message: string, action: string, aClass: string) {
+    this._snackBar.open(message, action, {panelClass: [aClass]});
+  }
+
   onNoClick(): void {
     this.dialogRef.close();
   }
