@@ -12,10 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ro.alina.unidoc.model.SecretaryAllocationModel;
-import ro.alina.unidoc.model.SecretaryDocumentModel;
-import ro.alina.unidoc.model.SecretaryModel;
-import ro.alina.unidoc.model.StudentDocumentRowModel;
+import ro.alina.unidoc.model.*;
 import ro.alina.unidoc.model.filters.StudentDocumentFilter;
 import ro.alina.unidoc.model.property_editor.GenericPropertyEditor;
 import ro.alina.unidoc.service.SecretaryService;
@@ -103,17 +100,16 @@ public class SecretaryController {
      * @return a success or error message
      */
     @PostMapping("/document/upload")
-    public ResponseEntity<Object> uploadSecretaryDocument(@RequestPart(value = "file") MultipartFile file,
-                                                          @RequestParam(value = "allocationId") String secretaryAllocationId,
-                                                          @RequestParam(value = "name") String name,
-                                                          @RequestParam(value = "description") String description,
-                                                          @RequestParam(value = "endDateOfUpload")String endDateOfUpload) throws FileAlreadyExistsException {
-       secretaryService.uploadSecretaryDocument(file, SecretaryDocumentModel.builder()
+    public ResponseEntity<Response> uploadSecretaryDocument(@RequestPart(value = "file") MultipartFile file,
+                                                            @RequestParam(value = "allocationId") String secretaryAllocationId,
+                                                            @RequestParam(value = "name") String name,
+                                                            @RequestParam(value = "description") String description,
+                                                            @RequestParam(value = "endDateOfUpload")String endDateOfUpload) throws FileAlreadyExistsException {
+       return ResponseEntity.ok(secretaryService.uploadSecretaryDocument(file, SecretaryDocumentModel.builder()
                 .endDateOfUpload(LocalDateTime.parse(endDateOfUpload, DateTimeFormatter.ISO_DATE_TIME))
                 .name(name)
                 .description(description)
-                .build(), Long.valueOf(secretaryAllocationId));
-       return ResponseEntity.ok("{}");
+                .build(), Long.valueOf(secretaryAllocationId)));
     }
 
     /**
@@ -135,7 +131,7 @@ public class SecretaryController {
      * @return true or false depending on the success of the edit
      */
     @PostMapping("/allocation/student/document/{id}")
-    ResponseEntity<Boolean> editStudentDocumentStatus(@PathVariable final Long id,
+    ResponseEntity<Response> editStudentDocumentStatus(@PathVariable final Long id,
                                                       @RequestParam(value = "status") final String status,
                                                       @RequestParam(value = "comment", required = false) String comment) {
         return ResponseEntity.ok(secretaryService.editStudentDocumentStatus(id, status, comment));

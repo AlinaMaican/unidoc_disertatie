@@ -7,11 +7,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import ro.alina.unidoc.model.RequiredDocumentsRowModel;
+import ro.alina.unidoc.model.Response;
 import ro.alina.unidoc.model.StudentModel;
 import ro.alina.unidoc.model.filters.StudentFilter;
 import ro.alina.unidoc.model.property_editor.GenericPropertyEditor;
 import ro.alina.unidoc.service.StudentService;
 
+import java.nio.file.FileAlreadyExistsException;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -19,6 +24,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/student")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class StudentController {
 
     private final StudentService studentService;
@@ -40,5 +46,18 @@ public class StudentController {
                                                              @RequestParam(name = "filter", required = false) final StudentFilter filter) {
         return ResponseEntity.ok(studentService.getAllStudents(pageable, Optional.ofNullable(filter)
                 .orElseGet(StudentFilter::new)));
+    }
+
+    @GetMapping("/secretary/document")
+    public ResponseEntity<List<RequiredDocumentsRowModel>> getRequiredSecretaryDocuments(@RequestParam(value = "studentId") final Long studentId){
+        return ResponseEntity.ok(studentService.getRequiredSecretaryDocuments(studentId));
+    }
+
+    @PostMapping("/document/secretary/upload")
+    public ResponseEntity<Response> uploadStudentDocument(@RequestPart(value = "file") MultipartFile file,
+                                                          @RequestParam(value = "studentId") Long studentId,
+                                                          @RequestParam(value = "secretaryDocumentId") Long secretaryDocumentId,
+                                                          @RequestParam(value = "name") String name) {
+        return ResponseEntity.ok(studentService.uploadSecretaryDocument(file, studentId, secretaryDocumentId, name));
     }
 }

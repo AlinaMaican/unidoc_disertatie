@@ -1,7 +1,6 @@
 package ro.alina.unidoc.service;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.EmptyFileException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -30,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -99,10 +99,10 @@ public class SecretaryService {
         }
     }
 
-    public void uploadSecretaryDocument(final MultipartFile file, final SecretaryDocumentModel model,
-                                        final Long secretaryAllocationId) throws FileAlreadyExistsException {
+    public Response uploadSecretaryDocument(final MultipartFile file, final SecretaryDocumentModel model,
+                                            final Long secretaryAllocationId) throws FileAlreadyExistsException {
         if (file.isEmpty()) {
-            throw new EmptyFileException();
+            return Response.builder().type("ERROR").message("The file is empty!").build();
         }
         try {
             byte[] bytes = file.getBytes();
@@ -116,8 +116,9 @@ public class SecretaryService {
                     .endDateOfUpload(model.getEndDateOfUpload())
                     .build());
         } catch (Exception e) {
-            throw new FileAlreadyExistsException("lala");
+            return Response.builder().type("ERROR").message("There has been an error").build();
         }
+        return Response.builder().type("SUCCESS").message("The file was uploaded successfully!").build();
     }
 
     public Page<StudentDocumentRowModel> getAllStudentDocuments(final StudentDocumentFilter filter) {
@@ -127,10 +128,15 @@ public class SecretaryService {
                 .map(this::toStudentDocumentRowModel);
     }
 
-    public Boolean editStudentDocumentStatus(final Long documentId, final String status, final String comment) {
+    public Response editStudentDocumentStatus(final Long documentId, final String status, final String comment) {
         try {
+            AtomicReference<String> type = new AtomicReference<>("SUCCESS");
+            AtomicReference<String> message = new AtomicReference<>("The status of the file has been changed successfully!");
             studentDocumentRepository.findById(documentId).ifPresent(document -> {
-
+                if (document.getDateOfUpload().isAfter(document.getSecretaryDocument().getEndDateOfUpload())) {
+                    type.set("ERROR");
+                    message.set("You can not change the status of a document that has the end date exceeded!");
+                }
                 document.setStatus(DocumentStatusType.valueOf(status));
                 studentDocumentRepository.save(document);
                 notificationService.sendSimpleMessage(document.getStudent().getUser().getEmail(),
@@ -141,9 +147,9 @@ public class SecretaryService {
                         .date(LocalDateTime.now())
                         .build());
             });
-            return true;
+            return Response.builder().type(type.get()).message(message.get()).build();
         } catch (Exception e) {
-            return false;
+            return Response.builder().type("ERROR").message("There has been an error").build();
         }
     }
 
@@ -186,7 +192,7 @@ public class SecretaryService {
                 .build();
     }
 
-    private String getStatusToANicerForm(final DocumentStatusType statusType) {
+    public String getStatusToANicerForm(final DocumentStatusType statusType) {
         switch (statusType) {
             case IN_PROGRESS:
                 return "IN PROGRESS";
