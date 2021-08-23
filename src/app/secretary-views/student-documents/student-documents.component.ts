@@ -18,7 +18,7 @@ import {ChangeStatusStudentDocumentDialogComponent} from "../change-status-stude
   templateUrl: './student-documents.component.html',
   styleUrls: ['./student-documents.component.scss']
 })
-export class StudentDocumentsComponent implements OnInit, AfterViewInit {
+export class StudentDocumentsComponent implements OnInit {
   displayedColumns: string[] = ['studyGroup', 'firstName', 'lastName', 'name', 'dateOfUpload', 'status', 'viewDocument'];
   displayedColumnFilters: string[] = ['studyGroup-filter', 'firstName-filter', 'lastName-filter', 'name-filter', 'dateOfUpload-filter', 'status-filter', 'viewDocument-filter'];
   clickedRows = new Set<SecretaryDocumentModel>();
@@ -43,15 +43,17 @@ export class StudentDocumentsComponent implements OnInit, AfterViewInit {
   firstName: any;
   lastName: any;
   fileName: any;
-  dataLength: any;
   tooltipText = "Click here to see the student's details";
   changeStatusTooltipMessage = "Change the status of the document and notify the student about this change!";
   viewDocumentTooltipMessage= "Click here to see the document";
 
-  // @ts-ignore
-  @ViewChild(MatSort) sort: MatSort;
-  // @ts-ignore
-  @ViewChild(MatPaginator, {static: false}) paginator : MatPaginator;
+  dataLength:any;
+  pageIndex:number = 1;
+  pageSize:number = 1;
+  pageSizeOptions:number[] = [1, 5, 10];
+
+  columnName = 'dateOfUpload';
+  direction = 'desc';
 
   constructor(private studyService: StudyService,
               private secretaryService: SecretaryService,
@@ -65,29 +67,6 @@ export class StudentDocumentsComponent implements OnInit, AfterViewInit {
         this.learningTypes = data;
       })
     }
-  }
-
-  ngAfterViewInit(): void {
-    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
-    this.dataSource.paginator = this.paginator;
-
-    // merge(this.sort.sortChange, this.paginator.page)
-    //   .pipe(startWith({}), switchMap(() => {
-    //     console.log("caca")
-    //       return this.secretaryService.getStudentDocumentRowModel(this.filterTable());}),
-    //     map(data => {
-    //       // Flip flag to show that loading has finished.
-    //       if (data === null) {
-    //         return [];
-    //       }
-    //
-    //       // Only refresh the result length if there is new data. In case of rate
-    //       // limit errors, we do not want to reset the paginator to zero, as that
-    //       // would prevent users from re-triggering requests.
-    //       this.dataLength = data.size;
-    //       return data.content;
-    //     })
-    //   ).subscribe(data => this.dataSource = data);
   }
 
   makeUniversityStudyVisible(learningType: number): void {
@@ -175,17 +154,27 @@ export class StudentDocumentsComponent implements OnInit, AfterViewInit {
     filter.firstName = this.firstName;
     filter.lastName = this.lastName;
     filter.name = this.fileName;
-    filter.pageNumber = this.paginator.pageIndex;
-    filter.pageSize = this.paginator.pageSize;
-    filter.columnName = "name";
-    filter.sortDirection = 'asc';
-    filter.sortDirection = this.sort.direction;
+    filter.pageNumber = this.pageIndex;
+    filter.pageSize = this.pageSize;
+    filter.columnName = this.columnName;
+    filter.sortDirection = this.direction;
     this.secretaryService.getStudentDocumentRowModel(filter).subscribe(data => {
       this.dataSource = new MatTableDataSource(data.content);
-      this.dataSource.paginator = this.paginator;
-      this.dataLength = data.size;
+      this.setPagination(data.totalPages, data.pageable.pageNumber, data.pageable.pageSize)
     })
     return filter;
+  }
+
+  setPagination(length: number, startIndex: number, pageSize: number) {
+    this.dataLength = length;
+    this.pageIndex = startIndex;
+    this.pageSize = pageSize;
+  }
+
+  onPaginationChange(event: any) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.filterTable();
   }
 
   openDetailsDialog(studentDetails: StudentModel): void{
@@ -208,5 +197,11 @@ export class StudentDocumentsComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
     });
+  }
+
+  sortData(event: any){
+    this.columnName = event['active'];
+    this.direction = event['direction'];
+    this.filterTable();
   }
 }

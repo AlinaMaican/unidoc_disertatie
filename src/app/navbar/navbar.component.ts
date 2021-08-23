@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {AppUserAuthModel} from "../model/app-user-auth.model";
 import {TokenStorageService} from "../_services/token-storage.service";
 import {RoleType} from "../type/role.type";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-navbar',
@@ -14,7 +15,8 @@ export class NavbarComponent implements OnInit {
   isStudent: boolean = false;
   isSecretary: boolean = false;
 
-  constructor(private tokenService: TokenStorageService) {
+  constructor(private tokenService: TokenStorageService,
+              private router: Router) {
   }
 
   ngOnInit(): void {
@@ -36,6 +38,6 @@ export class NavbarComponent implements OnInit {
 
   logOut(): void{
     window.sessionStorage.clear();
-    window.location.reload();
+    this.router.navigate(['/login'])
   }
 }

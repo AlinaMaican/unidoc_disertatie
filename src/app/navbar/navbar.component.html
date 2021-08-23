@@ -82,11 +82,21 @@
     <span class="example-spacer"></span>
 
 
-    <a mat-button="" href="https://github.com/angular/components" aria-label="GitHub Repository"
+    <a *ngIf="isStudent" mat-button="" href="https://github.com/angular/components" aria-label="GitHub Repository"
        class="mat-focus-indicator docs-button mat-button mat-button-base"
-       tabindex="0" aria-disabled="false">
+       tabindex="0" aria-disabled="false" href="/student-notifications">
       <span class="mat-button-wrapper">
-        <mat-icon alt="notifications" class="docs-angular-logo">notifications</mat-icon>
+        <mat-icon matBadge="15" matBadgeColor="warn" alt="notifications" class="docs-angular-logo">notifications</mat-icon>
+      </span>
+      <span matripple="" class="mat-ripple mat-button-ripple"></span>
+      <span class="mat-button-focus-overlay"></span>
+    </a>
+
+    <a *ngIf="isSecretary" mat-button="" href="https://github.com/angular/components" aria-label="GitHub Repository"
+       class="mat-focus-indicator docs-button mat-button mat-button-base"
+       tabindex="0" aria-disabled="false" href="/secretary-notifications">
+      <span class="mat-button-wrapper">
+        <mat-icon matBadge="15" matBadgeColor="warn" alt="notifications" class="docs-angular-logo">notifications</mat-icon>
       </span>
       <span matripple="" class="mat-ripple mat-button-ripple"></span>
       <span class="mat-button-focus-overlay"></span>
@@ -102,6 +112,15 @@
       <span class="mat-button-focus-overlay"></span>
     </a>
 
+    <a mat-button=""  aria-label="GitHub Repository"
+       class="mat-focus-indicator docs-button mat-button mat-button-base"
+       tabindex="0" aria-disabled="false" (click)="logOut()">
+      <span class="mat-button-wrapper">
+        <mat-icon alt="account" class="docs-angular-logo">exit_to_app</mat-icon>
+      </span>
+      <span matripple="" class="mat-ripple mat-button-ripple"></span>
+      <span class="mat-button-focus-overlay"></span>
+    </a>
 
   </mat-toolbar>
 </p>

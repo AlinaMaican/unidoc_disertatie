@@ -41,6 +41,11 @@ import { UploadStudentDocumentDialogComponent } from './student-views/upload-stu
 import { ViewStudentDocumentDialogComponent } from './student-views/view-student-document-dialog/view-student-document-dialog.component';
 import { CreatedDocumentsComponent } from './student-views/created-documents/created-documents.component';
 import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {MatBadgeModule} from "@angular/material/badge";
+import { StudentNotificationsComponent } from './student-views/student-notifications/student-notifications.component';
+import { SecretaryNotificationsComponent } from './secretary-views/secretary-notifications/secretary-notifications.component';
+import { PaginationComponent } from './pagination/pagination.component';
+import { UploadOwnDocumentDialogComponent } from './student-views/upload-own-document-dialog/upload-own-document-dialog.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -78,7 +83,11 @@ export function translationServiceFactory(translate: TranslateService): () => Pr
     RequiredDocumentsComponent,
     UploadStudentDocumentDialogComponent,
     ViewStudentDocumentDialogComponent,
-    CreatedDocumentsComponent
+    CreatedDocumentsComponent,
+    StudentNotificationsComponent,
+    SecretaryNotificationsComponent,
+    PaginationComponent,
+    UploadOwnDocumentDialogComponent
   ],
     imports: [
         BrowserModule,
@@ -109,7 +118,8 @@ export function translationServiceFactory(translate: TranslateService): () => Pr
         MatPaginatorModule,
         FormsModule,
         MatTooltipModule,
-        MatSnackBarModule
+        MatSnackBarModule,
+        MatBadgeModule
     ],
   providers: [
     authInterceptorProviders,

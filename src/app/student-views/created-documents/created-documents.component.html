@@ -3,4 +3,49 @@
   <div>
     <h1>Created documents</h1>
   </div>
+  <p>Upload new documents and notify your secretary about them</p>
+  <div><button mat-button (click)="openUploadDialog()">Upload new document</button></div>
+
+  <table mat-table class="mat-elevation-z8 demo-table" [dataSource]="dataSource">
+
+    <ng-container matColumnDef="documentName">
+      <th mat-header-cell *matHeaderCellDef>Document name</th>
+      <td mat-cell *matCellDef="let document" class="wider-cell">{{document.name}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef>Description</th>
+      <td mat-cell *matCellDef="let document" class="wider-cell">{{document.description}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="dateOfUpload">
+      <th mat-header-cell *matHeaderCellDef>Date of upload</th>
+      <td mat-cell *matCellDef="let document" class="wider-cell">{{document.dateOfUpload | date}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <td mat-cell *matCellDef="let document" class="wider-cell">{{document.status}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="viewDocument">
+      <th mat-header-cell *matHeaderCellDef>View</th>
+      <td mat-cell *matCellDef="let document" class="action-cell wider-cell">
+        <mat-icon class="" data-toggle="modal" (click)="openPdf(document.filePathName)"
+                  data-target="#editSecretaryDocument">remove_red_eye
+        </mat-icon>
+      </td>&nbsp;
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      mat-row
+      (click)="clickedRows.add(row)"
+      [class.demo-row-is-clicked]="clickedRows.has(row)"
+      *matRowDef="let row; columns: displayedColumns;"
+    ></tr>
+  </table>
+  <mat-paginator [length]="dataLength" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="onPaginationChange($event)"
+                 id="tablePagination">
+  </mat-paginator>
 </div>

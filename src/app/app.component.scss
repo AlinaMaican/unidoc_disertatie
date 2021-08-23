@@ -1,9 +1,11 @@
-.errorSnackBar{
-  background: darkred;
-  color: white;
+.mat-snack-bar-container{
+  background: #f44336 !important;
 }
 
 .successSnackBar{
-  background: green;
-  color: white;
+  background: #46a35e !important;
+}
+
+.errorSnackBar{
+  background: #f44336 !important;
 }

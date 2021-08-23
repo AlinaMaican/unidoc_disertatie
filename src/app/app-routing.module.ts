@@ -8,6 +8,8 @@ import {DocumentManagementComponent} from "./secretary-views/document-management
 import {StudentDocumentsComponent} from "./secretary-views/student-documents/student-documents.component";
 import {RequiredDocumentsComponent} from "./student-views/required-documents/required-documents.component";
 import {CreatedDocumentsComponent} from "./student-views/created-documents/created-documents.component";
+import {StudentNotificationsComponent} from "./student-views/student-notifications/student-notifications.component";
+import {SecretaryNotificationsComponent} from "./secretary-views/secretary-notifications/secretary-notifications.component";
 
 const routes: Routes = [
   {path: '', redirectTo:'login', pathMatch: 'full'},
@@ -18,7 +20,9 @@ const routes: Routes = [
   {path: 'document-management', component: DocumentManagementComponent},
   {path: 'student-documents', component: StudentDocumentsComponent},
   {path: 'required-documents', component: RequiredDocumentsComponent},
-  {path: 'created-documents', component: CreatedDocumentsComponent}
+  {path: 'created-documents', component: CreatedDocumentsComponent},
+  {path: 'student-notifications', component: StudentNotificationsComponent},
+  {path: 'secretary-notifications', component: SecretaryNotificationsComponent}
 ];
 
 @NgModule({

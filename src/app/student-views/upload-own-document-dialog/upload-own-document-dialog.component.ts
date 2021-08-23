@@ -5,23 +5,23 @@ import {StudentService} from "../../_services/student.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
-  selector: 'app-upload-student-document-dialog',
-  templateUrl: './upload-student-document-dialog.component.html',
-  styleUrls: ['./upload-student-document-dialog.component.scss']
+  selector: 'app-upload-own-document-dialog',
+  templateUrl: './upload-own-document-dialog.component.html',
+  styleUrls: ['./upload-own-document-dialog.component.scss']
 })
-export class UploadStudentDocumentDialogComponent implements OnInit {
+export class UploadOwnDocumentDialogComponent implements OnInit {
   uploadFileForm: FormGroup;
-  constructor(public dialogRef: MatDialogRef<UploadStudentDocumentDialogComponent>,
+  constructor(public dialogRef: MatDialogRef<UploadOwnDocumentDialogComponent>,
               private studentService: StudentService,
               private formBuilder: FormBuilder,
               @Inject(MAT_DIALOG_DATA) public data: number,
               private _snackBar: MatSnackBar) {
     this.uploadFileForm = this.formBuilder.group({
       name: [null, Validators.required],
+      description: [null],
       file: [null, Validators.required]
     });
   }
-
   ngOnInit(): void {
   }
 
@@ -29,7 +29,7 @@ export class UploadStudentDocumentDialogComponent implements OnInit {
     if (!this.uploadFileForm.valid) {
       return;
     }
-    this.studentService.uploadDocument(this.uploadFileForm, this.data).subscribe((response) => {
+    this.studentService.uploadOwnDocument(this.uploadFileForm, this.data).subscribe((response) => {
       if(response.type === "ERROR"){
         this.openSnackBar(response.message, "Close", "errorSnackBar")
       } else {

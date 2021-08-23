@@ -91,6 +91,7 @@ export class SecretaryService {
     if(filter.name !== undefined) {
       params = params.append("name", String(filter.name));
     }
+    console.log(params)
     return this.http.get<PageModel<StudentDocumentRowModel>>(SECRETARY_API + 'allocation/student/documents', {params: params});
   }
 

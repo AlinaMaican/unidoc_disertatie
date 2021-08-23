@@ -58,11 +58,10 @@
     </mat-form-field>
   </div>
 
-  <table mat-table class="mat-elevation-z8 demo-table hidden-element" [dataSource]="dataSource" matSort matSortActive="studyGroup"
-         matSortDisableClear matSortDirection="desc" id="table">
+  <table mat-table class="mat-elevation-z8 demo-table hidden-element" [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" id="table">
 
     <ng-container matColumnDef="studyGroup">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Study group</th>
+      <th mat-header-cell *matHeaderCellDef>Study group</th>
       <td mat-cell *matCellDef="let document" class="wider-cell">{{document.studyGroup}}</td>
     </ng-container>
 
@@ -77,7 +76,7 @@
     </ng-container>
 
     <ng-container matColumnDef="firstName">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>First name</th>
+      <th mat-header-cell *matHeaderCellDef>First name</th>
       <td mat-cell [matTooltip]="tooltipText" *matCellDef="let document" class="wider-cell" (click)="openDetailsDialog(document.studentModel)">{{document.studentModel.firstName}}</td>
     </ng-container>
 
@@ -90,7 +89,7 @@
     </ng-container>
 
     <ng-container matColumnDef="lastName">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Last name</th>
+      <th mat-header-cell *matHeaderCellDef>Last name</th>
       <td mat-cell *matCellDef="let document" class="wider-cell">{{document.studentModel.lastName}}</td>
     </ng-container>
 
@@ -127,7 +126,7 @@
 
     <ng-container matColumnDef="status">
       <th mat-header-cell *matHeaderCellDef>Status</th>
-      <td mat-cell *matCellDef="let document" class="wider-cell">{{document.status}}<mat-icon  [matTooltip]="changeStatusTooltipMessage" data-toggle="modal" (click)="openStatusChangeDialog(document)">cached</mat-icon></td>
+      <td mat-cell *matCellDef="let document" class="wider-cell" ><span>{{document.status}}</span><mat-icon  style="float: right;margin-right: 100px;" [matTooltip]="changeStatusTooltipMessage" data-toggle="modal" (click)="openStatusChangeDialog(document)">cached</mat-icon></td>
     </ng-container>
 
     <ng-container matColumnDef="status-filter">
@@ -162,7 +161,8 @@
       *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 
-  <mat-paginator [pageSize]="1" [pageSizeOptions]="[1, 30, 45]" [length]="dataLength" id="tablePagination" class="hidden-element">
+  <mat-paginator [length]="dataLength" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="onPaginationChange($event)"
+                 id="tablePagination" class="hidden-element">
   </mat-paginator>
 
 </div>
