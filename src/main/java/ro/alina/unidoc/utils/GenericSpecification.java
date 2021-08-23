@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.thymeleaf.util.StringUtils;
 import ro.alina.unidoc.model.type.DocumentStatusType;
+import ro.alina.unidoc.model.type.DocumentType;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,6 +49,14 @@ public class GenericSpecification <T>{
             return null;
         }
         return (root, query, builder) -> builder.equal(root.get(property), DocumentStatusType.valueOf(value));
+
+    }
+
+    public Specification<T> isDocumentTypeEqual(final String property, final String value) {
+        if (value == null) {
+            return null;
+        }
+        return (root, query, builder) -> builder.equal(root.get(property), DocumentType.valueOf(value));
 
     }
 
@@ -163,6 +172,15 @@ public class GenericSpecification <T>{
             String[] properties = property.split(NESTED_PROPERTY_DELIMITER);
             return (root, query, builder)
                     -> builder.equal(root.get(properties[PARENT]).get(properties[CHILD]), value);
+        }
+        return null;
+    }
+
+    public Specification<T> isNestedDocumentTypeEqualTo(final String property, final String value) {
+        if (!StringUtils.isEmptyOrWhitespace(value) && checkForNestedProperty(property)) {
+            String[] properties = property.split(NESTED_PROPERTY_DELIMITER);
+            return (root, query, builder)
+                    -> builder.equal(root.get(properties[PARENT]).get(properties[CHILD]), DocumentType.valueOf(value));
         }
         return null;
     }

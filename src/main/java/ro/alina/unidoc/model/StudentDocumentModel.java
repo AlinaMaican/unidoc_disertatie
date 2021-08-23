@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class StudentDocumentModel {
+    private final Long id;
     private final String name;
     private final String description;
     private final String status;

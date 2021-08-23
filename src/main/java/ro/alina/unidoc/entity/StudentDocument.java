@@ -41,6 +41,8 @@ public class StudentDocument {
 
     private LocalDateTime dateOfUpload;
 
+    private Boolean seen;
+
     @Enumerated(EnumType.STRING)
     private DocumentType documentType;
 }

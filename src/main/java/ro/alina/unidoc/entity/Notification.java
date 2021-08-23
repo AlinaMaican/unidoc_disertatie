@@ -27,4 +27,8 @@ public class Notification {
     private String message;
 
     private LocalDateTime date;
+
+    private Boolean seen;
+
+    private String type;
 }

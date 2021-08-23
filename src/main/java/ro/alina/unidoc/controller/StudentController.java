@@ -8,9 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ro.alina.unidoc.model.RequiredDocumentsRowModel;
-import ro.alina.unidoc.model.Response;
-import ro.alina.unidoc.model.StudentModel;
+import ro.alina.unidoc.model.*;
 import ro.alina.unidoc.model.filters.StudentFilter;
 import ro.alina.unidoc.model.property_editor.GenericPropertyEditor;
 import ro.alina.unidoc.service.StudentService;
@@ -49,7 +47,7 @@ public class StudentController {
     }
 
     @GetMapping("/secretary/document")
-    public ResponseEntity<List<RequiredDocumentsRowModel>> getRequiredSecretaryDocuments(@RequestParam(value = "studentId") final Long studentId){
+    public ResponseEntity<List<RequiredDocumentsRowModel>> getRequiredSecretaryDocuments(@RequestParam(value = "studentId") final Long studentId) {
         return ResponseEntity.ok(studentService.getRequiredSecretaryDocuments(studentId));
     }
 
@@ -60,4 +58,39 @@ public class StudentController {
                                                           @RequestParam(value = "name") String name) {
         return ResponseEntity.ok(studentService.uploadSecretaryDocument(file, studentId, secretaryDocumentId, name));
     }
+
+    @GetMapping("/own/document")
+    public ResponseEntity<Page<StudentDocumentModel>> getOwnDocuments(@RequestParam(value = "studentId") final Long studentId,
+                                                                      @RequestParam(value = "pageSize") final int pageSize,
+                                                                      @RequestParam(value = "pageNumber") final int pageNumber) {
+        return ResponseEntity.ok(studentService.getOwnDocuments(studentId, pageNumber, pageSize));
+    }
+
+    @PostMapping("/document/own/upload")
+    public ResponseEntity<Response> uploadOwnStudentDocument(@RequestPart(value = "file") MultipartFile file,
+                                                             @RequestParam(value = "studentId") Long studentId,
+                                                             @RequestParam(value = "description") String description,
+                                                             @RequestParam(value = "name") String name) {
+        return ResponseEntity.ok(studentService.uploadOwnDocument(file, studentId, description, name));
+    }
+
+    @GetMapping("/document/notifications")
+    public ResponseEntity<Page<StudentNotificationModel>> getStudentNotifications(@RequestParam(value = "studentId") Long studentId,
+                                                                                  @RequestParam(value = "pageSize") final int pageSize,
+                                                                                  @RequestParam(value = "pageNumber") final int pageNumber,
+                                                                                  @RequestParam(value = "columnName") final String columnName,
+                                                                                  @RequestParam(value = "direction") final String direction){
+        return ResponseEntity.ok(studentService.getStudentNotifications(studentId, pageSize, pageNumber, columnName, direction));
+    }
+
+    @PostMapping("/notification/seen")
+    public ResponseEntity<Response> markNotificationAsSeen(@RequestParam(value="notificationId") Long notificationId){
+        return ResponseEntity.ok(studentService.markNotificationAsSeen(notificationId));
+    }
+
+    @GetMapping("/notifications/unseen")
+    public int getUnseenNotifications(@RequestParam(value = "studentId") final Long studentId){
+        return studentService.getUnseenNotifications(studentId);
+    }
+
 }

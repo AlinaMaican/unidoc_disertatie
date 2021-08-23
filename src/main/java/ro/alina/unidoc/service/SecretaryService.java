@@ -123,7 +123,8 @@ public class SecretaryService {
 
     public Page<StudentDocumentRowModel> getAllStudentDocuments(final StudentDocumentFilter filter) {
         final var specification = getSpecifications(filter);
-        var pageReq = PageRequest.of(filter.getPageNumber(), filter.getPageSize(), Sort.by(filter.getColumnName()).descending());
+        var sort = filter.getSortDirection().equals("desc") ? Sort.by(filter.getColumnName()).descending(): Sort.by(filter.getColumnName()).ascending();
+        var pageReq = PageRequest.of(filter.getPageNumber(), filter.getPageSize(), sort);
         return studentDocumentRepository.findAll(specification, pageReq)
                 .map(this::toStudentDocumentRowModel);
     }
@@ -154,12 +155,12 @@ public class SecretaryService {
     }
 
     private Specification<StudentDocument> getSpecifications(final StudentDocumentFilter filter) {
-        System.out.println(filter.toString());
         return Objects.requireNonNull(studentDocumentGenericSpecification.where(
                 studentDocumentGenericSpecification.isNestedPropertyLike("student.firstName", filter.getFirstName()))
                 .and(studentDocumentGenericSpecification.isNestedPropertyLike("student.lastName", filter.getLastName()))
                 .and(studentDocumentGenericSpecification.isNestedPropertyLike("secretaryDocument.name", filter.getName()))
                 .and(studentDocumentGenericSpecification.isStatusEqual("status", filter.getStatus()))
+                .and(studentDocumentGenericSpecification.isDocumentTypeEqual("documentType", "SECRETARY"))
                 .and(studentDocumentGenericSpecification.isNestedNestedPropertyEqualNumber("student.secretaryAllocation.secretary.id", filter.getSecretaryId()))
                 .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.learningType.id", filter.getLearningTypeId()))
                 .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.universityStudyType.id", filter.getUniversityStudyId()))

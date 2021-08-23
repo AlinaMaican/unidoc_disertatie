@@ -9,4 +9,6 @@ import java.util.Optional;
 
 public interface StudentDocumentRepository extends JpaRepository<StudentDocument, Long>, JpaSpecificationExecutor<StudentDocument> {
      Optional<StudentDocument> findByStudentIdAndSecretaryDocumentId(Long studentId, Long secretaryDocumentId);
+
+     Optional<StudentDocument> findByStudentIdAndFilePathName(Long studentId, String filePathName);
 }
