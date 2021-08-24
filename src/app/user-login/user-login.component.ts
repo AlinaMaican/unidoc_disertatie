@@ -4,7 +4,7 @@ import {TokenStorageService} from "../_services/token-storage.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {RegularExpressionUtil} from "../util/regular-expression.util";
 import {Router} from "@angular/router";
-import {RoleType} from "../type/role.type";
+import {UserService} from "../_services/user.service";
 
 @Component({
   selector: 'bg-user-login',
@@ -17,9 +17,11 @@ export class UserLoginComponent implements OnInit {
   submitted = false;
   isLoggedIn = false;
   isLoginFailed = false;
+  hide = true;
 
   constructor(private authService: AuthService,
               private tokenStorage: TokenStorageService,
+              private userService: UserService,
               private router: Router) {
     this.userForm = new FormGroup({
       email: new FormControl(null, [Validators.required, Validators.pattern(RegularExpressionUtil.EMAIL)]),
@@ -40,33 +42,38 @@ export class UserLoginComponent implements OnInit {
 
       this.authService.login(email, password).subscribe(
         data => {
-          this.tokenStorage.saveToken(data.token);
-          this.tokenStorage.saveUser(data);
-          this.tokenStorage.setUser(this.tokenStorage.getUser());
-
-          this.isLoginFailed = false;
-          this.isLoggedIn = true;
-
-          if(this.tokenStorage.getUser().active){
-            if(this.tokenStorage.getUser().role === "STUDENT") {
-              this.authService.getStudent(this.tokenStorage.getUser().id).subscribe(
-                data => {
-                  window.sessionStorage.setItem("student", JSON.stringify(data));
-                  this.router.navigate(["/required-documents"]);
-                }
-              );
-            } else if (this.tokenStorage.getUser().role === "SECRETARY"){
-              this.authService.getSecretary(this.tokenStorage.getUser().id).subscribe(
-                data => {
-                  window.sessionStorage.setItem("secretary", JSON.stringify(data));
-                  this.router.navigate(["/document-management"]);
-                }
-              );
-            } else {
-              this.router.navigate(["/secretary-management"]);
-            }
+          if(data.type !== undefined && data.type === "ERROR"){
+              this.isLoginFailed = true;
+              this.errorMessage = data.message;
           } else {
-            this.router.navigate(["/change-password"]);
+            this.tokenStorage.saveToken(data.token);
+            this.tokenStorage.saveUser(data);
+            this.tokenStorage.setUser(this.tokenStorage.getUser());
+
+            this.isLoginFailed = false;
+            this.isLoggedIn = true;
+
+            if (this.tokenStorage.getUser().active) {
+              if (this.tokenStorage.getUser().role === "STUDENT") {
+                this.userService.getStudent(this.tokenStorage.getUser().id).subscribe(
+                  data => {
+                    window.sessionStorage.setItem("student", JSON.stringify(data));
+                    this.router.navigate(["/required-documents"]);
+                  }
+                );
+              } else if (this.tokenStorage.getUser().role === "SECRETARY") {
+                this.userService.getSecretary(this.tokenStorage.getUser().id).subscribe(
+                  data => {
+                    window.sessionStorage.setItem("secretary", JSON.stringify(data));
+                    this.router.navigate(["/document-management"]);
+                  }
+                );
+              } else {
+                this.router.navigate(["/secretary-management"]);
+              }
+            } else {
+              this.router.navigate(["/change-password"]);
+            }
           }
 
         },

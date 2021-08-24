@@ -60,18 +60,17 @@ export class StudentNotificationsComponent implements OnInit {
     this.loadData();
   }
 
-  goToTheDocument(documentId: number){
-    this.router.navigate(["/required-documents"]);
+  goToTheDocument(documentType: string){
+    if(documentType === "OWN"){
+      this.router.navigate(["/created-documents"]);
+    } else {
+      this.router.navigate(["/required-documents"]);
+    }
   }
 
   checkNotification(notificationId: number){
     return this.studentService.checkNotification(notificationId).subscribe(() =>{
-      window.location.reload();
+      this.loadData();
     })
   }
-
-  checkSeen(seen: boolean) : boolean{
-    return seen;
-  }
-
 }

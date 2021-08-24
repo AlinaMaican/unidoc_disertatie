@@ -70,4 +70,9 @@ export class StudentService {
     return this.http.post<ResponseModel>(STUDENT_API + "notification/seen", formData);
   }
 
+  getUnseenNotifications(userId: number): Observable<number>{
+    let params = new HttpParams();
+    params = params.append("userId", String(userId));
+    return this.http.get<number>(STUDENT_API + "notifications/unseen", {params: params});
+  }
 }

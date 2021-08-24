@@ -86,7 +86,7 @@
        class="mat-focus-indicator docs-button mat-button mat-button-base"
        tabindex="0" aria-disabled="false" href="/student-notifications">
       <span class="mat-button-wrapper">
-        <mat-icon matBadge="15" matBadgeColor="warn" alt="notifications" class="docs-angular-logo">notifications</mat-icon>
+        <mat-icon [matBadge]="matBadgeCount" matBadgeColor="warn" [matBadgeHidden]="hideMatBadge" alt="notifications" class="docs-angular-logo">notifications</mat-icon>
       </span>
       <span matripple="" class="mat-ripple mat-button-ripple"></span>
       <span class="mat-button-focus-overlay"></span>
@@ -96,15 +96,15 @@
        class="mat-focus-indicator docs-button mat-button mat-button-base"
        tabindex="0" aria-disabled="false" href="/secretary-notifications">
       <span class="mat-button-wrapper">
-        <mat-icon matBadge="15" matBadgeColor="warn" alt="notifications" class="docs-angular-logo">notifications</mat-icon>
+        <mat-icon [matBadge]="matBadgeCount" matBadgeColor="warn" [matBadgeHidden]="hideMatBadge" alt="notifications" class="docs-angular-logo">notifications</mat-icon>
       </span>
       <span matripple="" class="mat-ripple mat-button-ripple"></span>
       <span class="mat-button-focus-overlay"></span>
     </a>
 
-    <a mat-button=""  aria-label="GitHub Repository"
+    <a *ngIf="isStudent" mat-button=""  aria-label="GitHub Repository"
        class="mat-focus-indicator docs-button mat-button mat-button-base"
-       tabindex="0" aria-disabled="false" (click)="logOut()">
+       tabindex="0" aria-disabled="false" href="/user-profile">
       <span class="mat-button-wrapper">
         <mat-icon alt="account" class="docs-angular-logo">account_circle</mat-icon>
       </span>

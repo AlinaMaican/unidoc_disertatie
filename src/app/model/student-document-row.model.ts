@@ -6,7 +6,9 @@ export interface StudentDocumentRowModel{
   studyGroup: string;
   studyGroupId: number;
   name: string;
+  description: string;
   filePath: string;
   dateOfUpload: string;
   status: string
+  notificationId: number;
 }

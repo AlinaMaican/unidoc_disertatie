@@ -9,7 +9,7 @@
       <form [formGroup]="userForm">
           <div class="form">
             <div class="alert alert-warning" *ngIf="isLoginFailed">
-              {{ "login.message.user.login.bad.credentials" | translate }}
+              {{errorMessage}}
             </div>
             <!----------------email-------------------------------------------->
             <div class="form-row">
@@ -25,21 +25,17 @@
             </div>
             <!-----------------password-------------------------------------->
             <div class="form-row">
-              <i class="fa fa-eye"></i>
+              <i class="fa {{hide ? 'fa-eye-slash' : 'fa-eye'}}" (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide"></i>
               <label for="password" class="form-label">{{'login.password' | translate}}</label>
-              <input type="password" name="password" id="password" class="form-control form-text"
+              <input [type]="hide ? 'password' : 'text'" name="password" id="password"
                      formControlName="password" placeholder="{{'login.enter.password' | translate}}"
-                     [ngClass]="{ 'is-invalid': submitted && f.password.errors }">
+                     [ngClass]="{ 'is-invalid': submitted && f.password.errors }" class="form-control form-text">
               <div *ngIf="submitted && f.password.errors" class="validation-alert">
                 <div *ngIf="f.password.errors.required">{{'login.password.required' | translate}}</div>
               </div>
             </div>
             <!-----------------------------others---------------------------------->
-            <div class="form-row bottom">
-              <div class="form-check">
-                <input type="checkbox" id="remember" name="remember" value="remember">
-                <label for="remember">{{'login.remember.me' | translate}}</label>
-              </div>
+            <div class="form-row bottom" style="float: right">
               <a href="/change-password" class="forgot">{{'login.forgot.password' | translate}}</a>
             </div>
             <!--------------------------button--------------------------------->

@@ -46,6 +46,10 @@ import { StudentNotificationsComponent } from './student-views/student-notificat
 import { SecretaryNotificationsComponent } from './secretary-views/secretary-notifications/secretary-notifications.component';
 import { PaginationComponent } from './pagination/pagination.component';
 import { UploadOwnDocumentDialogComponent } from './student-views/upload-own-document-dialog/upload-own-document-dialog.component';
+import { UserProfileComponent } from './student-views/user-profile/user-profile.component';
+import { RoleGuardComponent } from './admin-views/role-guard/role-guard.component';
+import { StudentRoleGuardComponent } from './student-views/student-role-guard/student-role-guard.component';
+import { SecretaryRoleGuardComponent } from './secretary-views/secretary-role-guard/secretary-role-guard.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -87,7 +91,8 @@ export function translationServiceFactory(translate: TranslateService): () => Pr
     StudentNotificationsComponent,
     SecretaryNotificationsComponent,
     PaginationComponent,
-    UploadOwnDocumentDialogComponent
+    UploadOwnDocumentDialogComponent,
+    UserProfileComponent
   ],
     imports: [
         BrowserModule,
@@ -128,7 +133,10 @@ export function translationServiceFactory(translate: TranslateService): () => Pr
       useFactory: translationServiceFactory,
       deps: [TranslateService],
       multi: true,
-    }
+    },
+    RoleGuardComponent,
+    StudentRoleGuardComponent,
+    SecretaryRoleGuardComponent
   ],
   bootstrap: [AppComponent]
 })

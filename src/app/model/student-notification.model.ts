@@ -5,5 +5,6 @@ export interface StudentNotificationModel{
   message: string;
   date: string;
   studentDocumentId: number;
+  documentType: string;
   seen: boolean;
 }

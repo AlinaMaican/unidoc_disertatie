@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {AppUserAuthModel} from "../model/app-user-auth.model";
-import {JwtHelperService} from "@auth0/angular-jwt";
 import {RoleType} from "../type/role.type";
 import {BehaviorSubject, Observable} from "rxjs";
 
@@ -68,7 +67,7 @@ export class TokenStorageService {
     return null;
   }
 
-  public get currentUserValue(): AppUserAuthModel {
+  public getCurrentUserValue(): AppUserAuthModel {
     return this.currentUserSubject.value;
   }
 

@@ -3,6 +3,8 @@ import {AppUserAuthModel} from "../model/app-user-auth.model";
 import {TokenStorageService} from "../_services/token-storage.service";
 import {RoleType} from "../type/role.type";
 import {Router} from "@angular/router";
+import {StudentService} from "../_services/student.service";
+import {SecretaryService} from "../_services/secretary.service";
 
 @Component({
   selector: 'app-navbar',
@@ -15,8 +17,16 @@ export class NavbarComponent implements OnInit {
   isStudent: boolean = false;
   isSecretary: boolean = false;
 
+  matBadgeCount: number = 0;
+  hideMatBadge: boolean = true;
+  studentInterval: any;
+  secretaryInterval: any;
+
+
   constructor(private tokenService: TokenStorageService,
-              private router: Router) {
+              private router: Router,
+              private studentService: StudentService,
+              private secretaryService: SecretaryService) {
   }
 
   ngOnInit(): void {
@@ -34,10 +44,38 @@ export class NavbarComponent implements OnInit {
       default:
         this.isAdmin = true;
     }
+    if(this.isStudent){
+      this.studentService.getUnseenNotifications(this.user.id).subscribe(number=>{
+        this.matBadgeCount = number;
+        this.hideMatBadge = this.matBadgeCount === 0;
+      });
+      this.studentInterval = setInterval(() => {
+        // @ts-ignore
+        this.studentService.getUnseenNotifications(this.user.id).subscribe(number=>{
+          this.matBadgeCount = number;
+          this.hideMatBadge = this.matBadgeCount === 0;
+        });
+      }, 5000);
+    }
+    if(this.isSecretary){
+      this.secretaryService.getUnseenNotifications(this.user.id).subscribe(number=>{
+        this.matBadgeCount = number;
+        this.hideMatBadge = this.matBadgeCount === 0;
+      });
+      this.secretaryInterval = setInterval(() => {
+        // @ts-ignore
+        this.secretaryService.getUnseenNotifications(this.user.id).subscribe(number=>{
+          this.matBadgeCount = number;
+          this.hideMatBadge = this.matBadgeCount === 0;
+        });
+      }, 5000);
+    }
   }
 
   logOut(): void{
     window.sessionStorage.clear();
+    clearInterval(this.secretaryInterval);
+    clearInterval(this.studentInterval);
     this.router.navigate(['/login'])
   }
 }

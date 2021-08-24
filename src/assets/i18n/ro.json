@@ -20,7 +20,7 @@
     "email.pattern": "Adresa de email nu are un format valid!",
     "enter.email": "introdu adresa de email",
     "enter.password": "introdu parola",
-    "forgot.password": "ai uitat parola?",
+    "forgot.password": "schimba parola",
     "message.user.login.bad.credentials": "Parola/email invalide!",
     "password": "Parola",
     "password.required": "Introdu parola!",

@@ -1,0 +1,42 @@
+<app-navbar class="mat-elevation-z6"></app-navbar>
+<div style="margin:30px;width:60%;">
+  <div>
+    <h1>User profile</h1>
+  </div>
+</div>
+
+<div class="bottom" style="width:40%;">
+  <ul class="tasks">
+    <li class="one red">
+      <span class="task-title">First name</span>
+      <span class="task-time">{{student.firstName}}</span>
+
+    </li>
+    <li class="one red">
+      <span class="task-title">Last name</span>
+      <span class="task-time">{{student.lastName}}</span>
+
+    </li>
+    <li class="two green">
+      <span class="task-title">Email address</span>
+      <span class="task-time">{{student.emailAddress}}</span>
+
+    </li>
+
+    <li class="three yellow">
+      <span class="task-title">Phone numbers</span>
+      <span class="task-time">{{student.phoneNumbers.toString()}}</span>
+    </li>
+
+    <li class="three yellow">
+      <span class="task-title">CNP</span>
+      <span class="task-time">{{student.cnp}}</span>
+    </li>
+
+    <li class="three yellow">
+      <span class="task-title">Registration number</span>
+      <span class="task-time">{{student.registrationNumber}}</span>
+    </li>
+
+  </ul>
+</div>

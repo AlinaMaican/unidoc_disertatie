@@ -1,0 +1,62 @@
+body {
+  font: 300 14px/18px Roboto
+}
+
+*,
+:after,
+:before {
+  box-sizing: border-box
+}
+
+ul.tasks .task-title {
+  font-size: 13px;
+  display: inline-block;
+}
+
+ul.tasks .task-time {
+  float: right;
+  font-size: 10px;
+  color: #888;
+}
+
+ul.tasks li {
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 8;
+}
+
+ul.tasks li:after {
+  content: '';
+  position: absolute;
+  left: -18px;
+  top: 8px;
+  height: 8px;
+  width: 8px;
+  border-radius: 50%;
+}
+
+ul.tasks li.red:after {
+  background: #9131ff;
+}
+
+ul.tasks li.green:after {
+  background: #54D6C7;
+}
+
+ul.tasks li.yellow:after {
+  background: #EAB429;
+}
+
+ul.tasks::after {
+  content: '';
+  position: absolute;
+  height: 300px;
+  width: 1px;
+  background: #eee;
+  left: 20px;
+  margin-top: 40px;
+  top: 40px;
+}
+
+
+
