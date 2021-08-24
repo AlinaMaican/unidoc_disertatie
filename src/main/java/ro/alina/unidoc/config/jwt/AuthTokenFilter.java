@@ -11,6 +11,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import ro.alina.unidoc.service.UserService;
 import ro.alina.unidoc.utils.JwtUtils;
 
+import javax.security.sasl.AuthenticationException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +36,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 String email = jwtUtils.getEmailFromJwtToken(jwt);
 
                 UserDetails userDetails = appUserService.loadUserByUsername(email);
+                if(!userDetails.isAccountNonLocked()){
+                    throw new AuthenticationException("You need to change you password first before logging in!");
+                }
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -42,7 +46,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {
-            logger.error("Cannot set user authentication: {}", e);
+            logger.info("Cannot set user authentication: {}", e);
         }
 
         filterChain.doFilter(request, response);

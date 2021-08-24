@@ -42,6 +42,7 @@ public class StudentService {
     private final GenericSpecification<StudentDocument> studentDocumentGenericSpecification;
     private final GenericSpecification<Notification> notificationGenericSpecification;
     private final NotificationRepository notificationRepository;
+    private final NotificationService notificationService;
 
     public Page<StudentModel> getAllStudents(final Pageable pageable, final StudentFilter filter) {
         final var specification = getSpecifications(filter);
@@ -174,7 +175,11 @@ public class StudentService {
             studentDocumentRepository.findByStudentIdAndFilePathName(studentId, path.toString()).ifPresentOrElse(studentDocument -> {
                 type.set("ERROR");
                 message.set("The file already exists, it is called " + studentDocument.getName());
-            }, () -> studentDocumentRepository.save(StudentDocument.builder()
+            }, () -> {
+                var student = studentRepository.getOne(studentId);
+                notificationService.sendSimpleMessage(student.getSecretaryAllocation().getSecretary().getUser().getEmail(), "New document added by a student","A new document called " + name +" has been uploaded by the student "
+                        + student.getLastName() + " " + student.getFirstName() + " from the group " + student.getStudyGroup().getName());
+                var studentDocument = studentDocumentRepository.save(StudentDocument.builder()
                     .name(name)
                     .student(studentRepository.getOne(studentId))
                     .description(description)
@@ -183,7 +188,15 @@ public class StudentService {
                     .documentType(DocumentType.OWN)
                     .status(DocumentStatusType.IN_PROGRESS)
                     .seen(false)
-                    .build()));
+                    .build());
+                notificationRepository.save(Notification.builder()
+                        .type("SECRETARY")
+                        .seen(false)
+                        .date(LocalDateTime.now())
+                        .message("New document has been uploaded by a student!")
+                        .studentDocument(studentDocument)
+                        .build());
+            });
         } catch (Exception e) {
             return Response.builder().type("ERROR").message("There has been an error").build();
         }
@@ -212,9 +225,10 @@ public class StudentService {
                 .id(notification.getId())
                 .studentDocumentId(notification.getStudentDocument().getId())
                 .documentName(notification.getStudentDocument().getName())
+                .documentType(notification.getStudentDocument().getDocumentType().toString())
                 .date(notification.getDate())
                 .message(notification.getMessage())
-                .seen(notification.getStudentDocument().getSeen())
+                .seen(notification.getSeen())
                 .build();
     }
 
@@ -236,7 +250,19 @@ public class StudentService {
         }
     }
 
-    public int getUnseenNotifications(final Long studentId){
-        return notificationRepository.countBySeenAndStudentDocument_Student_Id(true, studentId);
+    public int getUnseenNotifications(final Long userId){
+        return notificationRepository.countBySeenAndStudentDocument_Student_IdAndType(false, studentRepository.findByUserId(userId).getId(), "STUDENT");
+    }
+
+    public StudentModel getUserProfile(final Long userId){
+        var student = studentRepository.findByUserId(userId);
+        return StudentModel.builder()
+                .firstName(student.getFirstName())
+                .lastName(student.getLastName())
+                .emailAddress(student.getUser().getEmail())
+                .phoneNumbers(phoneNumberRepository.findAllByUser(student.getUser()).stream().map(PhoneNumber::getPhoneNumber).collect(Collectors.toList()))
+                .cnp(student.getCnp())
+                .registrationNumber(student.getRegistrationNumber())
+                .build();
     }
 }

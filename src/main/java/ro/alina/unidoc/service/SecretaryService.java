@@ -129,24 +129,36 @@ public class SecretaryService {
                 .map(this::toStudentDocumentRowModel);
     }
 
+    public Page<StudentDocumentRowModel> getOwnStudentDocuments(final StudentDocumentFilter filter) {
+        final var specification = getSpecificationForOwnDocument(filter);
+        var sort = filter.getSortDirection().equals("desc") ? Sort.by(filter.getColumnName()).descending(): Sort.by(filter.getColumnName()).ascending();
+        var pageReq = PageRequest.of(filter.getPageNumber(), filter.getPageSize(), sort);
+        return studentDocumentRepository.findAll(specification, pageReq)
+                .map(this::toOwnStudentDocumentRowModel);
+    }
+
     public Response editStudentDocumentStatus(final Long documentId, final String status, final String comment) {
         try {
             AtomicReference<String> type = new AtomicReference<>("SUCCESS");
             AtomicReference<String> message = new AtomicReference<>("The status of the file has been changed successfully!");
             studentDocumentRepository.findById(documentId).ifPresent(document -> {
-                if (document.getDateOfUpload().isAfter(document.getSecretaryDocument().getEndDateOfUpload())) {
+
+                if (document.getSecretaryDocument() != null && document.getDateOfUpload().isAfter(document.getSecretaryDocument().getEndDateOfUpload())) {
                     type.set("ERROR");
                     message.set("You can not change the status of a document that has the end date exceeded!");
+                } else {
+                    document.setStatus(DocumentStatusType.valueOf(status));
+                    var newDocument = studentDocumentRepository.save(document);
+                    notificationService.sendSimpleMessage(document.getStudent().getUser().getEmail(),
+                            "Document status changed", "The status for the document " + document.getName() + " has changed to " + status);
+                    notificationRepository.save(Notification.builder()
+                            .studentDocument(newDocument)
+                            .message(comment)
+                            .date(LocalDateTime.now())
+                            .seen(false)
+                            .type("STUDENT")
+                            .build());
                 }
-                document.setStatus(DocumentStatusType.valueOf(status));
-                studentDocumentRepository.save(document);
-                notificationService.sendSimpleMessage(document.getStudent().getUser().getEmail(),
-                        "Document status changed", "The status for the document " + document.getName() + " has changed to " + status);
-                notificationRepository.save(Notification.builder()
-                        .studentDocument(document)
-                        .message(comment)
-                        .date(LocalDateTime.now())
-                        .build());
             });
             return Response.builder().type(type.get()).message(message.get()).build();
         } catch (Exception e) {
@@ -161,6 +173,22 @@ public class SecretaryService {
                 .and(studentDocumentGenericSpecification.isNestedPropertyLike("secretaryDocument.name", filter.getName()))
                 .and(studentDocumentGenericSpecification.isStatusEqual("status", filter.getStatus()))
                 .and(studentDocumentGenericSpecification.isDocumentTypeEqual("documentType", "SECRETARY"))
+                .and(studentDocumentGenericSpecification.isNestedNestedPropertyEqualNumber("student.secretaryAllocation.secretary.id", filter.getSecretaryId()))
+                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.learningType.id", filter.getLearningTypeId()))
+                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.universityStudyType.id", filter.getUniversityStudyId()))
+                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.domain.id", filter.getDomainId()))
+                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.studyProgram.id", filter.getStudyProgramId()))
+                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.studyYear.id", filter.getStudyYearId()))
+                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.studyGroup.id", filter.getStudyGroupId())));
+    }
+
+    private Specification<StudentDocument> getSpecificationForOwnDocument(final StudentDocumentFilter filter) {
+        return Objects.requireNonNull(studentDocumentGenericSpecification.where(
+                studentDocumentGenericSpecification.isNestedPropertyLike("student.firstName", filter.getFirstName()))
+                .and(studentDocumentGenericSpecification.isNestedPropertyLike("student.lastName", filter.getLastName()))
+                .and(studentDocumentGenericSpecification.isPropertyLike("name", filter.getName()))
+                .and(studentDocumentGenericSpecification.isStatusEqual("status", filter.getStatus()))
+                .and(studentDocumentGenericSpecification.isDocumentTypeEqual("documentType", "OWN"))
                 .and(studentDocumentGenericSpecification.isNestedNestedPropertyEqualNumber("student.secretaryAllocation.secretary.id", filter.getSecretaryId()))
                 .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.learningType.id", filter.getLearningTypeId()))
                 .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.universityStudyType.id", filter.getUniversityStudyId()))
@@ -193,6 +221,31 @@ public class SecretaryService {
                 .build();
     }
 
+    private StudentDocumentRowModel toOwnStudentDocumentRowModel(final StudentDocument studentDocument) {
+        return StudentDocumentRowModel.builder()
+                .name(studentDocument.getName())
+                .documentId(studentDocument.getId())
+                .description(studentDocument.getDescription())
+                .filePath(studentDocument.getFilePathName())
+                .dateOfUpload(studentDocument.getDateOfUpload())
+                .status(getStatusToANicerForm(studentDocument.getStatus()))
+                .studyGroupId(studentDocument.getStudent().getStudyGroup().getId())
+                .studyGroup(studentDocument.getStudent().getStudyGroup().getName())
+                .notificationId(notificationRepository.findByStudentDocument_IdAndType(studentDocument.getId(), "SECRETARY").getId())
+                .studentModel(StudentModel.builder()
+                        .firstName(studentDocument.getStudent().getFirstName())
+                        .lastName(studentDocument.getStudent().getLastName())
+                        .emailAddress(studentDocument.getStudent().getUser().getEmail())
+                        .cnp(studentDocument.getStudent().getCnp())
+                        .registrationNumber(studentDocument.getStudent().getRegistrationNumber())
+                        .phoneNumbers(phoneNumberRepository.findAllByUser(studentDocument.getStudent().getUser())
+                                .stream()
+                                .map(PhoneNumber::getPhoneNumber)
+                                .collect(Collectors.toList()))
+                        .build())
+                .build();
+    }
+
     public String getStatusToANicerForm(final DocumentStatusType statusType) {
         switch (statusType) {
             case IN_PROGRESS:
@@ -204,5 +257,28 @@ public class SecretaryService {
             default:
                 throw new IllegalStateException("Unexpected value: " + statusType);
         }
+    }
+
+    public Response markNotificationAsSeen(final Long notificationId){
+        try{
+            notificationRepository.findById(notificationId).ifPresent(notification ->{
+                notification.setSeen(true);
+                notificationRepository.save(notification);
+            });
+            return Response.builder()
+                    .type("SUCCESS")
+                    .message("Notification marked as seen")
+                    .build();
+        } catch(Exception e){
+            return Response.builder()
+                    .type("ERROR")
+                    .message("Something happened when trying to")
+                    .build();
+        }
+    }
+
+    public int getUnseenNotifications(final Long userId){
+        return notificationRepository.countBySeenAndStudentDocument_Student_SecretaryAllocation_SecretaryAndType(false,
+                secretaryRepository.findByUserId(userId), "SECRETARY");
     }
 }

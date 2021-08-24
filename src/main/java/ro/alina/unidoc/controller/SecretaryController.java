@@ -8,14 +8,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ro.alina.unidoc.model.*;
 import ro.alina.unidoc.model.filters.StudentDocumentFilter;
 import ro.alina.unidoc.model.property_editor.GenericPropertyEditor;
+import ro.alina.unidoc.model.type.RoleType;
 import ro.alina.unidoc.service.SecretaryService;
 
+import javax.annotation.security.RolesAllowed;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -150,5 +153,21 @@ public class SecretaryController {
             System.err.println(e);
         }
         return null;
+    }
+
+    @GetMapping("/notifications/unseen")
+    public int getUnseenNotifications(@RequestParam(value = "userId") final Long userId){
+        return secretaryService.getUnseenNotifications(userId);
+    }
+
+    @PostMapping("/notification/seen")
+    public ResponseEntity<Response> markNotificationAsSeen(@RequestParam(value="notificationId") Long notificationId){
+        return ResponseEntity.ok(secretaryService.markNotificationAsSeen(notificationId));
+    }
+
+    @ModelAttribute
+    @GetMapping("/allocation/student/own/documents")
+    public ResponseEntity<Page<StudentDocumentRowModel>> getOwnStudentDocuments(@ModelAttribute final StudentDocumentFilter filter) {
+        return ResponseEntity.ok(secretaryService.getOwnStudentDocuments(filter));
     }
 }

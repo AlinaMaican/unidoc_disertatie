@@ -1,24 +1,20 @@
 package ro.alina.unidoc.service;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-import javax.transaction.Transactional;
-
-@Service
-@Transactional
-@RequiredArgsConstructor
+@Component
 public class NotificationService {
 
-    private final JavaMailSender emailSender;
+    @Autowired
+    private JavaMailSender emailSender;
 
     public void sendSimpleMessage(String to, String subject, String text) {
         System.out.println("Am intrat");
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("noreply@baeldung.com");
             message.setTo(to);
             message.setSubject(subject);
             message.setText(text);

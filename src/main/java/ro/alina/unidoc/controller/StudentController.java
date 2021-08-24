@@ -89,8 +89,8 @@ public class StudentController {
     }
 
     @GetMapping("/notifications/unseen")
-    public int getUnseenNotifications(@RequestParam(value = "studentId") final Long studentId){
-        return studentService.getUnseenNotifications(studentId);
+    public int getUnseenNotifications(@RequestParam(value = "userId") final Long userId){
+        return studentService.getUnseenNotifications(userId);
     }
 
 }

@@ -17,7 +17,9 @@ public class StudentDocumentRowModel {
     private final String studyGroup;
     private final Long studyGroupId;
     private final String name;
+    private final String description;
     private final String filePath;
     private final LocalDateTime dateOfUpload;
     private final String status;
+    private final Long notificationId;
 }

@@ -17,5 +17,6 @@ public class StudentNotificationModel {
     private LocalDateTime date;
     private String message;
     private Long studentDocumentId;
+    private String documentType;
     private Boolean seen;
 }
