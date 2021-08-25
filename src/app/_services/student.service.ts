@@ -34,7 +34,7 @@ export class StudentService {
   }
 
   getRequiredDocuments(studentId: number): Observable<RequiredDocumentRowModel[]> {
-    return this.http.get<RequiredDocumentRowModel[]>(STUDENT_API + 'secretary/document', {params: {'studentId': studentId}});
+    return this.http.get<RequiredDocumentRowModel[]>(STUDENT_API + 'document/secretary', {params: {'studentId': studentId}});
   }
 
   getOwnDocuments(studentId: number, pageSize: number, pageNumber: number): Observable<PageModel<StudentDocumentModel>>{
@@ -42,7 +42,7 @@ export class StudentService {
     params = params.append("pageSize", String(pageSize));
     params = params.append("pageNumber", String(pageNumber));
     params = params.append("studentId", String(studentId));
-    return this.http.get<PageModel<StudentDocumentModel>>(STUDENT_API + 'own/document', {params: params});
+    return this.http.get<PageModel<StudentDocumentModel>>(STUDENT_API + 'document/own', {params: params});
   }
 
   uploadOwnDocument(uploadForm: any, data: any): Observable<ResponseModel> {
@@ -74,5 +74,10 @@ export class StudentService {
     let params = new HttpParams();
     params = params.append("userId", String(userId));
     return this.http.get<number>(STUDENT_API + "notifications/unseen", {params: params});
+  }
+
+  deleteOwnDocument(documentId: number): Observable<ResponseModel> {
+    console.log(documentId)
+    return this.http.delete<ResponseModel>(STUDENT_API + 'document/own/delete/' + documentId, httpOptions);
   }
 }

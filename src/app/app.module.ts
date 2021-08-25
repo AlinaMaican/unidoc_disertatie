@@ -50,6 +50,7 @@ import { UserProfileComponent } from './student-views/user-profile/user-profile.
 import { RoleGuardComponent } from './admin-views/role-guard/role-guard.component';
 import { StudentRoleGuardComponent } from './student-views/student-role-guard/student-role-guard.component';
 import { SecretaryRoleGuardComponent } from './secretary-views/secretary-role-guard/secretary-role-guard.component';
+import { DeleteOwnDocumentDialogComponent } from './student-views/delete-own-document-dialog/delete-own-document-dialog.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -92,7 +93,8 @@ export function translationServiceFactory(translate: TranslateService): () => Pr
     SecretaryNotificationsComponent,
     PaginationComponent,
     UploadOwnDocumentDialogComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    DeleteOwnDocumentDialogComponent
   ],
     imports: [
         BrowserModule,

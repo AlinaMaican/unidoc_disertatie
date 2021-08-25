@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
+import {UserProfileModel} from "../model/user-profile.model";
 
 const USER_API = 'http://localhost:8088/unidoc/api/user/';
 
@@ -21,8 +22,8 @@ export class UserService {
       , params: {'userId': userId}});
   }
 
-  getUserProfile(userId: number): Observable<any>{
-    return this.http.get(USER_API + "user-profile", {headers: new HttpHeaders({'Content-Type': 'application/json'})
+  getUserProfile(userId: number): Observable<UserProfileModel>{
+    return this.http.get<UserProfileModel>(USER_API + "user-profile", {headers: new HttpHeaders({'Content-Type': 'application/json'})
       , params: {'userId': userId}});
   }
 }

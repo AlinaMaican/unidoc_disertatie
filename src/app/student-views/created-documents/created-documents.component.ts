@@ -6,6 +6,7 @@ import {StudentDocumentModel} from "../../model/student-document.model";
 import {StudentService} from "../../_services/student.service";
 import {UploadOwnDocumentDialogComponent} from "../upload-own-document-dialog/upload-own-document-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
+import {DeleteOwnDocumentDialogComponent} from "../delete-own-document-dialog/delete-own-document-dialog.component";
 
 @Component({
   selector: 'app-created-documents',
@@ -13,7 +14,7 @@ import {MatDialog} from "@angular/material/dialog";
   styleUrls: ['./created-documents.component.scss']
 })
 export class CreatedDocumentsComponent implements OnInit {
-  displayedColumns: string[] = ['documentName', 'description', 'dateOfUpload', 'status', 'viewDocument'];
+  displayedColumns: string[] = ['documentName', 'description', 'dateOfUpload', 'status', 'viewDocument','deleteDocument'];
   clickedRows = new Set<SecretaryDocumentModel>();
   student: any;
   dataSource = new MatTableDataSource<StudentDocumentModel>();
@@ -65,6 +66,19 @@ export class CreatedDocumentsComponent implements OnInit {
       width: '500px',
       data: {
         'studentId': this.student.id
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
+
+  deleteDocument(documentId: number){
+    const dialogRef = this.dialog.open(DeleteOwnDocumentDialogComponent, {
+      width: '500px',
+      data: {
+        'documentId': documentId
       }
     });
 

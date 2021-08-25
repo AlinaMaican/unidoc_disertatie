@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../../_services/user.service";
+import {UserProfileModel} from "../../model/user-profile.model";
 
 @Component({
   selector: 'app-user-profile',
@@ -7,9 +8,11 @@ import {UserService} from "../../_services/user.service";
   styleUrls: ['./user-profile.component.scss']
 })
 export class UserProfileComponent implements OnInit {
-  student: any;
+  student: UserProfileModel = {};
 
-  constructor(private userService:UserService) { }
+  constructor(private userService:UserService) {
+
+  }
 
   ngOnInit(): void {
     if (window.sessionStorage.getItem("student") !== null) {

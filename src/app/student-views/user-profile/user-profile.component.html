@@ -25,7 +25,7 @@
 
     <li class="three yellow">
       <span class="task-title">Phone numbers</span>
-      <span class="task-time">{{student.phoneNumbers.toString()}}</span>
+      <span class="task-time">{{student.phoneNumbers === undefined?student.phoneNumbers : student.phoneNumbers.toString()}}</span>
     </li>
 
     <li class="three yellow">
