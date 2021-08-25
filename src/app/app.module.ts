@@ -51,6 +51,8 @@ import { RoleGuardComponent } from './admin-views/role-guard/role-guard.componen
 import { StudentRoleGuardComponent } from './student-views/student-role-guard/student-role-guard.component';
 import { SecretaryRoleGuardComponent } from './secretary-views/secretary-role-guard/secretary-role-guard.component';
 import { DeleteOwnDocumentDialogComponent } from './student-views/delete-own-document-dialog/delete-own-document-dialog.component';
+import { SecretaryAllocationsDialogComponent } from './admin-views/secretary-allocations-dialog/secretary-allocations-dialog.component';
+import { AddSecretaryDialogComponent } from './admin-views/add-secretary-dialog/add-secretary-dialog.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -94,7 +96,9 @@ export function translationServiceFactory(translate: TranslateService): () => Pr
     PaginationComponent,
     UploadOwnDocumentDialogComponent,
     UserProfileComponent,
-    DeleteOwnDocumentDialogComponent
+    DeleteOwnDocumentDialogComponent,
+    SecretaryAllocationsDialogComponent,
+    AddSecretaryDialogComponent
   ],
     imports: [
         BrowserModule,

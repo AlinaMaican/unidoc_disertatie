@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {Observable} from "rxjs";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {StudyModel} from "../model/study.model";
+import {ResponseModel} from "../model/response.model";
 
 const STUDY_API = 'http://localhost:8088/unidoc/api/study/';
 
@@ -48,5 +49,33 @@ export class StudyService {
   getAllFilteredStudyGroups(studyYearId: number): Observable<StudyModel[]> {
     httpOptions.params = {'studyYearId': studyYearId};
     return this.http.get<StudyModel[]>( STUDY_API + 'studyGroups', httpOptions);
+  }
+
+  getAllLearningTypes(): Observable<StudyModel[]> {
+    return this.http.get<StudyModel[]>( STUDY_API + 'learningTypes', httpOptions);
+  }
+
+  getAllUniversityStudies(learningTypeId: number): Observable<StudyModel[]> {
+    httpOptions.params = {'learningTypeId': learningTypeId};
+    return this.http.get<StudyModel[]>( STUDY_API + 'universityStudyTypes', httpOptions);
+  }
+
+  getAllDomains(universityStudyId: number): Observable<StudyModel[]> {
+    httpOptions.params = {'universityStudyId': universityStudyId};
+    return this.http.get<StudyModel[]>( STUDY_API + 'domains', httpOptions);
+  }
+
+  getAllStudyPrograms(domainId: number): Observable<StudyModel[]> {
+    httpOptions.params = {'domainId': domainId};
+    return this.http.get<StudyModel[]>( STUDY_API + 'studyPrograms', httpOptions);
+  }
+
+  getAllStudyYears(studyProgramId: number): Observable<StudyModel[]> {
+    httpOptions.params = {'studyProgramId': studyProgramId};
+    return this.http.get<StudyModel[]>( STUDY_API + 'studyYears', httpOptions);
+  }
+
+  createAllocation(allocation: any): Observable<ResponseModel>{
+    return this.http.post<ResponseModel>(STUDY_API + 'allocation/create', allocation);
   }
 }

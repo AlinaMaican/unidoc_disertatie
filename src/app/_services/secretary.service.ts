@@ -7,6 +7,8 @@ import {StudentDocumentRowModel} from "../model/student-document-row.model";
 import {StudentDocumentFilterModel} from "../model/student-document-filter.model";
 import {PageModel} from "../model/page.model";
 import {ResponseModel} from "../model/response.model";
+import {SecretaryListComponent} from "../admin-views/secretary-list/secretary-list.component";
+import {SecretaryListModel} from "../model/secretary-list.model";
 
 const SECRETARY_API = 'http://localhost:8088/unidoc/api/secretary/';
 
@@ -19,21 +21,22 @@ const httpOptions = {
 })
 export class SecretaryService {
 
-  constructor(private http: HttpClient) { }
-
-  getAllSecretaries(): Observable<any> {
-    return this.http.get( SECRETARY_API + 'all', httpOptions);
+  constructor(private http: HttpClient) {
   }
 
-  getAllAllocationsBySecretaryId(id : number): Observable<SecretaryAllocationModel[]>{
+  getAllSecretaries(): Observable<any> {
+    return this.http.get(SECRETARY_API + 'all', httpOptions);
+  }
+
+  getAllAllocationsBySecretaryId(id: number): Observable<SecretaryAllocationModel[]> {
     return this.http.get<SecretaryAllocationModel[]>(SECRETARY_API + id + "/allocations", httpOptions);
   }
 
-  getSecretaryDocumentsByAllocationId(allocationId : number): Observable<SecretaryDocumentModel[]>{
+  getSecretaryDocumentsByAllocationId(allocationId: number): Observable<SecretaryDocumentModel[]> {
     return this.http.get<SecretaryDocumentModel[]>(SECRETARY_API + "allocation/" + allocationId + "/documents", httpOptions);
   }
 
-  editSecretaryDocument(document: any): Observable<any>{
+  editSecretaryDocument(document: any): Observable<any> {
     const formData: FormData = new FormData();
     formData.append("id", document.get("id").value);
     formData.append("name", document.get("name").value);
@@ -56,7 +59,7 @@ export class SecretaryService {
     return this.http.post<ResponseModel>(SECRETARY_API + 'document/upload', formData);
   }
 
-  getStudentDocumentRowModel(filter: StudentDocumentFilterModel): Observable<PageModel<StudentDocumentRowModel>>{
+  getStudentDocumentRowModel(filter: StudentDocumentFilterModel): Observable<PageModel<StudentDocumentRowModel>> {
     let params = new HttpParams();
     params = params.append("pageSize", String(filter.pageSize));
     params = params.append("pageNumber", String(filter.pageNumber));
@@ -64,38 +67,38 @@ export class SecretaryService {
     params = params.append("sortDirection", String(filter.sortDirection));
     params = params.append("columnName", String(filter.columnName));
     params = params.append("learningTypeId", String(filter.learningTypeId));
-    if(filter.universityStudiesId !== undefined) {
+    if (filter.universityStudiesId !== undefined) {
       params = params.append("universityStudyId", String(filter.universityStudiesId));
     }
-    if(filter.studyProgramId !== undefined) {
+    if (filter.studyProgramId !== undefined) {
       params = params.append("studyProgramId", String(filter.studyProgramId));
     }
-    if(filter.domainId !== undefined) {
+    if (filter.domainId !== undefined) {
       params = params.append("domainId", String(filter.domainId));
     }
-    if(filter.studyYearId !== undefined) {
+    if (filter.studyYearId !== undefined) {
       params = params.append("studyYearId", String(filter.studyYearId));
     }
-    if(filter.studyGroupId !== undefined) {
+    if (filter.studyGroupId !== undefined) {
       params = params.append("studyGroupId", String(filter.studyGroupId));
     }
-    if(filter.status !== undefined) {
+    if (filter.status !== undefined) {
       params = params.append("status", String(filter.status));
     }
-    if(filter.firstName !== undefined) {
+    if (filter.firstName !== undefined) {
       params = params.append("firstName", String(filter.firstName));
     }
-    if(filter.lastName !== undefined) {
+    if (filter.lastName !== undefined) {
       params = params.append("lastName", String(filter.lastName));
     }
-    if(filter.name !== undefined) {
+    if (filter.name !== undefined) {
       params = params.append("name", String(filter.name));
     }
     console.log(params)
     return this.http.get<PageModel<StudentDocumentRowModel>>(SECRETARY_API + 'allocation/student/documents', {params: params});
   }
 
-  getOwnStudentDocumentRowModel(filter: StudentDocumentFilterModel): Observable<PageModel<StudentDocumentRowModel>>{
+  getOwnStudentDocumentRowModel(filter: StudentDocumentFilterModel): Observable<PageModel<StudentDocumentRowModel>> {
     let params = new HttpParams();
     params = params.append("pageSize", String(filter.pageSize));
     params = params.append("pageNumber", String(filter.pageNumber));
@@ -103,56 +106,73 @@ export class SecretaryService {
     params = params.append("sortDirection", String(filter.sortDirection));
     params = params.append("columnName", String(filter.columnName));
     params = params.append("learningTypeId", String(filter.learningTypeId));
-    if(filter.universityStudiesId !== undefined) {
+    if (filter.universityStudiesId !== undefined) {
       params = params.append("universityStudyId", String(filter.universityStudiesId));
     }
-    if(filter.studyProgramId !== undefined) {
+    if (filter.studyProgramId !== undefined) {
       params = params.append("studyProgramId", String(filter.studyProgramId));
     }
-    if(filter.domainId !== undefined) {
+    if (filter.domainId !== undefined) {
       params = params.append("domainId", String(filter.domainId));
     }
-    if(filter.studyYearId !== undefined) {
+    if (filter.studyYearId !== undefined) {
       params = params.append("studyYearId", String(filter.studyYearId));
     }
-    if(filter.studyGroupId !== undefined) {
+    if (filter.studyGroupId !== undefined) {
       params = params.append("studyGroupId", String(filter.studyGroupId));
     }
-    if(filter.status !== undefined) {
+    if (filter.status !== undefined) {
       params = params.append("status", String(filter.status));
     }
-    if(filter.firstName !== undefined) {
+    if (filter.firstName !== undefined) {
       params = params.append("firstName", String(filter.firstName));
     }
-    if(filter.lastName !== undefined) {
+    if (filter.lastName !== undefined) {
       params = params.append("lastName", String(filter.lastName));
     }
-    if(filter.name !== undefined) {
+    if (filter.name !== undefined) {
       params = params.append("name", String(filter.name));
     }
     console.log(params)
     return this.http.get<PageModel<StudentDocumentRowModel>>(SECRETARY_API + 'allocation/student/own/documents', {params: params});
   }
 
-  editStudentDocumentStatus(documentId:number, status: string, comment: string): Observable<ResponseModel>{
+  editStudentDocumentStatus(documentId: number, status: string, comment: string): Observable<ResponseModel> {
     const formData: FormData = new FormData();
     formData.append("status", status);
-    if(comment !== null){
+    if (comment !== null) {
       formData.append("comment", comment);
     }
     return this.http.post<ResponseModel>(SECRETARY_API + 'allocation/student/document/' + documentId, formData);
   }
 
-  checkNotification(notificationId: number): Observable<ResponseModel>{
+  checkNotification(notificationId: number): Observable<ResponseModel> {
     const formData: FormData = new FormData();
     formData.append("notificationId", String(notificationId));
     return this.http.post<ResponseModel>(SECRETARY_API + "notification/seen", formData);
   }
 
-  getUnseenNotifications(userId: number): Observable<number>{
+  getUnseenNotifications(userId: number): Observable<number> {
     let params = new HttpParams();
     params = params.append("userId", String(userId));
     return this.http.get<number>(SECRETARY_API + "notifications/unseen", {params: params});
+  }
+
+  createUserSecretary(form: any): Observable<ResponseModel> {
+    // const formData: FormData = new FormData();
+    // formData.append("firstName", form.get("firstName").value);
+    // formData.append("lastName", form.get("lastName").value);
+    // formData.append("emailAddress", form.get("emailAddress").value);
+    // formData.append("phoneNumbers", form.get("phoneNumbers").value);
+    let ceva: string[] = form.get("phoneNumbers").value.split(",");
+    console.log(ceva)
+    let data = {
+      firstName: form.get("firstName").value,
+      lastName: form.get("lastName").value,
+      emailAddress: form.get("emailAddress").value,
+      phoneNumbers: ceva
+    }
+    return this.http.post<ResponseModel>(SECRETARY_API + 'user/secretary/create', data);
   }
 }
 

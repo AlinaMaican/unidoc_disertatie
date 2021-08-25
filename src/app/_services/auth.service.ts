@@ -20,7 +20,7 @@ export class AuthService {
     return this.http.post(AUTH_API + 'login', {email, password}, httpOptions);
   }
 
-  changePassword(email: string, password: string, confirmPassword: string): Observable<any> {
-    return this.http.post(AUTH_API + 'change_password', {email, password, confirmPassword}, httpOptions);
+  changePassword(email: string, oldPassword: string, password: string, confirmPassword: string): Observable<any> {
+    return this.http.post(AUTH_API + 'change_password', {email, oldPassword, password, confirmPassword}, httpOptions);
   }
 }

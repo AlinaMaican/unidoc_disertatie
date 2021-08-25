@@ -10,22 +10,22 @@
     <li class="one red">
       <span class="task-title">First name</span>
       <span class="task-time">{{student.firstName}}</span>
-
     </li>
+
     <li class="one red">
       <span class="task-title">Last name</span>
       <span class="task-time">{{student.lastName}}</span>
-
     </li>
-    <li class="two green">
+
+    <li class="one red">
       <span class="task-title">Email address</span>
       <span class="task-time">{{student.emailAddress}}</span>
-
     </li>
 
     <li class="three yellow">
       <span class="task-title">Phone numbers</span>
-      <span class="task-time">{{student.phoneNumbers === undefined?student.phoneNumbers : student.phoneNumbers.toString()}}</span>
+      <span
+        class="task-time">{{student.phoneNumbers === undefined ? student.phoneNumbers : student.phoneNumbers.toString()}}</span>
     </li>
 
     <li class="three yellow">
@@ -37,6 +37,23 @@
       <span class="task-title">Registration number</span>
       <span class="task-time">{{student.registrationNumber}}</span>
     </li>
+
+    <li class="two green">
+      <span class="task-title">Secretary name</span>
+      <span class="task-time">{{student.secretaryName}}</span>
+    </li>
+
+    <li class="two green">
+      <span class="task-title">Secretary email address</span>
+      <span class="task-time">{{student.secretaryEmailAddress}}</span>
+    </li>
+
+    <li class="two green">
+      <span class="task-title">Secretary phone numbers</span>
+      <span class="task-time">{{student.secretaryPhoneNumbers === undefined ? student.secretaryPhoneNumbers :
+        student.secretaryPhoneNumbers.toString()}}</span>
+    </li>
+
 
   </ul>
 </div>

@@ -1,12 +1,10 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {StudyModel} from "../../model/study.model";
 import {StudyService} from "../../_services/study.service";
 import {SecretaryDocumentModel} from "../../model/secretary-document.model";
 import {SecretaryService} from "../../_services/secretary.service";
 import {StudentDocumentRowModel} from "../../model/student-document-row.model";
 import {MatTableDataSource} from "@angular/material/table";
-import {MatSort} from "@angular/material/sort";
-import {MatPaginator} from "@angular/material/paginator";
 import {StudentDocumentFilterModel} from "../../model/student-document-filter.model";
 import {StudentModel} from "../../model/student.model";
 import {StudentDetailsDialogComponent} from "../student-details-dialog/student-details-dialog.component";

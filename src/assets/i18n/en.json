@@ -21,6 +21,7 @@
     "enter.email": "enter the email address",
     "enter.password": "enter the password",
     "forgot.password": "forgot your password?",
+    "old.password": "Generated password",
     "message.user.login.bad.credentials": "Bad credentials!",
     "password": "Password",
     "password.required": "Please enter your password!",

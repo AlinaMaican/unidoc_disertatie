@@ -2,6 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {SecretaryListModel} from "../../model/secretary-list.model";
 import {SecretaryService} from "../../_services/secretary.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {StudyDetailsModel} from "../../model/study-details.model";
+import {SecretaryAllocationsDialogComponent} from "../secretary-allocations-dialog/secretary-allocations-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
+import {AddSecretaryDialogComponent} from "../add-secretary-dialog/add-secretary-dialog.component";
 
 @Component({
   selector: 'app-secretary-list',
@@ -9,13 +13,14 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
   styleUrls: ['./secretary-list.component.scss']
 })
 export class SecretaryListComponent implements OnInit {
-  displayedColumns: string[] = ['firstName', 'lastName', 'emailAddress', 'phoneNumbers', 'actions'];
+  displayedColumns: string[] = ['firstName', 'lastName', 'emailAddress', 'phoneNumbers', 'allocations', 'edit', 'delete'];
   dataSource : SecretaryListModel[] = [];
   clickedRows = new Set<SecretaryListModel>();
   editSecretaryForm: FormGroup = new FormGroup({});
-  targetSecretary: SecretaryListModel | undefined;
 
-  constructor(private secretaryService: SecretaryService){ }
+
+  constructor(private secretaryService: SecretaryService,
+              public dialog: MatDialog){ }
 
   ngOnInit(): void {
     this.secretaryService.getAllSecretaries().subscribe(data=>{
@@ -29,21 +34,38 @@ export class SecretaryListComponent implements OnInit {
       }
     );
   }
-  prepareEdit(secretary: SecretaryListModel) {
-    this.editSecretaryForm.patchValue({
-      'firstName': secretary.firstName,
-      'lastName': secretary.lastName,
-      'phoneNumbers': secretary.phoneNumbers
+
+  openAllocations(allocations: StudyDetailsModel[], secretaryId: number){
+    const dialogRef = this.dialog.open(SecretaryAllocationsDialogComponent, {
+      width: '800px',
+      data: {
+        'allocations' :allocations,
+        'secretaryId': secretaryId
+      }
     });
-    this.targetSecretary = secretary;
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 
-  prepareDelete(secretary: SecretaryListModel) {
-    this.targetSecretary = secretary;
+  addSecretary(): void{
+    const dialogRef = this.dialog.open(AddSecretaryDialogComponent, {
+      width: '500px',
+      height: '1000px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 
-  prepareView(secretary: SecretaryListModel) {
-    this.targetSecretary = secretary;
+  editSecretary(secretary: SecretaryListModel): void{
+
+  }
+
+  deleteSecretary(secretary: SecretaryListModel): void{
+
   }
 
 }
