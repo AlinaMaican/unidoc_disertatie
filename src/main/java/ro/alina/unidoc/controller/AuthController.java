@@ -76,28 +76,53 @@ public class AuthController {
         }
     }
 
-        /**
-         * changes the password of an existing user
-         *
-         * @param userChangePasswordModel the details of the user
-         * @return true or false depending on the success of the change
-         */
-        @PostMapping("/change_password")
-        public ResponseEntity<?> changePassword (@Valid @RequestBody UserChangePasswordModel userChangePasswordModel){
-            try {
-                User user = userRepository.findByEmail(userChangePasswordModel.getEmail())
-                        .orElseThrow(() -> new UsernameNotFoundException("User Not Found with email: " +
-                                userChangePasswordModel.getEmail()));
-                System.out.println(userChangePasswordModel.getPassword().equals(userChangePasswordModel.getConfirmPassword()));
-                if (userChangePasswordModel.getPassword().equals(userChangePasswordModel.getConfirmPassword())) {
+    /**
+     * changes the password of an existing user
+     *
+     * @param userChangePasswordModel the details of the user
+     * @return true or false depending on the success of the change
+     */
+    @PostMapping("/change_password")
+    public ResponseEntity<Response> changePassword(@Valid @RequestBody UserChangePasswordModel userChangePasswordModel) {
+        try {
+            User user = userRepository.findByEmail(userChangePasswordModel.getEmail())
+                    .orElseThrow(() -> new UsernameNotFoundException("User Not Found with email: " +
+                            userChangePasswordModel.getEmail()));
+            System.out.println(userChangePasswordModel.getOldPassword());
+            // daca userul are parola veche pusa si contul inactiv
+            if (userChangePasswordModel.getOldPassword() != null && !user.getIsActive()) {
+                if (userChangePasswordModel.getPassword().equals(userChangePasswordModel.getConfirmPassword()) &&
+                        passwordEncoder.matches(userChangePasswordModel.getOldPassword(), user.getPassword())) {
                     user.setPassword(passwordEncoder.encode(userChangePasswordModel.getPassword()));
                     user.setIsActive(true);
                     userRepository.save(user);
-                    return ResponseEntity.ok(true);
+                    return ResponseEntity.ok(Response.builder()
+                            .type("SUCCESS")
+                            .message("Your password was changed successfully and your account was activated!")
+                            .build());
                 }
-            } catch(Exception e){
-                System.out.println(e.getMessage());
             }
-            return ResponseEntity.ok(false);
+            if (user.getIsActive()) {
+                if (userChangePasswordModel.getPassword().equals(userChangePasswordModel.getConfirmPassword())) {
+                    user.setPassword(passwordEncoder.encode(userChangePasswordModel.getPassword()));
+                    userRepository.save(user);
+                    return ResponseEntity.ok(Response.builder()
+                            .type("SUCCESS")
+                            .message("Your password was changed successfully!")
+                            .build());
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.ok(Response.builder()
+                    .type("ERROR")
+                    .message(e.getMessage())
+                    .build());
         }
+        return ResponseEntity.ok(Response.builder()
+                .type("ERROR")
+                .message("Something is wrong with the credentials you submitted!")
+                .build());
     }
+
+}

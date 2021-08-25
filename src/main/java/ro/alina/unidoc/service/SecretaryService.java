@@ -5,18 +5,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ro.alina.unidoc.entity.Notification;
-import ro.alina.unidoc.entity.PhoneNumber;
-import ro.alina.unidoc.entity.SecretaryDocument;
-import ro.alina.unidoc.entity.StudentDocument;
+import ro.alina.unidoc.entity.*;
 import ro.alina.unidoc.mapper.SecretaryAllocationMapper;
 import ro.alina.unidoc.mapper.SecretaryDocumentMapper;
 import ro.alina.unidoc.mapper.StudyDetailsMapper;
 import ro.alina.unidoc.model.*;
 import ro.alina.unidoc.model.filters.StudentDocumentFilter;
 import ro.alina.unidoc.model.type.DocumentStatusType;
+import ro.alina.unidoc.model.type.RoleType;
 import ro.alina.unidoc.repository.*;
 import ro.alina.unidoc.utils.GenericSpecification;
 
@@ -46,6 +46,10 @@ public class SecretaryService {
     private final StudentDocumentRepository studentDocumentRepository;
     private final NotificationRepository notificationRepository;
     private final NotificationService notificationService;
+    private final UserRepository userRepository;
+    private final PasswordGeneratorService passwordGeneratorService;
+    private final PasswordEncoder passwordEncoder;
+    private final StudentRepository studentRepository;
 
     public List<SecretaryModel> getAllSecretaries() {
         var secretaries = secretaryRepository.findAll();
@@ -123,7 +127,7 @@ public class SecretaryService {
 
     public Page<StudentDocumentRowModel> getAllStudentDocuments(final StudentDocumentFilter filter) {
         final var specification = getSpecifications(filter);
-        var sort = filter.getSortDirection().equals("desc") ? Sort.by(filter.getColumnName()).descending(): Sort.by(filter.getColumnName()).ascending();
+        var sort = filter.getSortDirection().equals("desc") ? Sort.by(filter.getColumnName()).descending() : Sort.by(filter.getColumnName()).ascending();
         var pageReq = PageRequest.of(filter.getPageNumber(), filter.getPageSize(), sort);
         return studentDocumentRepository.findAll(specification, pageReq)
                 .map(this::toStudentDocumentRowModel);
@@ -131,7 +135,7 @@ public class SecretaryService {
 
     public Page<StudentDocumentRowModel> getOwnStudentDocuments(final StudentDocumentFilter filter) {
         final var specification = getSpecificationForOwnDocument(filter);
-        var sort = filter.getSortDirection().equals("desc") ? Sort.by(filter.getColumnName()).descending(): Sort.by(filter.getColumnName()).ascending();
+        var sort = filter.getSortDirection().equals("desc") ? Sort.by(filter.getColumnName()).descending() : Sort.by(filter.getColumnName()).ascending();
         var pageReq = PageRequest.of(filter.getPageNumber(), filter.getPageSize(), sort);
         return studentDocumentRepository.findAll(specification, pageReq)
                 .map(this::toOwnStudentDocumentRowModel);
@@ -259,9 +263,9 @@ public class SecretaryService {
         }
     }
 
-    public Response markNotificationAsSeen(final Long notificationId){
-        try{
-            notificationRepository.findById(notificationId).ifPresent(notification ->{
+    public Response markNotificationAsSeen(final Long notificationId) {
+        try {
+            notificationRepository.findById(notificationId).ifPresent(notification -> {
                 notification.setSeen(true);
                 notificationRepository.save(notification);
             });
@@ -269,7 +273,7 @@ public class SecretaryService {
                     .type("SUCCESS")
                     .message("Notification marked as seen")
                     .build();
-        } catch(Exception e){
+        } catch (Exception e) {
             return Response.builder()
                     .type("ERROR")
                     .message("Something happened when trying to")
@@ -277,8 +281,116 @@ public class SecretaryService {
         }
     }
 
-    public int getUnseenNotifications(final Long userId){
+    public int getUnseenNotifications(final Long userId) {
         return notificationRepository.countBySeenAndStudentDocument_Student_SecretaryAllocation_SecretaryAndType(false,
                 secretaryRepository.findByUserId(userId), "SECRETARY");
+    }
+
+    public Response createUserSecretary(final SecretaryModel secretary) {
+        try {
+            if (userRepository.findByEmail(secretary.getEmailAddress()).isPresent()) {
+                return Response.builder()
+                        .type("ERROR")
+                        .message("There is already a user that has this email address!")
+                        .build();
+            }
+            var password = passwordGeneratorService.generatePassayPassword();
+            var user = userRepository.save(User.builder()
+                    .email(secretary.getEmailAddress())
+                    .isActive(false)
+                    .role(UserRole.SECRETARY)
+                    .password(passwordEncoder.encode(password))
+                    .build());
+            notificationService.sendSimpleMessage(secretary.getEmailAddress(), "Generated password for Unidoc", "Hello! Here is your generated password for the app Unidoc. Use it to change your password, not to login in! The password is " + password);
+            final var savedUser = userRepository.save(user);
+            secretaryRepository.save(Secretary.builder()
+                    .user(savedUser)
+                    .firstName(secretary.getFirstName())
+                    .lastName(secretary.getLastName())
+                    .build());
+            if (!secretary.getPhoneNumbers().isEmpty()) {
+                var phoneNumbers = secretary.getPhoneNumbers().stream()
+                        .map(number -> PhoneNumber.builder().phoneNumber(number).user(savedUser).build())
+                        .collect(Collectors.toList());
+                phoneNumberRepository.saveAll(phoneNumbers);
+            }
+            return Response.builder()
+                    .type("SUCCESS")
+                    .message("The user and secretary were created successfully!")
+                    .build();
+        } catch (Exception e) {
+            return Response.builder()
+                    .type("ERROR")
+                    .message("The user couldn't be saved")
+                    .build();
+        }
+    }
+
+    public Response editUserSecretary(final SecretaryModel secretary) {
+        try {
+            var secretaryModel = secretaryRepository.getOne(secretary.getId());
+            secretaryModel.setLastName(secretary.getLastName());
+            secretaryModel.setFirstName(secretary.getFirstName());
+            secretaryRepository.save(secretaryModel);
+            if (!secretary.getPhoneNumbers().isEmpty()) {
+                phoneNumberRepository.deleteAll(phoneNumberRepository.findAllByUser(secretaryModel.getUser()));
+                var phoneNumbers = secretary.getPhoneNumbers().stream()
+                        .map(number -> PhoneNumber.builder().phoneNumber(number).user(secretaryModel.getUser()).build())
+                        .collect(Collectors.toList());
+                phoneNumberRepository.saveAll(phoneNumbers);
+            }
+            return Response.builder()
+                    .type("SUCCESS")
+                    .message("The user and secretary were created successfully!")
+                    .build();
+        } catch (Exception e) {
+            return Response.builder()
+                    .type("ERROR")
+                    .message("The user couldn't be saved")
+                    .build();
+        }
+    }
+
+    public Response deleteUserSecretary(final Long secretaryId){
+        try {
+            var secretary = secretaryRepository.getOne(secretaryId);
+            var phoneNumbers = phoneNumberRepository.findAllByUser(secretary.getUser());
+            var allocations = secretaryAllocationRepository.findAllBySecretary_Id(secretaryId);
+            var studentDocuments = studentDocumentRepository.findBySecretaryDocument_SecretaryAllocation_Secretary_Id(secretaryId);
+            var secretaryDocuments = secretaryDocumentRepository.findAllBySecretaryAllocation_Secretary_Id(secretaryId);
+            var students = studentRepository.findBySecretaryAllocation_Secretary_Id(secretaryId);
+
+            students.ifPresent(studentList -> {
+                studentRepository.saveAll(studentList.stream()
+                        .peek(student -> student.setSecretaryAllocation(null))
+                        .collect(Collectors.toList()));
+            });
+
+            studentDocuments.ifPresent(studentDocumentList ->
+                    studentDocumentRepository.saveAll(studentDocumentList.stream()
+                            .peek(studentDocument -> studentDocument.setSecretaryDocument(null))
+                            .collect(Collectors.toList())
+                    ));
+
+            secretaryDocuments.ifPresent(secretaryDocumentRepository::deleteAll);
+
+            secretaryAllocationRepository.deleteAll(allocations);
+
+            secretaryRepository.delete(secretary);
+
+            phoneNumberRepository.deleteAll(phoneNumbers);
+
+            userRepository.delete(secretary.getUser());
+
+            return Response.builder()
+                    .type("SUCCESS")
+                    .message("The secretary was deleted successfully!")
+                    .build();
+        } catch (Exception e){
+            return Response.builder()
+                    .type("ERROR")
+                    .message("Error creating the allocation!")
+                    .build();
+        }
     }
 }

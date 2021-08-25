@@ -19,4 +19,7 @@ public class StudentModel {
     private final List<String> phoneNumbers;
     private final String cnp;
     private final String registrationNumber;
+    private final String secretaryName;
+    private final String secretaryEmailAddress;
+    private final List<String> secretaryPhoneNumbers;
 }

@@ -263,6 +263,12 @@ public class StudentService {
                 .phoneNumbers(phoneNumberRepository.findAllByUser(student.getUser()).stream().map(PhoneNumber::getPhoneNumber).collect(Collectors.toList()))
                 .cnp(student.getCnp())
                 .registrationNumber(student.getRegistrationNumber())
+                .secretaryName(student.getSecretaryAllocation().getSecretary().getFirstName() + " " + student.getSecretaryAllocation().getSecretary().getLastName())
+                .secretaryPhoneNumbers(phoneNumberRepository.findAllByUser(student.getSecretaryAllocation().getSecretary().getUser())
+                        .stream()
+                        .map(PhoneNumber::getPhoneNumber)
+                        .collect(Collectors.toList()))
+                .secretaryEmailAddress(student.getSecretaryAllocation().getSecretary().getUser().getEmail())
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package ro.alina.unidoc.controller;
 
+import com.nimbusds.oauth2.sdk.auth.Secret;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.IOUtils;
@@ -12,13 +13,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ro.alina.unidoc.entity.Secretary;
 import ro.alina.unidoc.model.*;
 import ro.alina.unidoc.model.filters.StudentDocumentFilter;
 import ro.alina.unidoc.model.property_editor.GenericPropertyEditor;
-import ro.alina.unidoc.model.type.RoleType;
 import ro.alina.unidoc.service.SecretaryService;
 
-import javax.annotation.security.RolesAllowed;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -41,6 +41,7 @@ public class SecretaryController {
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(SecretaryDocumentModel.class, new GenericPropertyEditor<>(SecretaryDocumentModel.class));
         binder.registerCustomEditor(StudentDocumentRowModel.class, new GenericPropertyEditor<>(StudentDocumentRowModel.class));
+        binder.registerCustomEditor(SecretaryModel.class, new GenericPropertyEditor<>(SecretaryModel.class));
     }
 
     /**
@@ -181,4 +182,24 @@ public class SecretaryController {
     public ResponseEntity<Page<StudentDocumentRowModel>> getOwnStudentDocuments(@ModelAttribute final StudentDocumentFilter filter) {
         return ResponseEntity.ok(secretaryService.getOwnStudentDocuments(filter));
     }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/user/secretary/create")
+    public ResponseEntity<Response> createUserSecretary(@RequestBody SecretaryModel secretaryModel) {
+        return ResponseEntity.ok(secretaryService.createUserSecretary(secretaryModel));
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/user/secretary/edit")
+    public ResponseEntity<Response> editUserSecretary(@RequestBody SecretaryModel secretaryModel) {
+        return ResponseEntity.ok(secretaryService.editUserSecretary(secretaryModel));
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @DeleteMapping("/user/secretary/delete/{secretaryId}")
+    public ResponseEntity<Response> deleteUserSecretary(@PathVariable Long secretaryId) {
+        return ResponseEntity.ok(secretaryService.deleteUserSecretary(secretaryId));
+    }
+
+
 }

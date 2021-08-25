@@ -20,6 +20,8 @@ public class UserChangePasswordModel {
     @NotBlank
     private String password;
 
+    private String oldPassword;
+
     @NotBlank
     private String confirmPassword;
 }

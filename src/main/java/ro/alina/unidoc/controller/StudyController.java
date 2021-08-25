@@ -2,9 +2,12 @@ package ro.alina.unidoc.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.xmlbeans.impl.xb.xsdschema.All;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import ro.alina.unidoc.model.StudyModel;
+import ro.alina.unidoc.model.*;
+import ro.alina.unidoc.model.property_editor.GenericPropertyEditor;
 import ro.alina.unidoc.service.StudyService;
 
 import java.util.List;
@@ -17,7 +20,10 @@ import java.util.List;
 public class StudyController {
 
     private final StudyService studyService;
-
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(AllocationModel.class, new GenericPropertyEditor<>(AllocationModel.class));
+    }
     /**
      * gets all the learning types
      *
@@ -144,5 +150,20 @@ public class StudyController {
     @GetMapping("/studyGroups")
     public ResponseEntity<List<StudyModel>> getAllStudyGroups(@RequestParam(name = "studyYearId") final Long studyYearId) {
         return ResponseEntity.ok(studyService.getAllStudyGroups(studyYearId));
+    }
+
+    @PostMapping("/allocation/create")
+    public ResponseEntity<Response> createAllocation(@RequestBody AllocationModel allocationModel){
+        return ResponseEntity.ok(studyService.createAllocation(allocationModel));
+    }
+
+    @PostMapping("/allocation/edit")
+    public ResponseEntity<Response> editAllocation(@RequestBody AllocationModel allocationModel){
+        return ResponseEntity.ok(studyService.editAllocation(allocationModel));
+    }
+
+    @DeleteMapping("/allocation/delete/{allocationId}")
+    public ResponseEntity<Response> deleteAllocation(@PathVariable Long allocationId){
+        return ResponseEntity.ok(studyService.deleteAllocation(allocationId));
     }
 }
