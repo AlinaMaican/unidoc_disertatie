@@ -1,6 +1,5 @@
 package ro.alina.unidoc.controller;
 
-import com.nimbusds.oauth2.sdk.ResponseMode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +14,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ro.alina.unidoc.entity.User;
-import ro.alina.unidoc.model.*;
-import ro.alina.unidoc.repository.SecretaryRepository;
-import ro.alina.unidoc.repository.StudentRepository;
+import ro.alina.unidoc.model.JwtResponseModel;
+import ro.alina.unidoc.model.Response;
+import ro.alina.unidoc.model.UserChangePasswordModel;
+import ro.alina.unidoc.model.UserLoginModel;
 import ro.alina.unidoc.repository.UserRepository;
-import ro.alina.unidoc.service.StudentService;
 import ro.alina.unidoc.service.UserDetailsImpl;
 import ro.alina.unidoc.utils.JwtUtils;
 

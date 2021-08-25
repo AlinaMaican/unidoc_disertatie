@@ -265,4 +265,20 @@ public class StudentService {
                 .registrationNumber(student.getRegistrationNumber())
                 .build();
     }
+
+    public Response deleteOwnDocument(final Long documentId){
+        try{
+            notificationRepository.deleteByStudentDocument_Id(documentId);
+            studentDocumentRepository.deleteById(documentId);
+            return Response.builder()
+                    .type("SUCCESS")
+                    .message("Student document deleted successfully!")
+                    .build();
+        } catch (Exception e){
+            return Response.builder()
+                    .type("ERROR")
+                    .message("There has been an error when trying to delete the student document!")
+                    .build();
+        }
+    }
 }

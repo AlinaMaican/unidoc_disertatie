@@ -48,6 +48,7 @@ public class SecretaryController {
      *
      * @return returns a list of secretaries
      */
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/all")
     public ResponseEntity<List<SecretaryModel>> getAllSecretaries() {
         return ResponseEntity.ok(secretaryService.getAllSecretaries());
@@ -59,6 +60,7 @@ public class SecretaryController {
      * @param id the id of the secretary
      * @return returns a list of the allocations
      */
+    @PreAuthorize("hasAuthority('SECRETARY')")
     @GetMapping("/{id}/allocations")
     public ResponseEntity<List<SecretaryAllocationModel>> getSecretaryAllocationsBySecretaryId(@PathVariable Long id) {
         return ResponseEntity.ok(secretaryService.getSecretaryAllocationsBySecretaryId(id));
@@ -70,6 +72,7 @@ public class SecretaryController {
      * @param id the id of the allocation
      * @return a list of all the documents a secretary has uploaded for an allocation
      */
+    @PreAuthorize("hasAuthority('SECRETARY')")
     @GetMapping("/allocation/{id}/documents")
     public ResponseEntity<List<SecretaryDocumentModel>> getSecretaryDocumentsByAllocation(@PathVariable Long id) {
         return ResponseEntity.ok(secretaryService.getSecretaryDocumentsByAllocationId(id));
@@ -80,6 +83,7 @@ public class SecretaryController {
      *
      * @return if the edit was a success then true, otherwise false
      */
+    @PreAuthorize("hasAuthority('SECRETARY')")
     @PostMapping("/document/edit")
     public ResponseEntity<Boolean> editSecretaryDocument(@RequestParam(value = "id") String id,
                                                          @RequestParam(value = "name") String name,
@@ -100,6 +104,7 @@ public class SecretaryController {
      * @param secretaryAllocationId  the secretaryAllocation id
      * @return a success or error message
      */
+    @PreAuthorize("hasAuthority('SECRETARY')")
     @PostMapping("/document/upload")
     public ResponseEntity<Response> uploadSecretaryDocument(@RequestPart(value = "file") MultipartFile file,
                                                             @RequestParam(value = "allocationId") String secretaryAllocationId,
@@ -118,6 +123,7 @@ public class SecretaryController {
      *
      * @return a list of student documents along with some student details
      */
+    @PreAuthorize("hasAuthority('SECRETARY')")
     @ModelAttribute
     @GetMapping("/allocation/student/documents")
     public ResponseEntity<Page<StudentDocumentRowModel>> getAllStudentDocuments(@ModelAttribute final StudentDocumentFilter filter) {
@@ -131,6 +137,7 @@ public class SecretaryController {
      * @param status the new status
      * @return true or false depending on the success of the edit
      */
+    @PreAuthorize("hasAuthority('SECRETARY')")
     @PostMapping("/allocation/student/document/{id}")
     ResponseEntity<Response> editStudentDocumentStatus(@PathVariable final Long id,
                                                       @RequestParam(value = "status") final String status,
@@ -138,6 +145,7 @@ public class SecretaryController {
         return ResponseEntity.ok(secretaryService.editStudentDocumentStatus(id, status, comment));
     }
 
+    @PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('STUDENT')")
     @RequestMapping(value = "/downloadPdfDocument", method = RequestMethod.GET, produces = "application/pdf")
     public ResponseEntity<byte[]> getPDF(@RequestParam(value = "filePath") String filePath) {
         FileInputStream fileStream;
@@ -155,16 +163,19 @@ public class SecretaryController {
         return null;
     }
 
+    @PreAuthorize("hasAuthority('SECRETARY')")
     @GetMapping("/notifications/unseen")
     public int getUnseenNotifications(@RequestParam(value = "userId") final Long userId){
         return secretaryService.getUnseenNotifications(userId);
     }
 
+    @PreAuthorize("hasAuthority('SECRETARY')")
     @PostMapping("/notification/seen")
     public ResponseEntity<Response> markNotificationAsSeen(@RequestParam(value="notificationId") Long notificationId){
         return ResponseEntity.ok(secretaryService.markNotificationAsSeen(notificationId));
     }
 
+    @PreAuthorize("hasAuthority('SECRETARY')")
     @ModelAttribute
     @GetMapping("/allocation/student/own/documents")
     public ResponseEntity<Page<StudentDocumentRowModel>> getOwnStudentDocuments(@ModelAttribute final StudentDocumentFilter filter) {

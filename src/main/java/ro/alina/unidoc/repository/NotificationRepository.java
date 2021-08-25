@@ -13,4 +13,6 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
                                                                                    final String notificationType);
 
     Notification findByStudentDocument_IdAndType(final Long documentType, final String type);
+
+    void deleteByStudentDocument_Id(final Long documentId);
 }
