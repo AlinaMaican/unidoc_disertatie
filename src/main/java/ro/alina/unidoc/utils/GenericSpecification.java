@@ -47,9 +47,12 @@ public class GenericSpecification <T>{
     public Specification<T> isStatusEqual(final String property, final String value) {
         if (value == null) {
             return null;
+        } else {
+            if(value.equals("ALL")){
+                return null;
+            }
+            return (root, query, builder) -> builder.equal(root.get(property), DocumentStatusType.valueOf(value));
         }
-        return (root, query, builder) -> builder.equal(root.get(property), DocumentStatusType.valueOf(value));
-
     }
 
     public Specification<T> isDocumentTypeEqual(final String property, final String value) {
@@ -187,6 +190,9 @@ public class GenericSpecification <T>{
 
     public Specification<T> isNestedPropertyEqualNumber(final String property, final Long value) {
         if (value != null && checkForNestedProperty(property)) {
+            if(value == -1){
+                return null;
+            }
             String[] properties = property.split(NESTED_PROPERTY_DELIMITER);
             return (root, query, builder)
                     -> builder.equal(root.get(properties[PARENT]).get(properties[CHILD]), value);

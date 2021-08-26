@@ -11,6 +11,7 @@ import ro.alina.unidoc.model.StudyModel;
 import ro.alina.unidoc.repository.*;
 
 import javax.transaction.Transactional;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -107,8 +108,8 @@ public class StudyService {
                 .collect(Collectors.toList());
     }
 
-    public List<StudyModel> getAllStudyGroups(final Long studyYearId) {
-        return studyGroupRepository.findAllByStudyYear_Id(studyYearId)
+    public List<StudyModel> getAllStudyGroups(final Long allocationId) {
+        return studyGroupRepository.findAllByStudyYear_Id(secretaryAllocationRepository.getOne(allocationId).getStudyYear().getId())
                 .stream()
                 .map(this::toStudyModel)
                 .collect(Collectors.toList());
@@ -266,5 +267,20 @@ public class StudyService {
                     .message("Error editing the allocation!")
                     .build();
         }
+    }
+
+    public List<StudyModel> getAllocationFilter(final Long secretaryId){
+        return secretaryAllocationRepository.findAllBySecretary_Id(secretaryId).stream()
+                .map(this::toStudyModelFromAllocation)
+                .sorted(Comparator.comparing(StudyModel::getValue))
+                .collect(Collectors.toList());
+    }
+
+    private StudyModel toStudyModelFromAllocation(final SecretaryAllocation allocation){
+        return StudyModel.builder()
+                .id(allocation.getId())
+                .value(allocation.getLearningType().getName() + ", " + allocation.getUniversityStudyType().getName()
+                        + ", " + allocation.getDomain().getName() + ", " + allocation.getStudyProgram().getName() + ", " + allocation.getStudyYear().getName())
+                .build();
     }
 }

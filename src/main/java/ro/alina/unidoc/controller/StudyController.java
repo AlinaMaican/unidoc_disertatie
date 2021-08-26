@@ -143,13 +143,11 @@ public class StudyController {
 
     /**
      * gets all the study groups of a specific study year
-     *
-     * @param studyYearId the study year id
      * @return a list of study groups
      */
     @GetMapping("/studyGroups")
-    public ResponseEntity<List<StudyModel>> getAllStudyGroups(@RequestParam(name = "studyYearId") final Long studyYearId) {
-        return ResponseEntity.ok(studyService.getAllStudyGroups(studyYearId));
+    public ResponseEntity<List<StudyModel>> getAllStudyGroups(@RequestParam(name = "allocationId") final Long allocationId) {
+        return ResponseEntity.ok(studyService.getAllStudyGroups(allocationId));
     }
 
     @PostMapping("/allocation/create")
@@ -157,13 +155,13 @@ public class StudyController {
         return ResponseEntity.ok(studyService.createAllocation(allocationModel));
     }
 
-    @PostMapping("/allocation/edit")
-    public ResponseEntity<Response> editAllocation(@RequestBody AllocationModel allocationModel){
-        return ResponseEntity.ok(studyService.editAllocation(allocationModel));
-    }
-
     @DeleteMapping("/allocation/delete/{allocationId}")
     public ResponseEntity<Response> deleteAllocation(@PathVariable Long allocationId){
         return ResponseEntity.ok(studyService.deleteAllocation(allocationId));
+    }
+
+    @GetMapping("/allocationFilter")
+    public ResponseEntity<List<StudyModel>> getAllocationFilter(@RequestParam(name = "secretaryId") final Long secretaryId) {
+        return ResponseEntity.ok(studyService.getAllocationFilter(secretaryId));
     }
 }

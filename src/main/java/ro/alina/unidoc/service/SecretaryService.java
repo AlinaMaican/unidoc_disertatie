@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -56,10 +57,6 @@ public class SecretaryService {
         List<SecretaryModel> secretaryModels = new ArrayList<>();
 
         secretaries.forEach(s -> {
-            var studyDetails = secretaryAllocationRepository.findAllBySecretary_Id(s.getId())
-                    .stream()
-                    .map(StudyDetailsMapper::toStudyDetails)
-                    .collect(Collectors.toList());
             secretaryModels.add(SecretaryModel.builder()
                     .id(s.getId())
                     .firstName(s.getFirstName())
@@ -69,7 +66,6 @@ public class SecretaryService {
                             .stream()
                             .map(PhoneNumber::getPhoneNumber)
                             .collect(Collectors.toList()))
-                    .studyDetails(studyDetails)
                     .build());
         });
         return secretaryModels;
@@ -79,6 +75,8 @@ public class SecretaryService {
         return secretaryAllocationRepository.findAllBySecretary_Id(secretaryId)
                 .stream()
                 .map(SecretaryAllocationMapper::toSecretaryAllocationModel)
+                .sorted(Comparator.comparing((SecretaryAllocationModel h) -> (h.getLearningType() + ", " + h.getUniversityStudyType()
+                        + ", " + h.getDomain() + ", " + h.getStudyProgram() + ", " + h.getStudyYear())))
                 .collect(Collectors.toList());
     }
 
@@ -89,7 +87,7 @@ public class SecretaryService {
                 .collect(Collectors.toList());
     }
 
-    public Boolean editSecretaryDocument(final SecretaryDocumentModel model) {
+    public Response editSecretaryDocument(final SecretaryDocumentModel model) {
         try {
             secretaryDocumentRepository.findById(model.getId()).ifPresent(secretaryDocument -> {
                 secretaryDocument.setName(model.getName());
@@ -97,9 +95,15 @@ public class SecretaryService {
                 secretaryDocument.setEndDateOfUpload(model.getEndDateOfUpload());
                 secretaryDocumentRepository.save(secretaryDocument);
             });
-            return true;
+            return Response.builder()
+                    .message("The document was edited successfully!")
+                    .type("SUCCESS")
+                    .build();
         } catch (Exception e) {
-            return false;
+            return Response.builder()
+                    .message("There was an error editing the document!")
+                    .type("ERRORS")
+                    .build();
         }
     }
 
@@ -177,12 +181,13 @@ public class SecretaryService {
                 .and(studentDocumentGenericSpecification.isNestedPropertyLike("secretaryDocument.name", filter.getName()))
                 .and(studentDocumentGenericSpecification.isStatusEqual("status", filter.getStatus()))
                 .and(studentDocumentGenericSpecification.isDocumentTypeEqual("documentType", "SECRETARY"))
-                .and(studentDocumentGenericSpecification.isNestedNestedPropertyEqualNumber("student.secretaryAllocation.secretary.id", filter.getSecretaryId()))
-                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.learningType.id", filter.getLearningTypeId()))
-                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.universityStudyType.id", filter.getUniversityStudyId()))
-                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.domain.id", filter.getDomainId()))
-                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.studyProgram.id", filter.getStudyProgramId()))
-                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.studyYear.id", filter.getStudyYearId()))
+//                .and(studentDocumentGenericSpecification.isNestedNestedPropertyEqualNumber("student.secretaryAllocation.secretary.id", filter.getSecretaryId()))
+//                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.learningType.id", filter.getLearningTypeId()))
+//                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.universityStudyType.id", filter.getUniversityStudyId()))
+//                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.domain.id", filter.getDomainId()))
+//                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.studyProgram.id", filter.getStudyProgramId()))
+//                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.studyYear.id", filter.getStudyYearId()))
+                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.secretaryAllocation.id", filter.getAllocationId()))
                 .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.studyGroup.id", filter.getStudyGroupId())));
     }
 
@@ -193,12 +198,13 @@ public class SecretaryService {
                 .and(studentDocumentGenericSpecification.isPropertyLike("name", filter.getName()))
                 .and(studentDocumentGenericSpecification.isStatusEqual("status", filter.getStatus()))
                 .and(studentDocumentGenericSpecification.isDocumentTypeEqual("documentType", "OWN"))
-                .and(studentDocumentGenericSpecification.isNestedNestedPropertyEqualNumber("student.secretaryAllocation.secretary.id", filter.getSecretaryId()))
-                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.learningType.id", filter.getLearningTypeId()))
-                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.universityStudyType.id", filter.getUniversityStudyId()))
-                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.domain.id", filter.getDomainId()))
-                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.studyProgram.id", filter.getStudyProgramId()))
-                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.studyYear.id", filter.getStudyYearId()))
+//                .and(studentDocumentGenericSpecification.isNestedNestedPropertyEqualNumber("student.secretaryAllocation.secretary.id", filter.getSecretaryId()))
+//                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.learningType.id", filter.getLearningTypeId()))
+//                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.universityStudyType.id", filter.getUniversityStudyId()))
+//                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.domain.id", filter.getDomainId()))
+//                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.studyProgram.id", filter.getStudyProgramId()))
+//                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.studyYear.id", filter.getStudyYearId()))
+                .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.secretaryAllocation.id", filter.getAllocationId()))
                 .and(studentDocumentGenericSpecification.isNestedPropertyEqualNumber("student.studyGroup.id", filter.getStudyGroupId())));
     }
 
@@ -341,12 +347,12 @@ public class SecretaryService {
             }
             return Response.builder()
                     .type("SUCCESS")
-                    .message("The user and secretary were created successfully!")
+                    .message("The user and secretary were edited successfully!")
                     .build();
         } catch (Exception e) {
             return Response.builder()
                     .type("ERROR")
-                    .message("The user couldn't be saved")
+                    .message("The user couldn't be edited")
                     .build();
         }
     }

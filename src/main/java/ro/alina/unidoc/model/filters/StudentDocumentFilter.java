@@ -19,6 +19,7 @@ public class StudentDocumentFilter {
     private Long universityStudyId;
     private Long learningTypeId;
     private Long secretaryId;
+    private Long allocationId;
     private String columnName;
     private int pageSize;
     private int pageNumber;

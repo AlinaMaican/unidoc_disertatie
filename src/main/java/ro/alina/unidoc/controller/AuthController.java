@@ -69,7 +69,6 @@ public class AuthController {
                     .build();
             return ResponseEntity.ok(res);
         } catch (BadCredentialsException ex) {
-            System.out.println("deceeecee");
             return ResponseEntity.ok(Response.builder().message("Bad credentials!").type("ERROR").build());
         } catch (DisabledException ex) {
             return ResponseEntity.ok(Response.builder().message("Your account is not active! Please change your password to activate it and then log in!").type("ERROR").build());
@@ -113,7 +112,6 @@ public class AuthController {
                 }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.ok(Response.builder()
                     .type("ERROR")
                     .message(e.getMessage())

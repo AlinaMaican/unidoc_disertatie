@@ -1,6 +1,5 @@
 package ro.alina.unidoc.controller;
 
-import com.nimbusds.oauth2.sdk.auth.Secret;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.IOUtils;
@@ -13,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ro.alina.unidoc.entity.Secretary;
 import ro.alina.unidoc.model.*;
 import ro.alina.unidoc.model.filters.StudentDocumentFilter;
 import ro.alina.unidoc.model.property_editor.GenericPropertyEditor;
@@ -61,7 +59,7 @@ public class SecretaryController {
      * @param id the id of the secretary
      * @return returns a list of the allocations
      */
-    @PreAuthorize("hasAuthority('SECRETARY')")
+    @PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('ADMIN')")
     @GetMapping("/{id}/allocations")
     public ResponseEntity<List<SecretaryAllocationModel>> getSecretaryAllocationsBySecretaryId(@PathVariable Long id) {
         return ResponseEntity.ok(secretaryService.getSecretaryAllocationsBySecretaryId(id));
@@ -86,7 +84,7 @@ public class SecretaryController {
      */
     @PreAuthorize("hasAuthority('SECRETARY')")
     @PostMapping("/document/edit")
-    public ResponseEntity<Boolean> editSecretaryDocument(@RequestParam(value = "id") String id,
+    public ResponseEntity<Response> editSecretaryDocument(@RequestParam(value = "id") String id,
                                                          @RequestParam(value = "name") String name,
                                                          @RequestParam(value = "description") String description,
                                                          @RequestParam(value = "endDateOfUpload")String endDateOfUpload) {

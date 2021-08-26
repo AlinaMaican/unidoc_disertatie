@@ -17,5 +17,4 @@ public class SecretaryModel {
     private final String lastName;
     private final String emailAddress;
     private final List<String> phoneNumbers;
-    private final List<StudyDetailsModel> studyDetails;
 }
