@@ -12,7 +12,6 @@ import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {LanguageUtil} from "./util/language.util";
 import {take} from "rxjs/operators";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import { HomeComponent } from './home/home.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import {MatToolbarModule} from "@angular/material/toolbar";
@@ -44,7 +43,6 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatBadgeModule} from "@angular/material/badge";
 import { StudentNotificationsComponent } from './student-views/student-notifications/student-notifications.component';
 import { SecretaryNotificationsComponent } from './secretary-views/secretary-notifications/secretary-notifications.component';
-import { PaginationComponent } from './pagination/pagination.component';
 import { UploadOwnDocumentDialogComponent } from './student-views/upload-own-document-dialog/upload-own-document-dialog.component';
 import { UserProfileComponent } from './student-views/user-profile/user-profile.component';
 import { RoleGuardComponent } from './admin-views/role-guard/role-guard.component';
@@ -53,6 +51,10 @@ import { SecretaryRoleGuardComponent } from './secretary-views/secretary-role-gu
 import { DeleteOwnDocumentDialogComponent } from './student-views/delete-own-document-dialog/delete-own-document-dialog.component';
 import { SecretaryAllocationsDialogComponent } from './admin-views/secretary-allocations-dialog/secretary-allocations-dialog.component';
 import { AddSecretaryDialogComponent } from './admin-views/add-secretary-dialog/add-secretary-dialog.component';
+import { EditSecretaryDialogComponent } from './admin-views/edit-secretary-dialog/edit-secretary-dialog.component';
+import { DeleteSecretaryDialogComponent } from './admin-views/delete-secretary-dialog/delete-secretary-dialog.component';
+import { DeleteAllocationDialogComponent } from './admin-views/delete-allocation-dialog/delete-allocation-dialog.component';
+import { StudentManagementComponent } from './admin-views/student-management/student-management.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -77,7 +79,6 @@ export function translationServiceFactory(translate: TranslateService): () => Pr
   declarations: [
     AppComponent,
     UserLoginComponent,
-    HomeComponent,
     ChangePasswordComponent,
     NavbarComponent,
     SecretaryListComponent,
@@ -93,12 +94,15 @@ export function translationServiceFactory(translate: TranslateService): () => Pr
     CreatedDocumentsComponent,
     StudentNotificationsComponent,
     SecretaryNotificationsComponent,
-    PaginationComponent,
     UploadOwnDocumentDialogComponent,
     UserProfileComponent,
     DeleteOwnDocumentDialogComponent,
     SecretaryAllocationsDialogComponent,
-    AddSecretaryDialogComponent
+    AddSecretaryDialogComponent,
+    EditSecretaryDialogComponent,
+    DeleteSecretaryDialogComponent,
+    DeleteAllocationDialogComponent,
+    StudentManagementComponent
   ],
     imports: [
         BrowserModule,

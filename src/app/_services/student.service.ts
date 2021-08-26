@@ -3,12 +3,9 @@ import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {RequiredDocumentRowModel} from "../model/required-document-row.model";
 import {ResponseModel} from "../model/response.model";
-import {StudentDocumentFilterModel} from "../model/student-document-filter.model";
-import {Pageable, PageModel} from "../model/page.model";
-import {StudentDocumentRowModel} from "../model/student-document-row.model";
+import {PageModel} from "../model/page.model";
 import {StudentDocumentModel} from "../model/student-document.model";
 import {StudentNotificationModel} from "../model/student-notification.model";
-import {not} from "rxjs/internal-compatibility";
 
 const STUDENT_API = 'http://localhost:8088/unidoc/api/student/';
 
@@ -77,7 +74,6 @@ export class StudentService {
   }
 
   deleteOwnDocument(documentId: number): Observable<ResponseModel> {
-    console.log(documentId)
     return this.http.delete<ResponseModel>(STUDENT_API + 'document/own/delete/' + documentId, httpOptions);
   }
 }

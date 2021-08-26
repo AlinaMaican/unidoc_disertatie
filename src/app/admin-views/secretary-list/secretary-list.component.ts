@@ -2,10 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {SecretaryListModel} from "../../model/secretary-list.model";
 import {SecretaryService} from "../../_services/secretary.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {StudyDetailsModel} from "../../model/study-details.model";
 import {SecretaryAllocationsDialogComponent} from "../secretary-allocations-dialog/secretary-allocations-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {AddSecretaryDialogComponent} from "../add-secretary-dialog/add-secretary-dialog.component";
+import {DeleteSecretaryDialogComponent} from "../delete-secretary-dialog/delete-secretary-dialog.component";
+import {EditSecretaryDialogComponent} from "../edit-secretary-dialog/edit-secretary-dialog.component";
 
 @Component({
   selector: 'app-secretary-list',
@@ -35,11 +36,10 @@ export class SecretaryListComponent implements OnInit {
     );
   }
 
-  openAllocations(allocations: StudyDetailsModel[], secretaryId: number){
+  openAllocations(secretaryId: number){
     const dialogRef = this.dialog.open(SecretaryAllocationsDialogComponent, {
       width: '800px',
       data: {
-        'allocations' :allocations,
         'secretaryId': secretaryId
       }
     });
@@ -51,8 +51,7 @@ export class SecretaryListComponent implements OnInit {
 
   addSecretary(): void{
     const dialogRef = this.dialog.open(AddSecretaryDialogComponent, {
-      width: '500px',
-      height: '1000px'
+      width: '500px'
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -61,11 +60,25 @@ export class SecretaryListComponent implements OnInit {
   }
 
   editSecretary(secretary: SecretaryListModel): void{
+    const dialogRef = this.dialog.open(EditSecretaryDialogComponent, {
+      width: '500px',
+      data: secretary
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 
   deleteSecretary(secretary: SecretaryListModel): void{
+    const dialogRef = this.dialog.open(DeleteSecretaryDialogComponent, {
+      width: '500px',
+      data: secretary.id
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 
 }

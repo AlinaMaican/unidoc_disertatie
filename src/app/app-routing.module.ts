@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {UserLoginComponent} from "./user-login/user-login.component";
-import {HomeComponent} from "./home/home.component";
 import {ChangePasswordComponent} from "./change-password/change-password.component";
 import {SecretaryListComponent} from "./admin-views/secretary-list/secretary-list.component";
 import {DocumentManagementComponent} from "./secretary-views/document-management/document-management.component";
@@ -14,13 +13,14 @@ import {UserProfileComponent} from "./student-views/user-profile/user-profile.co
 import {StudentRoleGuardComponent} from "./student-views/student-role-guard/student-role-guard.component";
 import {SecretaryRoleGuardComponent} from "./secretary-views/secretary-role-guard/secretary-role-guard.component";
 import {RoleGuardComponent} from "./admin-views/role-guard/role-guard.component";
+import {StudentManagementComponent} from "./admin-views/student-management/student-management.component";
 
 const routes: Routes = [
   {path: '', redirectTo:'login', pathMatch: 'full'},
   {path: 'login', component: UserLoginComponent},
-  {path: 'home', component: HomeComponent},
   {path: 'change-password', component:ChangePasswordComponent},
   {path: 'secretary-management', component: SecretaryListComponent, canActivate: [RoleGuardComponent]},
+  {path: 'student-management', component: StudentManagementComponent, canActivate: [RoleGuardComponent]},
   {path: 'document-management', component: DocumentManagementComponent, canActivate: [SecretaryRoleGuardComponent]},
   {path: 'student-documents', component: StudentDocumentsComponent, canActivate: [SecretaryRoleGuardComponent]},
   {path: 'required-documents', component: RequiredDocumentsComponent, canActivate: [StudentRoleGuardComponent]},

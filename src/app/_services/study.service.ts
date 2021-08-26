@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable} from "rxjs";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {StudyModel} from "../model/study.model";
@@ -46,8 +46,8 @@ export class StudyService {
     return this.http.get<StudyModel[]>( STUDY_API + 'filteredStudyYears', httpOptions);
   }
 
-  getAllFilteredStudyGroups(studyYearId: number): Observable<StudyModel[]> {
-    httpOptions.params = {'studyYearId': studyYearId};
+  getAllFilteredStudyGroups(allocationId: number): Observable<StudyModel[]> {
+    httpOptions.params = {'allocationId': allocationId};
     return this.http.get<StudyModel[]>( STUDY_API + 'studyGroups', httpOptions);
   }
 
@@ -77,5 +77,14 @@ export class StudyService {
 
   createAllocation(allocation: any): Observable<ResponseModel>{
     return this.http.post<ResponseModel>(STUDY_API + 'allocation/create', allocation);
+  }
+
+  deleteAllocation(allocationId: number): Observable<ResponseModel> {
+    return this.http.delete<ResponseModel>(STUDY_API + 'allocation/delete/' + allocationId, httpOptions);
+  }
+
+  getAllocationFilter(secretaryId: number): Observable<StudyModel[]>{
+    httpOptions.params = {'secretaryId': secretaryId};
+    return this.http.get<StudyModel[]>(STUDY_API + 'allocationFilter' , httpOptions);
   }
 }

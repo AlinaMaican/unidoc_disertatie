@@ -5,7 +5,6 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {RegularExpressionUtil} from "../util/regular-expression.util";
 import {Router} from "@angular/router";
 import {UserService} from "../_services/user.service";
-import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'bg-user-login',

@@ -7,7 +7,6 @@ import {MatDialog} from "@angular/material/dialog";
 import {UploadStudentDocumentDialogComponent} from "../upload-student-document-dialog/upload-student-document-dialog.component";
 import {StudentDocumentModel} from "../../model/student-document.model";
 import {ViewStudentDocumentDialogComponent} from "../view-student-document-dialog/view-student-document-dialog.component";
-import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-required-documents',

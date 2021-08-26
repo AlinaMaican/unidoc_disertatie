@@ -17,7 +17,7 @@ export class StudentNotificationsComponent implements OnInit {
 
   dataLength:any;
   pageIndex:number = 0;
-  pageSize:number = 1;
+  pageSize:number = 10;
   pageSizeOptions:number[] = [1, 5, 10];
 
   columnName = 'date';

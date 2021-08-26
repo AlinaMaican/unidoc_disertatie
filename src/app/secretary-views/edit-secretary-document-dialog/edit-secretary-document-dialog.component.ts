@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {SecretaryService} from "../../_services/secretary.service";
 import {SecretaryDocumentModel} from "../../model/secretary-document.model";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-edit-secretary-document-dialog',
@@ -16,7 +17,8 @@ export class EditSecretaryDocumentDialogComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<EditSecretaryDocumentDialogComponent>,
               private secretaryService: SecretaryService,
               private formBuilder: FormBuilder,
-              @Inject(MAT_DIALOG_DATA) public data: SecretaryDocumentModel) {
+              @Inject(MAT_DIALOG_DATA) public data: SecretaryDocumentModel,
+              private _snackBar: MatSnackBar) {
     this.editFileForm = this.formBuilder.group({
       id: [null, Validators.required],
       name: [null, [Validators.required]],
@@ -33,11 +35,20 @@ export class EditSecretaryDocumentDialogComponent implements OnInit {
     if (!this.editFileForm.valid) {
       return;
     }
-    this.secretaryService.editSecretaryDocument(this.editFileForm).subscribe((message) => {
-      location.reload();
+    this.secretaryService.editSecretaryDocument(this.editFileForm).subscribe((response) => {
+      if(response.type === "ERROR"){
+        this.openSnackBar(response.message, "Close", "errorSnackBar")
+      } else {
+        location.reload();
+        this.openSnackBar(response.message, "Close", "successSnackBar");
+      }
     });
   }
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  openSnackBar(message: string, action: string, aClass: string) {
+    this._snackBar.open(message, action, {panelClass: [aClass]});
   }
 }

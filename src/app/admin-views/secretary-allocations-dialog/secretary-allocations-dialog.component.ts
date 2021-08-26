@@ -1,9 +1,11 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {StudyDetailsModel} from "../../model/study-details.model";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {StudyModel} from "../../model/study.model";
 import {StudyService} from "../../_services/study.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {SecretaryService} from "../../_services/secretary.service";
+import {SecretaryAllocationModel} from "../../model/secretary-allocation.model";
+import {DeleteAllocationDialogComponent} from "../delete-allocation-dialog/delete-allocation-dialog.component";
 
 @Component({
   selector: 'app-secretary-allocations-dialog',
@@ -11,9 +13,9 @@ import {MatSnackBar} from "@angular/material/snack-bar";
   styleUrls: ['./secretary-allocations-dialog.component.scss']
 })
 export class SecretaryAllocationsDialogComponent implements OnInit {
-  dataSource: StudyDetailsModel[] = [];
-  displayedColumns: string[] = ['learningType', 'universityStudiesType', 'domain', 'studyProgram', 'studyYear', 'edit', 'delete'];
-  clickedRows = new Set<StudyDetailsModel>();
+  dataSource: SecretaryAllocationModel[] = [];
+  displayedColumns: string[] = ['learningType', 'universityStudiesType', 'domain', 'studyProgram', 'studyYear','delete'];
+  clickedRows = new Set<SecretaryAllocationModel>();
   learningTypes: StudyModel[] = [];
   universityStudies: StudyModel[] = [];
   domains: StudyModel[] = [];
@@ -28,24 +30,35 @@ export class SecretaryAllocationsDialogComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<SecretaryAllocationsDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
+              public dialog: MatDialog,
               private studyService: StudyService,
+              private secretaryService: SecretaryService,
               private _snackBar: MatSnackBar) {
   }
 
   ngOnInit(): void {
-    this.dataSource = this.data.allocations;
+    this.loadData();
+  }
+
+  loadData(): void{
+    this.secretaryService.getAllAllocationsBySecretaryId(this.data.secretaryId).subscribe(data =>{
+      this.dataSource = data;
+    })
   }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
 
-  editAllocation(allocation: StudyDetailsModel): void {
+  deleteAllocation(allocation: SecretaryAllocationModel): void {
+    const dialogRef = this.dialog.open(DeleteAllocationDialogComponent, {
+      width: '500px',
+      data: allocation.allocationId
+    });
 
-  }
-
-  deleteAllocation(allocation: StudyDetailsModel): void {
-
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 
   addAllocation(): void {
@@ -143,6 +156,7 @@ export class SecretaryAllocationsDialogComponent implements OnInit {
         if (element6 !== null) {
           element6.classList.add("hidden-element");
         }
+        this.loadData();
         this.openSnackBar(response.message, "Close", "successSnackBar");
       }
     })

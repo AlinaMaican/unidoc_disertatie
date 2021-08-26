@@ -1,14 +1,14 @@
 <app-navbar class="mat-elevation-z6"></app-navbar>
 <div style="margin:30px;width:60%;">
-  <div>
+  <div style="margin-bottom: 20px;">
     <h1>Document management</h1>
   </div>
 
-  <div *ngFor="let secretaryAllocation of secretaryAllocations">
-    <div>
+  <div *ngFor="let secretaryAllocation of secretaryAllocations" style="border: #69f0ae;border-style: solid;margin-bottom: 20px;">
+    <div style="margin:10px;">
       <h3>{{secretaryAllocation.allocationName}}</h3>
       <button mat-button (click)="openUploadDialog(secretaryAllocation.allocationId)">Add new document</button>
-      <table mat-table class="mat-elevation-z8 demo-table" [dataSource]="secretaryAllocation.tableData">
+      <table *ngIf="secretaryAllocation.tableData.length !== 0" mat-table class="mat-elevation-z8 demo-table" [dataSource]="secretaryAllocation.tableData">
 
         <ng-container matColumnDef="documentName">
           <th mat-header-cell *matHeaderCellDef>Document name</th>
@@ -51,7 +51,7 @@
           *matRowDef="let row; columns: displayedColumns;"
         ></tr>
       </table>
-
+      <div *ngIf="secretaryAllocation.tableData.length === 0"><p>There are no documents uploaded for this allocation</p></div>
     </div>
   </div>
 </div>

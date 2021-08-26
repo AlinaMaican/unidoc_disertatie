@@ -10,6 +10,7 @@ import {StudentDocumentFilterModel} from "../../model/student-document-filter.mo
 import {StudentModel} from "../../model/student.model";
 import {StudentDetailsDialogComponent} from "../student-details-dialog/student-details-dialog.component";
 import {ChangeStatusStudentDocumentDialogComponent} from "../change-status-student-document-dialog/change-status-student-document-dialog.component";
+import {allowMangle} from "@angular-devkit/build-angular/src/utils/environment-options";
 
 @Component({
   selector: 'app-secretary-notifications',
@@ -21,16 +22,18 @@ export class SecretaryNotificationsComponent implements OnInit {
   displayedColumnFilters: string[] = ['studyGroup-filter', 'firstName-filter', 'lastName-filter', 'name-filter', 'description-filter','dateOfUpload-filter', 'status-filter', 'viewDocument-filter'];
   clickedRows = new Set<SecretaryDocumentModel>();
   dataSource = new MatTableDataSource<StudentDocumentRowModel>();
-  learningTypes: StudyModel[] = [];
-  universityStudies: StudyModel[] = [];
-  domains: StudyModel[] = [];
-  studyPrograms: StudyModel[] = [];
-  studyYears: StudyModel[] = [];
+  allocations: StudyModel[] = [];
+  // learningTypes: StudyModel[] = [];
+  // universityStudies: StudyModel[] = [];
+  // domains: StudyModel[] = [];
+  // studyPrograms: StudyModel[] = [];
+  // studyYears: StudyModel[] = [];
   studyGroups: StudyModel[] = [];
   secretary: any;
   inProgress = 'IN_PROGRESS';
   valid = 'VALID';
   invalid = 'INVALID';
+  allStatuses = 'ALL';
   selectLearningType: any;
   selectUniversityStudy: any;
   selectDomain: any;
@@ -38,6 +41,7 @@ export class SecretaryNotificationsComponent implements OnInit {
   selectStudyYear: any;
   selectStudyGroup: any;
   selectStatus: any;
+  selectAllocation: any;
   firstName: any;
   lastName: any;
   fileName: any;
@@ -47,11 +51,12 @@ export class SecretaryNotificationsComponent implements OnInit {
 
   dataLength:any;
   pageIndex:number = 0;
-  pageSize:number = 1;
+  pageSize:number = 10;
   pageSizeOptions:number[] = [1, 5, 10];
 
   columnName = 'dateOfUpload';
   direction = 'desc';
+
   constructor(private studyService: StudyService,
               private secretaryService: SecretaryService,
               public dialog: MatDialog) { }
@@ -59,13 +64,66 @@ export class SecretaryNotificationsComponent implements OnInit {
   ngOnInit(): void {
     if (window.sessionStorage.getItem("secretary") !== null) {
       this.secretary = JSON.parse(<string>window.sessionStorage.getItem("secretary"));
-      this.studyService.getAllFilteredLearningTypes(this.secretary.id).subscribe(data => {
-        this.learningTypes = data;
+      this.studyService.getAllocationFilter(this.secretary.id).subscribe(data => {
+        this.allocations = data;
       })
     }
   }
 
-  makeUniversityStudyVisible(learningType: number): void {
+  // makeUniversityStudyVisible(learningType: number): void {
+  //   let table = document.getElementById("table");
+  //   let tablePagination = document.getElementById("tablePagination");
+  //   let info = document.getElementsByTagName("h3")[0];
+  //   if (table !== null && tablePagination !== null && info !== null) {
+  //     info.classList.add("hidden-element");
+  //     table.classList.remove("hidden-element");
+  //     tablePagination.classList.remove("hidden-element");
+  //     this.filterTable();
+  //     let element = document.getElementById("universityStudyId");
+  //     if (element !== null) {
+  //       element.classList.remove("hidden-element");
+  //       this.studyService.getAllFilteredUniversityStudies(this.secretary.id, learningType).subscribe(data => {
+  //         this.universityStudies = data;
+  //       })
+  //     }
+  //   }
+  // }
+  //
+  // makeDomainVisible(universityStudy: number): void {
+  //   let element = document.getElementById("domainId");
+  //   if (element !== null) {
+  //     this.filterTable();
+  //     element.classList.remove("hidden-element");
+  //     this.studyService.getAllFilteredDomains(this.secretary.id, universityStudy).subscribe(data => {
+  //       this.domains = data;
+  //     })
+  //   }
+  // }
+  //
+  // makeStudyProgramVisible(domain: number): void {
+  //   let element = document.getElementById("studyProgramId");
+  //   if (element !== null) {
+  //     this.filterTable();
+  //     element.classList.remove("hidden-element");
+  //     this.studyService.getAllFilteredStudyPrograms(this.secretary.id, domain).subscribe(data => {
+  //       this.studyPrograms = data;
+  //     })
+  //   }
+  // }
+  //
+  // makeStudyYearVisible(studyProgram: number): void {
+  //   let element = document.getElementById("studyYearId");
+  //   if (element !== null) {
+  //     this.filterTable();
+  //     element.classList.remove("hidden-element");
+  //     this.studyService.getAllFilteredStudyYears(this.secretary.id, studyProgram).subscribe(data => {
+  //       this.studyYears = data;
+  //     })
+  //   }
+  // }
+
+  makeStudyGroupVisible(allocation: number): void {
+    let element = document.getElementById("studyGroupId");
     let table = document.getElementById("table");
     let tablePagination = document.getElementById("tablePagination");
     let info = document.getElementsByTagName("h3")[0];
@@ -74,56 +132,18 @@ export class SecretaryNotificationsComponent implements OnInit {
       table.classList.remove("hidden-element");
       tablePagination.classList.remove("hidden-element");
       this.filterTable();
-      let element = document.getElementById("universityStudyId");
-      if (element !== null) {
-        element.classList.remove("hidden-element");
-        this.studyService.getAllFilteredUniversityStudies(this.secretary.id, learningType).subscribe(data => {
-          this.universityStudies = data;
-        })
-      }
     }
-  }
-
-  makeDomainVisible(universityStudy: number): void {
-    let element = document.getElementById("domainId");
     if (element !== null) {
-      this.filterTable();
       element.classList.remove("hidden-element");
-      this.studyService.getAllFilteredDomains(this.secretary.id, universityStudy).subscribe(data => {
-        this.domains = data;
-      })
-    }
-  }
-
-  makeStudyProgramVisible(domain: number): void {
-    let element = document.getElementById("studyProgramId");
-    if (element !== null) {
-      this.filterTable();
-      element.classList.remove("hidden-element");
-      this.studyService.getAllFilteredStudyPrograms(this.secretary.id, domain).subscribe(data => {
-        this.studyPrograms = data;
-      })
-    }
-  }
-
-  makeStudyYearVisible(studyProgram: number): void {
-    let element = document.getElementById("studyYearId");
-    if (element !== null) {
-      this.filterTable();
-      element.classList.remove("hidden-element");
-      this.studyService.getAllFilteredStudyYears(this.secretary.id, studyProgram).subscribe(data => {
-        this.studyYears = data;
-      })
-    }
-  }
-
-  makeStudyGroupVisible(studyYear: number): void {
-    let element = document.getElementById("studyGroupId");
-    if (element !== null) {
-      this.filterTable();
-      element.classList.remove("hidden-element");
-      this.studyService.getAllFilteredStudyGroups(studyYear).subscribe(data => {
+      this.studyService.getAllFilteredStudyGroups(allocation).subscribe(data => {
         this.studyGroups = data;
+
+        // @ts-ignore
+        let all: StudyModel = {};
+        all.id = -1;
+        all.value = 'ALL';
+        this.studyGroups = data;
+        this.studyGroups.unshift(all);
       })
     }
   }
@@ -142,11 +162,12 @@ export class SecretaryNotificationsComponent implements OnInit {
   filterTable(): StudentDocumentFilterModel {
     let filter: StudentDocumentFilterModel = {};
     // @ts-ignore
-    filter.learningTypeId = this.selectLearningType;
-    filter.universityStudiesId = this.selectUniversityStudy;
-    filter.domainId = this.selectDomain;
-    filter.studyProgramId = this.selectStudyProgram;
-    filter.studyYearId = this.selectStudyYear;
+    // filter.learningTypeId = this.selectLearningType;
+    // filter.universityStudiesId = this.selectUniversityStudy;
+    // filter.domainId = this.selectDomain;
+    // filter.studyProgramId = this.selectStudyProgram;
+    // filter.studyYearId = this.selectStudyYear;
+    filter.allocationId = this.selectAllocation;
     filter.studyGroupId = this.selectStudyGroup;
     filter.status = this.selectStatus;
     filter.secretaryId = this.secretary.id;
