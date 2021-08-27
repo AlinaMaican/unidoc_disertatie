@@ -17,6 +17,7 @@ import ro.alina.unidoc.repository.*;
 import ro.alina.unidoc.utils.GenericSpecification;
 
 import javax.transaction.Transactional;
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -44,9 +45,10 @@ public class StudentService {
     private final NotificationRepository notificationRepository;
     private final NotificationService notificationService;
 
-    public Page<StudentModel> getAllStudents(final Pageable pageable, final StudentFilter filter) {
-        final var specification = getSpecifications(filter);
-        return studentRepository.findAll(specification, pageable).map(this::toStudentModel);
+    public Page<StudentModel> getAllStudents(final int pageSize, final int pageNumber) {
+        //final var specification = getSpecifications(filter);
+        var pageReq = PageRequest.of(pageNumber, pageSize);
+        return studentRepository.findAll(pageReq).map(this::toStudentModel);
     }
 
     private Specification<Student> getSpecifications(final StudentFilter filter) {
@@ -68,6 +70,9 @@ public class StudentService {
                 .firstName(student.getFirstName())
                 .lastName(student.getLastName())
                 .emailAddress(student.getUser().getEmail())
+                .study(student.getLearningType().getName().toString() + ", " + student.getUniversityStudyType().getName().toString()
+                        + ", " + student.getDomain().getName().toString() + ", " + student.getStudyProgram().getName() + ", "
+                        + student.getStudyYear().getName() + ", " + student.getStudyGroup().getName())
                 .cnp(student.getCnp())
                 .registrationNumber(student.getRegistrationNumber())
                 .phoneNumbers(phoneNumberRepository.findAllByUser(student.getUser())
@@ -109,14 +114,19 @@ public class StudentService {
             byte[] bytes = file.getBytes();
             var secretaryDocument = secretaryDocumentRepository.getOne(secretaryDocumentId);
             if (secretaryDocument.getEndDateOfUpload().isBefore(LocalDateTime.now())) {
-                return Response.builder().type("ERROR").message("The limit date of the file has been exceded!").build();
+                return Response.builder().type("ERROR").message("The limit date of the file has been exceeded!").build();
             }
             Path path = Paths.get(UPLOAD_FOLDER + "\\" + secretaryDocument.getSecretaryAllocation().getId() + "\\student\\"
                     + studentId + "\\" + file.getOriginalFilename());
+            File directory = new File(UPLOAD_FOLDER + "\\" + secretaryDocument.getSecretaryAllocation().getId() + "\\student\\"
+                    + studentId + "\\" );
+            if(!directory.exists())
+            {
+                directory.mkdir();
+            }
             Files.write(path, bytes);
             studentDocumentRepository.findByStudentIdAndSecretaryDocumentId(studentId, secretaryDocumentId).ifPresentOrElse(studentDocument -> {
-                studentDocument.setFilePathName(UPLOAD_FOLDER + "\\" + secretaryDocument.getSecretaryAllocation().getId() + "\\student\\"
-                        + studentId + "\\" + file.getOriginalFilename());
+                studentDocument.setFilePathName(path.toString());
                 studentDocument.setName(name);
                 studentDocument.setDateOfUpload(LocalDateTime.now());
                 studentDocumentRepository.saveAndFlush(studentDocument);
@@ -124,8 +134,7 @@ public class StudentService {
                     .name(name)
                     .student(studentRepository.getOne(studentId))
                     .secretaryDocument(secretaryDocument)
-                    .filePathName(UPLOAD_FOLDER + "\\" + secretaryDocument.getSecretaryAllocation().getId() + "\\student\\"
-                            + studentId + "\\" + file.getOriginalFilename())
+                    .filePathName(path.toString())
                     .dateOfUpload(LocalDateTime.now())
                     .documentType(DocumentType.SECRETARY)
                     .status(DocumentStatusType.IN_PROGRESS)
@@ -171,6 +180,11 @@ public class StudentService {
             byte[] bytes = file.getBytes();
 
             Path path = Paths.get(UPLOAD_FOLDER_FOR_OWN_DOCUMENTS + "\\" + studentId + "\\" + file.getOriginalFilename());
+            File directory = new File(UPLOAD_FOLDER_FOR_OWN_DOCUMENTS + "\\" + studentId + "\\" );
+            if(!directory.exists())
+            {
+                directory.mkdir();
+            }
             Files.write(path, bytes);
             studentDocumentRepository.findByStudentIdAndFilePathName(studentId, path.toString()).ifPresentOrElse(studentDocument -> {
                 type.set("ERROR");

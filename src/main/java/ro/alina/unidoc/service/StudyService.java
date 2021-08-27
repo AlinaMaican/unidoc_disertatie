@@ -283,4 +283,62 @@ public class StudyService {
                         + ", " + allocation.getDomain().getName() + ", " + allocation.getStudyProgram().getName() + ", " + allocation.getStudyYear().getName())
                 .build();
     }
+
+    public List<StudyModel> getAllowedLearningTypes(final Long secretaryId){
+        return secretaryAllocationRepository.findAllBySecretary_Id(secretaryId).stream()
+                .map(allocation-> allocation.getLearningType().getName())
+                .distinct()
+                .map(name -> StudyModel.builder().name(name.toString()).value(name.toString()).build())
+                .collect(Collectors.toList());
+
+    }
+
+    public List<StudyModel> getAllowedUniversityStudies(final Long secretaryId, final String learningType){
+        return secretaryAllocationRepository.findAllBySecretary_Id(secretaryId).stream()
+                .filter(allocation -> allocation.getLearningType().getName().toString().equals(learningType))
+                .map(allocation-> allocation.getUniversityStudyType().getName())
+                .distinct()
+                .map(name -> StudyModel.builder().name(name.toString()).value(name.toString()).build())
+                .collect(Collectors.toList());
+
+    }
+
+    public List<StudyModel> getAllowedDomains(final Long secretaryId, final String learningType, final String universityStudyType){
+        return secretaryAllocationRepository.findAllBySecretary_Id(secretaryId).stream()
+                .filter(allocation -> allocation.getLearningType().getName().toString().equals(learningType))
+                .filter(allocation -> allocation.getUniversityStudyType().getName().toString().equals(universityStudyType))
+                .map(allocation-> allocation.getDomain().getName())
+                .distinct()
+                .map(name -> StudyModel.builder().name(name.toString()).value(name.toString()).build())
+                .collect(Collectors.toList());
+
+    }
+
+    public List<StudyModel> getAllowedStudyPrograms(final Long secretaryId, final String learningType,
+                                                    final String universityStudyType, final String domain){
+        return secretaryAllocationRepository.findAllBySecretary_Id(secretaryId).stream()
+                .filter(allocation -> allocation.getLearningType().getName().toString().equals(learningType))
+                .filter(allocation -> allocation.getUniversityStudyType().getName().toString().equals(universityStudyType))
+                .filter(allocation -> allocation.getDomain().getName().toString().equals(domain))
+                .map(allocation-> allocation.getStudyProgram().getName())
+                .distinct()
+                .map(name -> StudyModel.builder().name(name.toString()).value(name.toString()).build())
+                .collect(Collectors.toList());
+
+    }
+
+    public List<StudyModel> getAllowedStudyYears(final Long secretaryId, final String learningType,
+                                                 final String universityStudyType, final String domain,
+                                                 final String studyProgram){
+        return secretaryAllocationRepository.findAllBySecretary_Id(secretaryId).stream()
+                .filter(allocation -> allocation.getLearningType().getName().toString().equals(learningType))
+                .filter(allocation -> allocation.getUniversityStudyType().getName().toString().equals(universityStudyType))
+                .filter(allocation -> allocation.getDomain().getName().toString().equals(domain))
+                .filter(allocation -> allocation.getStudyProgram().getName().equals(studyProgram))
+                .map(allocation-> allocation.getStudyYear().getName())
+                .distinct()
+                .map(name -> StudyModel.builder().name(name.toString()).value(name.toString()).build())
+                .collect(Collectors.toList());
+
+    }
 }

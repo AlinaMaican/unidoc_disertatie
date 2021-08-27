@@ -20,10 +20,12 @@ import java.util.List;
 public class StudyController {
 
     private final StudyService studyService;
+
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(AllocationModel.class, new GenericPropertyEditor<>(AllocationModel.class));
     }
+
     /**
      * gets all the learning types
      *
@@ -143,6 +145,7 @@ public class StudyController {
 
     /**
      * gets all the study groups of a specific study year
+     *
      * @return a list of study groups
      */
     @GetMapping("/studyGroups")
@@ -151,17 +154,52 @@ public class StudyController {
     }
 
     @PostMapping("/allocation/create")
-    public ResponseEntity<Response> createAllocation(@RequestBody AllocationModel allocationModel){
+    public ResponseEntity<Response> createAllocation(@RequestBody AllocationModel allocationModel) {
         return ResponseEntity.ok(studyService.createAllocation(allocationModel));
     }
 
     @DeleteMapping("/allocation/delete/{allocationId}")
-    public ResponseEntity<Response> deleteAllocation(@PathVariable Long allocationId){
+    public ResponseEntity<Response> deleteAllocation(@PathVariable Long allocationId) {
         return ResponseEntity.ok(studyService.deleteAllocation(allocationId));
     }
 
     @GetMapping("/allocationFilter")
     public ResponseEntity<List<StudyModel>> getAllocationFilter(@RequestParam(name = "secretaryId") final Long secretaryId) {
         return ResponseEntity.ok(studyService.getAllocationFilter(secretaryId));
+    }
+
+    @GetMapping("/allowedLearningTypes")
+    public ResponseEntity<List<StudyModel>> getAllowedLearningTypes(@RequestParam(value = "secretaryId") final Long secretaryId) {
+        return ResponseEntity.ok(studyService.getAllowedLearningTypes(secretaryId));
+    }
+
+    @GetMapping("/allowedUniversityStudies")
+    public ResponseEntity<List<StudyModel>> getAllowedUniversityStudies(@RequestParam(value = "secretaryId") final Long secretaryId,
+                                                                        @RequestParam(value = "learningType") final String learningType) {
+        return ResponseEntity.ok(studyService.getAllowedUniversityStudies(secretaryId, learningType));
+    }
+
+    @GetMapping("/allowedDomains")
+    public ResponseEntity<List<StudyModel>> getAllowedDomains(@RequestParam(value = "secretaryId") final Long secretaryId,
+                                                              @RequestParam(value = "learningType") final String learningType,
+                                                              @RequestParam(value = "universityStudy") final String universityStudy) {
+        return ResponseEntity.ok(studyService.getAllowedDomains(secretaryId, learningType, universityStudy));
+    }
+
+    @GetMapping("/allowedStudyPrograms")
+    public ResponseEntity<List<StudyModel>> getAllowedStudyPrograms(@RequestParam(value = "secretaryId") final Long secretaryId,
+                                                                    @RequestParam(value = "learningType") final String learningType,
+                                                                    @RequestParam(value = "universityStudy") final String universityStudy,
+                                                                    @RequestParam(value = "domain") final String domain) {
+        return ResponseEntity.ok(studyService.getAllowedStudyPrograms(secretaryId, learningType, universityStudy, domain));
+    }
+
+    @GetMapping("/allowedStudyYears")
+    public ResponseEntity<List<StudyModel>> getAllowedStudyYears(@RequestParam(value = "secretaryId") final Long secretaryId,
+                                                                 @RequestParam(value = "learningType") final String learningType,
+                                                                 @RequestParam(value = "universityStudy") final String universityStudy,
+                                                                 @RequestParam(value = "domain") final String domain,
+                                                                 @RequestParam(value = "studyProgram") final String studyProgram) {
+        return ResponseEntity.ok(studyService.getAllowedStudyYears(secretaryId, learningType, universityStudy, domain, studyProgram));
     }
 }

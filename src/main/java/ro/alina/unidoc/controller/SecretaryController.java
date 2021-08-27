@@ -85,9 +85,9 @@ public class SecretaryController {
     @PreAuthorize("hasAuthority('SECRETARY')")
     @PostMapping("/document/edit")
     public ResponseEntity<Response> editSecretaryDocument(@RequestParam(value = "id") String id,
-                                                         @RequestParam(value = "name") String name,
-                                                         @RequestParam(value = "description") String description,
-                                                         @RequestParam(value = "endDateOfUpload")String endDateOfUpload) {
+                                                          @RequestParam(value = "name") String name,
+                                                          @RequestParam(value = "description") String description,
+                                                          @RequestParam(value = "endDateOfUpload") String endDateOfUpload) {
         return ResponseEntity.ok(secretaryService.editSecretaryDocument(SecretaryDocumentModel.builder()
                 .id(Long.valueOf(id))
                 .endDateOfUpload(LocalDateTime.parse(endDateOfUpload, DateTimeFormatter.ISO_DATE_TIME))
@@ -99,22 +99,32 @@ public class SecretaryController {
     /**
      * uploads a secretary document for a specific allocation
      *
-     * @param file                   the document
-     * @param secretaryAllocationId  the secretaryAllocation id
+     * @param file the document
      * @return a success or error message
      */
     @PreAuthorize("hasAuthority('SECRETARY')")
     @PostMapping("/document/upload")
     public ResponseEntity<Response> uploadSecretaryDocument(@RequestPart(value = "file") MultipartFile file,
-                                                            @RequestParam(value = "allocationId") String secretaryAllocationId,
                                                             @RequestParam(value = "name") String name,
                                                             @RequestParam(value = "description") String description,
-                                                            @RequestParam(value = "endDateOfUpload")String endDateOfUpload) throws FileAlreadyExistsException {
-       return ResponseEntity.ok(secretaryService.uploadSecretaryDocument(file, SecretaryDocumentModel.builder()
+                                                            @RequestParam(value = "secretaryId") Long secretaryId,
+                                                            @RequestParam(value = "endDateOfUpload") String endDateOfUpload,
+                                                            @RequestParam(value = "learningType") String learningType,
+                                                            @RequestParam(value = "universityStudy") String universityStudy,
+                                                            @RequestParam(value = "domain") String domain,
+                                                            @RequestParam(value = "studyProgram") String studyProgram,
+                                                            @RequestParam(value = "studyYear") String studyYear) throws FileAlreadyExistsException {
+        return ResponseEntity.ok(secretaryService.uploadSecretaryDocument(file, SecretaryDocumentModel.builder()
                 .endDateOfUpload(LocalDateTime.parse(endDateOfUpload, DateTimeFormatter.ISO_DATE_TIME))
                 .name(name)
+                .secretaryId(secretaryId)
                 .description(description)
-                .build(), Long.valueOf(secretaryAllocationId)));
+                .learningType(learningType)
+                .universityStudy(universityStudy)
+                .domain(domain)
+                .studyProgram(studyProgram)
+                .studyYear(studyYear)
+                .build()));
     }
 
     /**
@@ -139,8 +149,8 @@ public class SecretaryController {
     @PreAuthorize("hasAuthority('SECRETARY')")
     @PostMapping("/allocation/student/document/{id}")
     ResponseEntity<Response> editStudentDocumentStatus(@PathVariable final Long id,
-                                                      @RequestParam(value = "status") final String status,
-                                                      @RequestParam(value = "comment", required = false) String comment) {
+                                                       @RequestParam(value = "status") final String status,
+                                                       @RequestParam(value = "comment", required = false) String comment) {
         return ResponseEntity.ok(secretaryService.editStudentDocumentStatus(id, status, comment));
     }
 
@@ -149,7 +159,7 @@ public class SecretaryController {
     public ResponseEntity<byte[]> getPDF(@RequestParam(value = "filePath") String filePath) {
         FileInputStream fileStream;
         try {
-            fileStream = new FileInputStream(new File (filePath));
+            fileStream = new FileInputStream(new File(filePath));
             byte[] contents = IOUtils.toByteArray(fileStream);
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.parseMediaType("application/pdf"));
@@ -164,13 +174,13 @@ public class SecretaryController {
 
     @PreAuthorize("hasAuthority('SECRETARY')")
     @GetMapping("/notifications/unseen")
-    public int getUnseenNotifications(@RequestParam(value = "userId") final Long userId){
+    public int getUnseenNotifications(@RequestParam(value = "userId") final Long userId) {
         return secretaryService.getUnseenNotifications(userId);
     }
 
     @PreAuthorize("hasAuthority('SECRETARY')")
     @PostMapping("/notification/seen")
-    public ResponseEntity<Response> markNotificationAsSeen(@RequestParam(value="notificationId") Long notificationId){
+    public ResponseEntity<Response> markNotificationAsSeen(@RequestParam(value = "notificationId") Long notificationId) {
         return ResponseEntity.ok(secretaryService.markNotificationAsSeen(notificationId));
     }
 

@@ -10,4 +10,5 @@ import lombok.Data;
 public class StudyModel {
     private Long id;
     private String value;
+    private String name;
 }

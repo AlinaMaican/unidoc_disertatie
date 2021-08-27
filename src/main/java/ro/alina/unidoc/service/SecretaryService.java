@@ -5,22 +5,23 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ro.alina.unidoc.entity.*;
 import ro.alina.unidoc.mapper.SecretaryAllocationMapper;
 import ro.alina.unidoc.mapper.SecretaryDocumentMapper;
-import ro.alina.unidoc.mapper.StudyDetailsMapper;
 import ro.alina.unidoc.model.*;
 import ro.alina.unidoc.model.filters.StudentDocumentFilter;
 import ro.alina.unidoc.model.type.DocumentStatusType;
-import ro.alina.unidoc.model.type.RoleType;
+import ro.alina.unidoc.model.type.DomainType;
+import ro.alina.unidoc.model.type.LearningTypeEnum;
+import ro.alina.unidoc.model.type.UniversityStudyTypeEnum;
 import ro.alina.unidoc.repository.*;
 import ro.alina.unidoc.utils.GenericSpecification;
 
 import javax.transaction.Transactional;
+import java.io.File;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -107,24 +108,49 @@ public class SecretaryService {
         }
     }
 
-    public Response uploadSecretaryDocument(final MultipartFile file, final SecretaryDocumentModel model,
-                                            final Long secretaryAllocationId) throws FileAlreadyExistsException {
+    public Response uploadSecretaryDocument(final MultipartFile file, final SecretaryDocumentModel model) {
         if (file.isEmpty()) {
             return Response.builder().type("ERROR").message("The file is empty!").build();
         }
-        try {
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(UPLOAD_FOLDER + "\\" + secretaryAllocationId + "\\" + file.getOriginalFilename());
-            Files.write(path, bytes);
-            secretaryDocumentRepository.save(SecretaryDocument.builder()
-                    .name(model.getName())
-                    .description(model.getDescription())
-                    .secretaryAllocation(secretaryAllocationRepository.getOne(secretaryAllocationId))
-                    .filePathName(UPLOAD_FOLDER + "\\" + secretaryAllocationId + "\\" + file.getOriginalFilename())
-                    .endDateOfUpload(model.getEndDateOfUpload())
-                    .build());
-        } catch (Exception e) {
-            return Response.builder().type("ERROR").message("There has been an error").build();
+        List<SecretaryAllocation> allocations;
+        if(model.getDomain().equals("ALL")){
+            allocations = secretaryAllocationRepository.findAllBySecretary_IdAndLearningType_NameAndUniversityStudyType_Name(model.getSecretaryId(), LearningTypeEnum.valueOf(model.getLearningType()),
+                    UniversityStudyTypeEnum.valueOf(model.getUniversityStudy()));
+        } else {
+            if(model.getStudyProgram().equals("ALL")){
+                allocations = secretaryAllocationRepository.findAllBySecretary_IdAndLearningType_NameAndUniversityStudyType_NameAndDomain_Name(model.getSecretaryId(),
+                        LearningTypeEnum.valueOf(model.getLearningType()), UniversityStudyTypeEnum.valueOf(model.getUniversityStudy()), DomainType.valueOf(model.getDomain()));
+            } else {
+                if(model.getStudyYear().equals("ALL")){
+                    allocations = secretaryAllocationRepository.findAllBySecretary_IdAndLearningType_NameAndUniversityStudyType_NameAndDomain_NameAndStudyProgram_Name(model.getSecretaryId(),
+                            LearningTypeEnum.valueOf(model.getLearningType()), UniversityStudyTypeEnum.valueOf(model.getUniversityStudy()), DomainType.valueOf(model.getDomain()), model.getStudyProgram());
+                } else {
+                    allocations = secretaryAllocationRepository.findAllBySecretary_IdAndLearningType_NameAndUniversityStudyType_NameAndDomain_NameAndStudyProgram_NameAndStudyYear_Name(model.getSecretaryId(),
+                            LearningTypeEnum.valueOf(model.getLearningType()), UniversityStudyTypeEnum.valueOf(model.getUniversityStudy()), DomainType.valueOf(model.getDomain()), model.getStudyProgram(), model.getStudyYear());
+                }
+            }
+        }
+        for (SecretaryAllocation allocation : allocations) {
+            try {
+                byte[] bytes = file.getBytes();
+                Path path = Paths.get(UPLOAD_FOLDER + "\\" + allocation.getId() + "\\" + file.getOriginalFilename());
+                File directory = new File(UPLOAD_FOLDER + "\\" + allocation.getId() + "\\");
+                if(!directory.exists())
+                {
+                    directory.mkdir();
+                }
+                Files.write(path, bytes);
+                secretaryDocumentRepository.save(SecretaryDocument.builder()
+                        .name(model.getName())
+                        .description(model.getDescription())
+                        .secretaryAllocation(secretaryAllocationRepository.getOne(allocation.getId()))
+                        .filePathName(path.toString())
+                        .endDateOfUpload(model.getEndDateOfUpload())
+                        .build());
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                return Response.builder().type("ERROR").message("There has been an error!").build();
+            }
         }
         return Response.builder().type("SUCCESS").message("The file was uploaded successfully!").build();
     }

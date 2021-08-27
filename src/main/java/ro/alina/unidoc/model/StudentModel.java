@@ -17,6 +17,7 @@ public class StudentModel {
     private final String lastName;
     private final String emailAddress;
     private final List<String> phoneNumbers;
+    private final String study;
     private final String cnp;
     private final String registrationNumber;
     private final String secretaryName;
