@@ -1,16 +1,4 @@
 {
-  "navbar": {
-    "boardgames": "Jocuri",
-    "admin": "Administrare",
-    "admin.boardgames": "Jocuri",
-    "admin.users": "Utilizatori",
-    "support": "Suport",
-    "support.carousel": "Carousel",
-    "support.review": "Pareri",
-    "logout": "Iesire",
-    "login": "Conectare",
-    "overview": "Grafice"
-  },
   "language.en": "Engleza",
   "language.ro": "Romana",
   "login": {

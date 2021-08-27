@@ -50,10 +50,10 @@ export class DocumentManagementComponent implements OnInit {
     });
   }
 
-  openUploadDialog(allocationId: number){
+  openUploadDialog(){
     const dialogRef = this.dialog.open(UploadSecretaryDocumentDialogComponent, {
-      width: '500px',
-      data: allocationId
+      width: '800px',
+      height: '650px'
     });
 
     dialogRef.afterClosed().subscribe(result => {

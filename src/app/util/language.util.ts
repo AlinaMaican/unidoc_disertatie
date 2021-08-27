@@ -8,6 +8,6 @@ export class LanguageUtil {
   }
 
   static getLanguage(): LanguageType {
-    return <LanguageType>localStorage.getItem(this._languageKey) || LanguageType.RO;
+    return <LanguageType>localStorage.getItem(this._languageKey) || LanguageType.EN;
   }
 }

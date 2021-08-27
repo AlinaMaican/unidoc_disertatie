@@ -47,13 +47,18 @@ export class SecretaryService {
     return this.http.get(SECRETARY_API + "downloadPdfDocument", {responseType: "blob", params: {'filePath': filePath}});
   }
 
-  uploadDocument(uploadForm: any, allocationId: number): Observable<ResponseModel> {
+  uploadDocument(uploadForm: any, secretaryId: number): Observable<ResponseModel> {
     const formData: FormData = new FormData();
     formData.append("file", uploadForm.get("file").value, uploadForm.get("file").value.name);
     formData.append("name", uploadForm.get("name").value);
     formData.append("description", uploadForm.get("description").value);
     formData.append("endDateOfUpload", uploadForm.get("endDateOfUpload").value.toISOString());
-    formData.append("allocationId", allocationId.toString());
+    formData.append("secretaryId", String(secretaryId));
+    formData.append("learningType", uploadForm.get("learningType").value);
+    formData.append("universityStudy", uploadForm.get("universityStudy").value);
+    formData.append("domain", uploadForm.get("domain").value);
+    formData.append("studyProgram", uploadForm.get("studyProgram").value);
+    formData.append("studyYear", uploadForm.get("studyYear").value);
     return this.http.post<ResponseModel>(SECRETARY_API + 'document/upload', formData);
   }
 

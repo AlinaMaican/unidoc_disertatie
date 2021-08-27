@@ -1,16 +1,4 @@
 {
-  "navbar": {
-    "boardgames": "Boardgames",
-    "admin": "Administration",
-    "admin.boardgames": "Boardgames",
-    "admin.users": "Users",
-    "support": "Support",
-    "support.carousel": "Carousel",
-    "support.review": "Review",
-    "logout": "Log out",
-    "login": "Log in",
-    "overview": "Overview"
-  },
   "language.en": "English",
   "language.ro": "Romanian",
   "login": {
@@ -24,9 +12,20 @@
     "old.password": "Generated password",
     "message.user.login.bad.credentials": "Bad credentials!",
     "password": "Password",
+    "password.pattern": "The password must have at least 8 characters,from which one should be a number, a special character, a small and a big letter!",
     "password.required": "Please enter your password!",
     "remember.me": "remember me",
     "subtitle": "Log in to your account",
     "title": "Welcome!"
+  },
+  "password": {
+    "change": {
+      "title": "Chance your password",
+      "password" : "New password",
+      "old.password": "Generated password",
+      "renter.password": "Retype your password",
+      "confirm.button": "Save",
+      "match.error": "The passwords are not the same"
+    }
   }
 }

@@ -18,11 +18,14 @@ export class ChangePasswordComponent implements OnInit {
   isChangePasswordFailed = false;
   email = '';
   user = window.sessionStorage.getItem("auth-user");
+  hide1 = true;
+  hide2 = true;
+  hide3 = true;
 
   constructor(private authService: AuthService,
               private router: Router,
               private _snackBar: MatSnackBar) {
-    if(!!this.user){
+    if (!!this.user) {
       this.email = JSON.parse(this.user)["email"];
     }
     this.changePasswordForm = new FormGroup({
@@ -43,7 +46,7 @@ export class ChangePasswordComponent implements OnInit {
 
       this.authService.changePassword(email, oldPassword, password, confirmPassword).subscribe(
         response => {
-          if(response.type === "ERROR"){
+          if (response.type === "ERROR") {
             this.openSnackBar(response.message, "Close", "errorSnackBar")
           } else {
             this.isChangePasswordFailed = false;

@@ -1,4 +1,5 @@
 export interface StudyModel{
-  id: number;
-  value: string;
+  id?: number;
+  value?: string;
+  name?: string;
 }

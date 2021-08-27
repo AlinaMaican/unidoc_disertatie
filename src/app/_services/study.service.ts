@@ -87,4 +87,39 @@ export class StudyService {
     httpOptions.params = {'secretaryId': secretaryId};
     return this.http.get<StudyModel[]>(STUDY_API + 'allocationFilter' , httpOptions);
   }
+
+  getAllowedLearningTypes(secretaryId: number): Observable<StudyModel[]> {
+    httpOptions.params = {'secretaryId': secretaryId};
+    return this.http.get<StudyModel[]>( STUDY_API + 'allowedLearningTypes', httpOptions);
+  }
+
+  getAllowedUniversityStudies(secretaryId: number, learningTypeId: string): Observable<StudyModel[]> {
+    httpOptions.params = {'secretaryId': secretaryId,
+      'learningType': learningTypeId};
+    return this.http.get<StudyModel[]>( STUDY_API + 'allowedUniversityStudies', httpOptions);
+  }
+
+  getAllowedDomains(secretaryId: number, learningTypeId: string, universityStudyId: string): Observable<StudyModel[]> {
+    httpOptions.params = {'secretaryId': secretaryId,
+      'learningType': learningTypeId,
+      'universityStudy': universityStudyId};
+    return this.http.get<StudyModel[]>( STUDY_API + 'allowedDomains', httpOptions);
+  }
+
+  getAllowedStudyPrograms(secretaryId: number, learningTypeId: string, universityStudyId: string, domainId: string): Observable<StudyModel[]> {
+    httpOptions.params = {'secretaryId': secretaryId,
+      'learningType': learningTypeId,
+      'universityStudy': universityStudyId,
+      'domain': domainId};
+    return this.http.get<StudyModel[]>( STUDY_API + 'allowedStudyPrograms', httpOptions);
+  }
+
+  getAllowedStudyYears(secretaryId: number, learningTypeId: string, universityStudyId: string, domainId: string, studyProgramId: string): Observable<StudyModel[]> {
+    httpOptions.params = {'secretaryId': secretaryId,
+      'learningType': learningTypeId,
+      'universityStudy': universityStudyId,
+      'domain': domainId,
+      'studyProgram': studyProgramId};
+    return this.http.get<StudyModel[]>( STUDY_API + 'allowedStudyYears', httpOptions);
+  }
 }
