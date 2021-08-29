@@ -1,6 +1,9 @@
 package ro.alina.unidoc.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,15 +20,18 @@ import ro.alina.unidoc.repository.*;
 import ro.alina.unidoc.utils.GenericSpecification;
 
 import javax.transaction.Transactional;
-import java.io.File;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @Transactional
@@ -44,6 +50,11 @@ public class StudentService {
     private final GenericSpecification<Notification> notificationGenericSpecification;
     private final NotificationRepository notificationRepository;
     private final NotificationService notificationService;
+    private final SecretaryResponseDocumentRepository secretaryResponseDocumentRepository;
+    private final PasswordGeneratorService passwordGeneratorService;
+    private final UserRepository userRepository;
+    private final StudyGroupRepository studyGroupRepository;
+    private final SecretaryAllocationRepository secretaryAllocationRepository;
 
     public Page<StudentModel> getAllStudents(final int pageSize, final int pageNumber) {
         //final var specification = getSpecifications(filter);
@@ -119,9 +130,8 @@ public class StudentService {
             Path path = Paths.get(UPLOAD_FOLDER + "\\" + secretaryDocument.getSecretaryAllocation().getId() + "\\student\\"
                     + studentId + "\\" + file.getOriginalFilename());
             File directory = new File(UPLOAD_FOLDER + "\\" + secretaryDocument.getSecretaryAllocation().getId() + "\\student\\"
-                    + studentId + "\\" );
-            if(!directory.exists())
-            {
+                    + studentId + "\\");
+            if (!directory.exists()) {
                 directory.mkdir();
             }
             Files.write(path, bytes);
@@ -159,6 +169,11 @@ public class StudentService {
     }
 
     private StudentDocumentModel toStudentDocumentModel(final StudentDocument studentDocument) {
+        String responseDocumentFilePath = null;
+        if (secretaryResponseDocumentRepository.findByStudentDocument(studentDocument).isPresent()) {
+            responseDocumentFilePath = secretaryResponseDocumentRepository.findByStudentDocument(studentDocument).get()
+                    .getFilePathName();
+        }
         return StudentDocumentModel.builder()
                 .name(studentDocument.getName())
                 .description(studentDocument.getDescription())
@@ -166,6 +181,7 @@ public class StudentService {
                 .status(secretaryService.getStatusToANicerForm(studentDocument.getStatus()))
                 .id(studentDocument.getId())
                 .filePathName(studentDocument.getFilePathName())
+                .responseDocumentPathName(responseDocumentFilePath)
                 .build();
     }
 
@@ -175,14 +191,13 @@ public class StudentService {
             return Response.builder().type("ERROR").message("The file is empty!").build();
         }
         AtomicReference<String> type = new AtomicReference<>("SUCCESS");
-        AtomicReference<String> message = new AtomicReference<>("The file was uploaded successfully!");
+        AtomicReference<String> message = new AtomicReference<>("The file was uploaded successfully! You will be notified whenever the status of it changes!");
         try {
             byte[] bytes = file.getBytes();
 
             Path path = Paths.get(UPLOAD_FOLDER_FOR_OWN_DOCUMENTS + "\\" + studentId + "\\" + file.getOriginalFilename());
-            File directory = new File(UPLOAD_FOLDER_FOR_OWN_DOCUMENTS + "\\" + studentId + "\\" );
-            if(!directory.exists())
-            {
+            File directory = new File(UPLOAD_FOLDER_FOR_OWN_DOCUMENTS + "\\" + studentId + "\\");
+            if (!directory.exists()) {
                 directory.mkdir();
             }
             Files.write(path, bytes);
@@ -191,18 +206,18 @@ public class StudentService {
                 message.set("The file already exists, it is called " + studentDocument.getName());
             }, () -> {
                 var student = studentRepository.getOne(studentId);
-                notificationService.sendSimpleMessage(student.getSecretaryAllocation().getSecretary().getUser().getEmail(), "New document added by a student","A new document called " + name +" has been uploaded by the student "
+                notificationService.sendSimpleMessage(student.getSecretaryAllocation().getSecretary().getUser().getEmail(), "New document added by a student", "A new document called " + name + " has been uploaded by the student "
                         + student.getLastName() + " " + student.getFirstName() + " from the group " + student.getStudyGroup().getName());
                 var studentDocument = studentDocumentRepository.save(StudentDocument.builder()
-                    .name(name)
-                    .student(studentRepository.getOne(studentId))
-                    .description(description)
-                    .filePathName(path.toString())
-                    .dateOfUpload(LocalDateTime.now())
-                    .documentType(DocumentType.OWN)
-                    .status(DocumentStatusType.IN_PROGRESS)
-                    .seen(false)
-                    .build());
+                        .name(name)
+                        .student(studentRepository.getOne(studentId))
+                        .description(description)
+                        .filePathName(path.toString())
+                        .dateOfUpload(LocalDateTime.now())
+                        .documentType(DocumentType.OWN)
+                        .status(DocumentStatusType.IN_PROGRESS)
+                        .seen(false)
+                        .build());
                 notificationRepository.save(Notification.builder()
                         .type("SECRETARY")
                         .seen(false)
@@ -219,22 +234,22 @@ public class StudentService {
 
     public Page<StudentNotificationModel> getStudentNotifications(final Long studentId, final int pageSize,
                                                                   final int pageNumber, final String columnName,
-                                                                  final String direction){
+                                                                  final String direction) {
         final var specification = getNotificationSpecification(studentId);
-        var sort = direction.equals("desc")? Sort.by(columnName).descending(): Sort.by(columnName).ascending();
+        var sort = direction.equals("desc") ? Sort.by(columnName).descending() : Sort.by(columnName).ascending();
         var pageReq = PageRequest.of(pageNumber, pageSize, sort);
         return notificationRepository.findAll(specification, pageReq)
                 .map(this::toStudentNotification);
 
     }
 
-    private Specification<Notification> getNotificationSpecification(final Long studentId){
+    private Specification<Notification> getNotificationSpecification(final Long studentId) {
         return Objects.requireNonNull(notificationGenericSpecification
                 .where(notificationGenericSpecification.isNestedNestedPropertyEqualNumber("studentDocument.student.id", studentId))
-        .and(notificationGenericSpecification.isPropertyEqual("type", "STUDENT")));
+                .and(notificationGenericSpecification.isPropertyEqual("type", "STUDENT")));
     }
 
-    private StudentNotificationModel toStudentNotification(final Notification notification){
+    private StudentNotificationModel toStudentNotification(final Notification notification) {
         return StudentNotificationModel.builder()
                 .id(notification.getId())
                 .studentDocumentId(notification.getStudentDocument().getId())
@@ -246,9 +261,9 @@ public class StudentService {
                 .build();
     }
 
-    public Response markNotificationAsSeen(final Long notificationId){
-        try{
-            notificationRepository.findById(notificationId).ifPresent(notification ->{
+    public Response markNotificationAsSeen(final Long notificationId) {
+        try {
+            notificationRepository.findById(notificationId).ifPresent(notification -> {
                 notification.setSeen(true);
                 notificationRepository.save(notification);
             });
@@ -256,7 +271,7 @@ public class StudentService {
                     .type("SUCCESS")
                     .message("Notification marked as seen")
                     .build();
-        } catch(Exception e){
+        } catch (Exception e) {
             return Response.builder()
                     .type("ERROR")
                     .message("Something happened when trying to")
@@ -264,11 +279,11 @@ public class StudentService {
         }
     }
 
-    public int getUnseenNotifications(final Long userId){
+    public int getUnseenNotifications(final Long userId) {
         return notificationRepository.countBySeenAndStudentDocument_Student_IdAndType(false, studentRepository.findByUserId(userId).getId(), "STUDENT");
     }
 
-    public StudentModel getUserProfile(final Long userId){
+    public StudentModel getUserProfile(final Long userId) {
         var student = studentRepository.findByUserId(userId);
         return StudentModel.builder()
                 .firstName(student.getFirstName())
@@ -286,19 +301,86 @@ public class StudentService {
                 .build();
     }
 
-    public Response deleteOwnDocument(final Long documentId){
-        try{
+    public Response deleteOwnDocument(final Long documentId) {
+        try {
             notificationRepository.deleteByStudentDocument_Id(documentId);
             studentDocumentRepository.deleteById(documentId);
             return Response.builder()
                     .type("SUCCESS")
                     .message("Student document deleted successfully!")
                     .build();
-        } catch (Exception e){
+        } catch (Exception e) {
             return Response.builder()
                     .type("ERROR")
                     .message("There has been an error when trying to delete the student document!")
                     .build();
         }
+    }
+
+    public Response uploadStudents(final MultipartFile file) {
+        try {
+            InputStream inputStream = file.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            CSVParser csvParser = new CSVParser(bufferedReader, CSVFormat.DEFAULT);
+            StreamSupport.stream(csvParser.spliterator(), false)
+                    .forEach(record -> {
+                        try {
+                            User user = fromRecordToUserEntity(record);
+                            Optional<StudyGroup> studyGroup = studyGroupRepository.findById(Long.valueOf(record.get(6)));
+                            if (userRepository.findByEmail(user.getEmail()).isEmpty() && studyGroup.isPresent()) {
+                                Student student = fromRecordToStudentEntity(record, studyGroup.get());
+                                if (studentRepository.findByCnp(student.getCnp()).isEmpty()) {
+                                    PhoneNumber number = PhoneNumber.builder()
+                                            .phoneNumber(record.get(5))
+                                            .build();
+                                    user = userRepository.save(user);
+                                    student.setUser(user);
+                                    studentRepository.save(student);
+                                    number.setUser(user);
+                                    phoneNumberRepository.save(number);
+                                    notificationService.sendSimpleMessage(user.getEmail(), "Generated password for Unidoc", "Hello! Here is your generated password for the app Unidoc. Use it to change your password, not to login in! The password is " + user.getPassword());
+                                }
+                            }
+
+                        } catch (Exception e) {
+                            System.out.println("There was an error when trying to process and save this user!");
+                        }
+                    });
+            return Response.builder().type("SUCCESS").message("Students were uploaded successfully!").build();
+        } catch (IOException e) {
+            return Response.builder().type("ERROR").message("There has been an error with the upload!").build();
+        }
+    }
+
+    public User fromRecordToUserEntity(final CSVRecord csvRecord) {
+        return User.builder()
+                .email(csvRecord.get(4))
+                .password(passwordGeneratorService.generatePassayPassword())
+                .role(UserRole.STUDENT)
+                .isActive(false)
+                .build();
+    }
+
+    public Student fromRecordToStudentEntity(final CSVRecord csvRecord, final StudyGroup studyGroup) {
+        var learningType = studyGroup.getStudyYear().getStudyProgram().getDomain().getUniversityStudyType().getLearningType();
+        var universityStudyType = studyGroup.getStudyYear().getStudyProgram().getDomain().getUniversityStudyType();
+        var domain = studyGroup.getStudyYear().getStudyProgram().getDomain();
+        var studyProgram = studyGroup.getStudyYear().getStudyProgram();
+        var studyYear = studyGroup.getStudyYear();
+        Optional<SecretaryAllocation> allocation = secretaryAllocationRepository.findByLearningType_IdAndUniversityStudyType_IdAndDomain_IdAndStudyProgram_IdAndStudyYear_Id(learningType.getId(),
+                universityStudyType.getId(), domain.getId(), studyProgram.getId(), studyYear.getId());
+        return Student.builder()
+                .lastName(csvRecord.get(0))
+                .firstName(csvRecord.get(1))
+                .cnp(csvRecord.get(2))
+                .registrationNumber(csvRecord.get(3))
+                .learningType(learningType)
+                .universityStudyType(universityStudyType)
+                .domain(domain)
+                .studyProgram(studyProgram)
+                .studyYear(studyYear)
+                .studyGroup(studyGroup)
+                .secretaryAllocation(allocation.orElse(null))
+                .build();
     }
 }

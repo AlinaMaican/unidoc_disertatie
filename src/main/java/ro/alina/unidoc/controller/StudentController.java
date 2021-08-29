@@ -105,4 +105,9 @@ public class StudentController {
         return ResponseEntity.ok(studentService.deleteOwnDocument(id));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping(value = "/import")
+    public ResponseEntity<Response> uploadStudentsFromCSV(@RequestPart("file") final MultipartFile file) {
+        return ResponseEntity.ok(studentService.uploadStudents(file));
+    }
 }

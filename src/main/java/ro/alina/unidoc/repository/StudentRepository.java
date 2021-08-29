@@ -14,4 +14,6 @@ public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpec
     Optional<List<Student>> findBySecretaryAllocation(SecretaryAllocation allocation);
 
     Optional<List<Student>> findBySecretaryAllocation_Secretary_Id(Long secretaryId);
+
+    Optional<Student> findByCnp(String cnp);
 }

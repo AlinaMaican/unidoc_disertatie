@@ -22,4 +22,5 @@ public class StudentDocumentRowModel {
     private final LocalDateTime dateOfUpload;
     private final String status;
     private final Long notificationId;
+    private final String responseDocumentFilePath;
 }

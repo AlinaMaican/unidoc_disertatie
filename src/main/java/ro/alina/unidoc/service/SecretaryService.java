@@ -52,6 +52,7 @@ public class SecretaryService {
     private final PasswordGeneratorService passwordGeneratorService;
     private final PasswordEncoder passwordEncoder;
     private final StudentRepository studentRepository;
+    private final SecretaryResponseDocumentRepository secretaryResponseDocumentRepository;
 
     public List<SecretaryModel> getAllSecretaries() {
         var secretaries = secretaryRepository.findAll();
@@ -258,12 +259,17 @@ public class SecretaryService {
     }
 
     private StudentDocumentRowModel toOwnStudentDocumentRowModel(final StudentDocument studentDocument) {
+        String responseDocumentFilePath = null;
+        if (secretaryResponseDocumentRepository.findByStudentDocument(studentDocument).isPresent()){
+            responseDocumentFilePath = secretaryResponseDocumentRepository.findByStudentDocument(studentDocument).get().getFilePathName();
+        }
         return StudentDocumentRowModel.builder()
                 .name(studentDocument.getName())
                 .documentId(studentDocument.getId())
                 .description(studentDocument.getDescription())
                 .filePath(studentDocument.getFilePathName())
                 .dateOfUpload(studentDocument.getDateOfUpload())
+                .responseDocumentFilePath(responseDocumentFilePath)
                 .status(getStatusToANicerForm(studentDocument.getStatus()))
                 .studyGroupId(studentDocument.getStudent().getStudyGroup().getId())
                 .studyGroup(studentDocument.getStudent().getStudyGroup().getName())
@@ -423,6 +429,48 @@ public class SecretaryService {
                     .type("ERROR")
                     .message("Error creating the allocation!")
                     .build();
+        }
+    }
+
+    public Response uploadSecretaryResponseDocument(final MultipartFile file, final SecretaryDocumentModel model){
+        if (file.isEmpty()) {
+            return Response.builder().type("ERROR").message("The file is empty!").build();
+        }
+        try {
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(UPLOAD_FOLDER + "\\" + model.getAllocationId()+ "\\response\\" + file.getOriginalFilename());
+            File directory = new File(UPLOAD_FOLDER + "\\" + model.getAllocationId()+ "\\response\\");
+            if(!directory.exists())
+            {
+                directory.mkdir();
+            }
+            Files.write(path, bytes);
+            secretaryResponseDocumentRepository.save(SecretaryResponseDocument.builder()
+                    .name(model.getName())
+                    .description(model.getDescription())
+                    .secretaryAllocation(secretaryAllocationRepository.getOne(model.getAllocationId()))
+                    .studentDocument(studentDocumentRepository.getOne(model.getStudentDocumentId()))
+                    .filePathName(path.toString())
+                    .dateOfUpload(LocalDateTime.now())
+                    .build());
+            var studentDocument = studentDocumentRepository.getOne(model.getStudentDocumentId());
+            var student = studentRepository.getOne(studentDocument.getStudent().getId());
+
+            notificationService.sendSimpleMessage(student.getUser().getEmail(), "A new response document has been uploaded", "A response file from the secretary" +
+                    " has been uploaded for the document " + studentDocument.getName() + "! Please go and check your notifications in Unidoc!");
+            notificationRepository.save(Notification.builder()
+                    .studentDocument(studentDocument)
+                    .message("A response file from the secretary has been uploaded for the document " + studentDocument.getName())
+                    .date(LocalDateTime.now())
+                    .seen(false)
+                    .type("STUDENT")
+                    .build());
+            return Response.builder()
+                    .type("SUCCESS")
+                    .message("The response file was uploaded successfully! The student will be notified of the upload!").build();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return Response.builder().type("ERROR").message("There has been an error!").build();
         }
     }
 }

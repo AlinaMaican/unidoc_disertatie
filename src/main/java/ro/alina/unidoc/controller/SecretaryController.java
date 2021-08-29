@@ -209,5 +209,19 @@ public class SecretaryController {
         return ResponseEntity.ok(secretaryService.deleteUserSecretary(secretaryId));
     }
 
+    @PreAuthorize("hasAuthority('SECRETARY')")
+    @PostMapping("/document/response/upload")
+    public ResponseEntity<Response> uploadSecretaryResponseDocument(@RequestPart(value = "file") MultipartFile file,
+                                                                    @RequestParam(value = "name") String name,
+                                                                    @RequestParam(value = "description") String description,
+                                                                    @RequestParam(value = "allocationId") Long allocationId,
+                                                                    @RequestParam(value = "studentDocumentId") Long studentDocumentId) throws FileAlreadyExistsException {
+        return ResponseEntity.ok(secretaryService.uploadSecretaryResponseDocument(file, SecretaryDocumentModel.builder()
+                .name(name)
+                .description(description)
+                .allocationId(allocationId)
+                .studentDocumentId(studentDocumentId)
+                .build()));
+    }
 
 }

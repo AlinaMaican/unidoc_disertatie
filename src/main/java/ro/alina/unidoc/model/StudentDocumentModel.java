@@ -19,4 +19,5 @@ public class StudentDocumentModel {
     private final String status;
     private final LocalDateTime dateOfUpload;
     private final String filePathName;
+    private final String responseDocumentPathName;
 }

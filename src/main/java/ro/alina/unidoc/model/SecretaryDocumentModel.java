@@ -21,6 +21,8 @@ public class SecretaryDocumentModel {
     private final String filePathName;
     private final LocalDateTime endDateOfUpload;
     private final Long secretaryId;
+    private final Long allocationId;
+    private final Long studentDocumentId;
     private final String learningType;
     private final String universityStudy;
     private final String domain;
