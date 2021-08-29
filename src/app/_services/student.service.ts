@@ -7,7 +7,6 @@ import {PageModel} from "../model/page.model";
 import {StudentDocumentModel} from "../model/student-document.model";
 import {StudentNotificationModel} from "../model/student-notification.model";
 import {StudentModel} from "../model/student.model";
-import {StudentDocumentRowModel} from "../model/student-document-row.model";
 
 const STUDENT_API = 'http://localhost:8088/unidoc/api/student/';
 
@@ -84,5 +83,11 @@ export class StudentService {
     params = params.append("pageSize", String(pageSize));
     params = params.append("pageNumber", String(pageNumber));
     return this.http.get<PageModel<StudentModel>>(STUDENT_API + 'all', {params: params});
+  }
+
+  uploadStudents(uploadForm: any): Observable<ResponseModel> {
+    const formData: FormData = new FormData();
+    formData.append("file", uploadForm.get("file").value, uploadForm.get("file").value.name);
+    return this.http.post<ResponseModel>(STUDENT_API + 'import', formData);
   }
 }

@@ -14,7 +14,8 @@ import {DeleteOwnDocumentDialogComponent} from "../delete-own-document-dialog/de
   styleUrls: ['./created-documents.component.scss']
 })
 export class CreatedDocumentsComponent implements OnInit {
-  displayedColumns: string[] = ['documentName', 'description', 'dateOfUpload', 'status', 'viewDocument','deleteDocument'];
+  displayedColumns: string[] = ['documentName', 'description', 'dateOfUpload', 'status', 'viewDocument', 'downloadResponseDocument',
+    'deleteDocument'];
   clickedRows = new Set<SecretaryDocumentModel>();
   student: any;
   dataSource = new MatTableDataSource<StudentDocumentModel>();

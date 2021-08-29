@@ -185,6 +185,18 @@ export class SecretaryService {
     }
     return this.http.post<ResponseModel>(SECRETARY_API + "user/secretary/edit", data)
   }
+
+  uploadResponseDocument(uploadForm: any, allocationId: number, studentDocumentId: number): Observable<ResponseModel> {
+    console.log(allocationId);
+    console.log(studentDocumentId);
+    const formData: FormData = new FormData();
+    formData.append("file", uploadForm.get("file").value, uploadForm.get("file").value.name);
+    formData.append("name", uploadForm.get("name").value);
+    formData.append("description", uploadForm.get("description").value);
+    formData.append("allocationId", String(allocationId));
+    formData.append("studentDocumentId", String(studentDocumentId));
+    return this.http.post<ResponseModel>(SECRETARY_API + 'document/response/upload', formData);
+  }
 }
 
 

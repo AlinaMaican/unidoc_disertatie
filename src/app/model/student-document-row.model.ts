@@ -11,4 +11,5 @@ export interface StudentDocumentRowModel{
   dateOfUpload: string;
   status: string
   notificationId: number;
+  responseDocumentFilePath: string;
 }

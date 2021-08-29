@@ -55,6 +55,8 @@ import { EditSecretaryDialogComponent } from './admin-views/edit-secretary-dialo
 import { DeleteSecretaryDialogComponent } from './admin-views/delete-secretary-dialog/delete-secretary-dialog.component';
 import { DeleteAllocationDialogComponent } from './admin-views/delete-allocation-dialog/delete-allocation-dialog.component';
 import { StudentManagementComponent } from './admin-views/student-management/student-management.component';
+import { UploadResponseSecretaryDocumentComponentDialog } from './secretary-views/upload-response-secretary-document-dialog/upload-response-secretary-document.component-dialog';
+import { UploadStudentsDialogComponent } from './admin-views/upload-students-dialog/upload-students-dialog.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -102,7 +104,9 @@ export function translationServiceFactory(translate: TranslateService): () => Pr
     EditSecretaryDialogComponent,
     DeleteSecretaryDialogComponent,
     DeleteAllocationDialogComponent,
-    StudentManagementComponent
+    StudentManagementComponent,
+    UploadResponseSecretaryDocumentComponentDialog,
+    UploadStudentsDialogComponent
   ],
     imports: [
         BrowserModule,

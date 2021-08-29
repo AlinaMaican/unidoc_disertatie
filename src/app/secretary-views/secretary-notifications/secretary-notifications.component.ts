@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {SecretaryDocumentModel} from "../../model/secretary-document.model";
 import {MatTableDataSource} from "@angular/material/table";
 import {StudentDocumentRowModel} from "../../model/student-document-row.model";
@@ -10,7 +10,7 @@ import {StudentDocumentFilterModel} from "../../model/student-document-filter.mo
 import {StudentModel} from "../../model/student.model";
 import {StudentDetailsDialogComponent} from "../student-details-dialog/student-details-dialog.component";
 import {ChangeStatusStudentDocumentDialogComponent} from "../change-status-student-document-dialog/change-status-student-document-dialog.component";
-import {allowMangle} from "@angular-devkit/build-angular/src/utils/environment-options";
+import {UploadResponseSecretaryDocumentComponentDialog} from "../upload-response-secretary-document-dialog/upload-response-secretary-document.component-dialog";
 
 @Component({
   selector: 'app-secretary-notifications',
@@ -18,8 +18,11 @@ import {allowMangle} from "@angular-devkit/build-angular/src/utils/environment-o
   styleUrls: ['./secretary-notifications.component.scss']
 })
 export class SecretaryNotificationsComponent implements OnInit {
-  displayedColumns: string[] = ['studyGroup', 'firstName', 'lastName', 'name', 'description', 'dateOfUpload', 'status', 'viewDocument'];
-  displayedColumnFilters: string[] = ['studyGroup-filter', 'firstName-filter', 'lastName-filter', 'name-filter', 'description-filter','dateOfUpload-filter', 'status-filter', 'viewDocument-filter'];
+  displayedColumns: string[] = ['studyGroup', 'firstName', 'lastName', 'name', 'description', 'dateOfUpload', 'status',
+    'viewDocument', "addResponseDocument", "viewResponseDocument"];
+  displayedColumnFilters: string[] = ['studyGroup-filter', 'firstName-filter', 'lastName-filter', 'name-filter',
+    'description-filter','dateOfUpload-filter', 'status-filter', 'viewDocument-filter', 'addResponseDocument-filter',
+    'viewResponseDocument-filter'];
   clickedRows = new Set<SecretaryDocumentModel>();
   dataSource = new MatTableDataSource<StudentDocumentRowModel>();
   allocations: StudyModel[] = [];
@@ -48,6 +51,8 @@ export class SecretaryNotificationsComponent implements OnInit {
   tooltipText = "Click here to see the student's details";
   changeStatusTooltipMessage = "Change the status of the document and notify the student about this change!";
   viewDocumentTooltipMessage= "Click here to see the document";
+  uploadResponseTooltipMessage="Cick here to upload a response document for this student";
+  viewResponseDocumentTooltipMessage = "Click here to see the uploaded response document"
 
   dataLength:any;
   pageIndex:number = 0;
@@ -223,6 +228,26 @@ export class SecretaryNotificationsComponent implements OnInit {
     this.columnName = event['active'];
     this.direction = event['direction'];
     this.filterTable();
+  }
+
+  uploadResponseDocument(documentId: number): void{
+    const dialogRef = this.dialog.open(UploadResponseSecretaryDocumentComponentDialog, {
+      width: '500px',
+      data: {studentDocumentId: documentId,
+      secretaryAllocationId: this.selectAllocation}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
+
+  openResponseDocumentPdf(filePath: string){
+    this.secretaryService.downloadDocument(filePath).subscribe(data => {
+      let file = new Blob([data], {type: 'application/pdf'});
+      const fileURL = URL.createObjectURL(file);
+      window.open(fileURL, '_blank');
+    });
   }
 }
 

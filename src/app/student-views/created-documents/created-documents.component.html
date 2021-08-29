@@ -37,6 +37,14 @@
       </td>&nbsp;
     </ng-container>
 
+    <ng-container matColumnDef="downloadResponseDocument">
+      <th mat-header-cell *matHeaderCellDef>Download response document</th>
+      <td mat-cell *matCellDef="let document" class="action-cell wider-cell">
+        <mat-icon *ngIf="document.responseDocumentPathName !== null" class="" data-toggle="modal" (click)="openPdf(document.responseDocumentPathName)">download
+        </mat-icon>
+      </td>&nbsp;
+    </ng-container>
+
     <ng-container matColumnDef="deleteDocument">
       <th mat-header-cell *matHeaderCellDef>Delete</th>
       <td mat-cell *matCellDef="let document" class="action-cell wider-cell">

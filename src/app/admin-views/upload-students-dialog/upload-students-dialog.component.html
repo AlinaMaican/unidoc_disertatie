@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>Upload students</h1>
+<form [formGroup]="uploadFileForm" (submit)="submit()">
+  <div mat-dialog-content>
+    <div>
+      <p>Upload the document</p>
+      <mat-form-field>
+        <ngx-mat-file-input [multiple]="false" [accept]="'.csv'" formControlName="file" [required]="true">
+        </ngx-mat-file-input>
+      </mat-form-field>
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-button cdkFocusInitial type="submit">Save</button>
+  </div>
+</form>
+

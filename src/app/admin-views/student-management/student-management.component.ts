@@ -2,6 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {StudentModel} from "../../model/student.model";
 import {StudentService} from "../../_services/student.service";
 import {MatTableDataSource} from "@angular/material/table";
+import {AddSecretaryDialogComponent} from "../add-secretary-dialog/add-secretary-dialog.component";
+import {UploadStudentsDialogComponent} from "../upload-students-dialog/upload-students-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-student-management',
@@ -18,7 +21,8 @@ export class StudentManagementComponent implements OnInit {
   pageSize:number = 10;
   pageSizeOptions:number[] = [1, 5, 10];
 
-  constructor(private studentService: StudentService,) { }
+  constructor(private studentService: StudentService,
+              public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.loadData();
@@ -45,7 +49,13 @@ export class StudentManagementComponent implements OnInit {
 
 
   uploadStudents():void{
+    const dialogRef = this.dialog.open(UploadStudentsDialogComponent, {
+      width: '500px'
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 
 }
