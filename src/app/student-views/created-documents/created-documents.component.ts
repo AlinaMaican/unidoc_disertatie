@@ -55,7 +55,7 @@ export class CreatedDocumentsComponent implements OnInit {
   }
 
   openPdf(filePath: string): void{
-    this.secretaryService.downloadDocument(filePath).subscribe(data => {
+    this.studentService.downloadEncryptedDocument(filePath, this.student.id).subscribe(data => {
       let file = new Blob([data], {type: 'application/pdf'});
       const fileURL = URL.createObjectURL(file);
       window.open(fileURL, '_blank');

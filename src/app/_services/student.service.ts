@@ -90,4 +90,8 @@ export class StudentService {
     formData.append("file", uploadForm.get("file").value, uploadForm.get("file").value.name);
     return this.http.post<ResponseModel>(STUDENT_API + 'import', formData);
   }
+
+  downloadEncryptedDocument(filePath: string, studentId: number): Observable<any> {
+    return this.http.get(STUDENT_API + "downloadEncryptedPdfDocument", {responseType: "blob", params: {'filePath': filePath, 'studentId': studentId}});
+  }
 }

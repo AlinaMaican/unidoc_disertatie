@@ -10,6 +10,7 @@ import {StudentModel} from "../../model/student.model";
 import {StudentDetailsDialogComponent} from "../student-details-dialog/student-details-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {ChangeStatusStudentDocumentDialogComponent} from "../change-status-student-document-dialog/change-status-student-document-dialog.component";
+import {StudentService} from "../../_services/student.service";
 
 @Component({
   selector: 'app-student-documents',
@@ -58,6 +59,7 @@ export class StudentDocumentsComponent implements OnInit {
 
   constructor(private studyService: StudyService,
               private secretaryService: SecretaryService,
+              private studentService: StudentService,
               public dialog: MatDialog) {
   }
 
@@ -147,8 +149,8 @@ export class StudentDocumentsComponent implements OnInit {
     }
   }
 
-  openPdf(filePath: string): void {
-    this.secretaryService.downloadDocument(filePath).subscribe(data => {
+  openPdf(filePath: string, studentId: number): void {
+    this.studentService.downloadEncryptedDocument(filePath, studentId).subscribe(data => {
       let file = new Blob([data], {type: 'application/pdf'});
       const fileURL = URL.createObjectURL(file);
       window.open(fileURL, '_blank');

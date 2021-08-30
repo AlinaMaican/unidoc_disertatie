@@ -11,6 +11,7 @@ import {StudentModel} from "../../model/student.model";
 import {StudentDetailsDialogComponent} from "../student-details-dialog/student-details-dialog.component";
 import {ChangeStatusStudentDocumentDialogComponent} from "../change-status-student-document-dialog/change-status-student-document-dialog.component";
 import {UploadResponseSecretaryDocumentComponentDialog} from "../upload-response-secretary-document-dialog/upload-response-secretary-document.component-dialog";
+import {StudentService} from "../../_services/student.service";
 
 @Component({
   selector: 'app-secretary-notifications',
@@ -64,6 +65,7 @@ export class SecretaryNotificationsComponent implements OnInit {
 
   constructor(private studyService: StudyService,
               private secretaryService: SecretaryService,
+              private studentService: StudentService,
               public dialog: MatDialog) { }
 
   ngOnInit(): void {
@@ -153,8 +155,8 @@ export class SecretaryNotificationsComponent implements OnInit {
     }
   }
 
-  openPdf(filePath: string, notificationId: number): void {
-    this.secretaryService.downloadDocument(filePath).subscribe(data => {
+  openPdf(filePath: string, notificationId: number, studentId: number): void {
+    this.studentService.downloadEncryptedDocument(filePath, studentId).subscribe(data => {
       let file = new Blob([data], {type: 'application/pdf'});
       const fileURL = URL.createObjectURL(file);
       window.open(fileURL, '_blank');
