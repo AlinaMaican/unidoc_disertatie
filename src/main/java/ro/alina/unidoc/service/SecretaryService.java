@@ -138,7 +138,7 @@ public class SecretaryService {
                 File directory = new File(UPLOAD_FOLDER + "\\" + allocation.getId() + "\\");
                 if(!directory.exists())
                 {
-                    directory.mkdir();
+                    directory.mkdirs();
                 }
                 Files.write(path, bytes);
                 secretaryDocumentRepository.save(SecretaryDocument.builder()
@@ -245,6 +245,7 @@ public class SecretaryService {
                 .studyGroupId(studentDocument.getStudent().getStudyGroup().getId())
                 .studyGroup(studentDocument.getStudent().getStudyGroup().getName())
                 .studentModel(StudentModel.builder()
+                        .id(studentDocument.getStudent().getId())
                         .firstName(studentDocument.getStudent().getFirstName())
                         .lastName(studentDocument.getStudent().getLastName())
                         .emailAddress(studentDocument.getStudent().getUser().getEmail())
@@ -275,6 +276,7 @@ public class SecretaryService {
                 .studyGroup(studentDocument.getStudent().getStudyGroup().getName())
                 .notificationId(notificationRepository.findByStudentDocument_IdAndType(studentDocument.getId(), "SECRETARY").getId())
                 .studentModel(StudentModel.builder()
+                        .id(studentDocument.getStudent().getId())
                         .firstName(studentDocument.getStudent().getFirstName())
                         .lastName(studentDocument.getStudent().getLastName())
                         .emailAddress(studentDocument.getStudent().getUser().getEmail())

@@ -64,7 +64,8 @@ CREATE TABLE secretary_allocation (
  university_study_type_id BIGINT REFERENCES university_study_type (id) NOT NULL,
  domain_id BIGINT REFERENCES domain (id) NOT NULL,
  study_program_id BIGINT REFERENCES study_program (id) NOT NULL,
- study_year_id BIGINT REFERENCES study_year (id) NOT NULL
+ study_year_id BIGINT REFERENCES study_year (id) NOT NULL,
+ UNIQUE (learning_type_id, university_study_type_id, domain_id, study_program_id, study_year_id)
 );
 
 CREATE SEQUENCE phone_number_seq;
@@ -114,10 +115,23 @@ CREATE TABLE student_document (
  document_type   VARCHAR(255) NOT NULL
 );
 
+CREATE SEQUENCE secretary_response_document_seq;
+CREATE TABLE secretary_response_document (
+id       BIGINT PRIMARY KEY,
+secretary_allocation_id BIGINT REFERENCES secretary_allocation (id) NOT NULL,
+student_document_id BIGINT REFERENCES student_document (id) NOT NULL,
+name     VARCHAR(255) NOT NULL,
+description     VARCHAR(255),
+file_path_name  VARCHAR(255) NOT NULL,
+date_of_upload TIMESTAMP NOT NULL
+);
+
 CREATE SEQUENCE notification_seq;
 CREATE TABLE notification (
  id       BIGINT PRIMARY KEY,
  student_document_id BIGINT REFERENCES student_document (id) NOT NULL,
  message     VARCHAR(5000) NOT NULL,
- date TIMESTAMP NOT NULL
+ date TIMESTAMP NOT NULL,
+ seen bool NOT NULL,
+ type VARCHAR(20) NOT NULL
 );

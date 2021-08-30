@@ -1,11 +1,5 @@
 --PASSWORD IS PASSWORD AND IS HASHED
-INSERT INTO users VALUES(nextval('users_seq'), 'ADMIN', 'alina.maican@my.fmi.unibuc.ro', '$2y$12$jbkinGYV9wduwiF4HFHOI.D/Vu6PH.tMPEiaVsYZVbLrIMv7Rou8C', true);
---PASSWORD IS STUDENT
-INSERT INTO users VALUES(nextval('users_seq'), 'STUDENT', 'student1@my.fmi.unibuc.ro', '$2a$12$ueAAockdrPNZmWfPE5QWvOT.9EFX0tWd4NCrFgaEECQNedH53UroO', true);
---PASSWORD IS SECRETARY
-INSERT INTO users VALUES(nextval('users_seq'), 'SECRETARY', 'secretary1@my.fmi.unibuc.ro', '$2a$12$x52AC5sK2VYuhh2q7qp/oOQqph1XQJdRwfxekNrj.aeHXdqwt9MUy', true);
-
-INSERT INTO secretary VALUES(nextval('secretary_seq'), 3, 'DOAMNA', 'SECRETAR1');
+INSERT INTO users VALUES(nextval('users_seq'), 'ADMIN', 'admin@my.fmi.unibuc.ro', '$2y$12$jbkinGYV9wduwiF4HFHOI.D/Vu6PH.tMPEiaVsYZVbLrIMv7Rou8C', true);
 
 ------------------------------------------------------------------------------------------------------------------------
 INSERT INTO learning_type VALUES(nextval('learning_type_seq'),'IF');
@@ -358,13 +352,3 @@ INSERT INTO study_group VALUES(nextval('study_group_seq'), 47, 'DOCT_INFO_2');
 INSERT INTO study_group VALUES(nextval('study_group_seq'), 48, 'DOCT_INFO_3');
 -- -- DOCTORAT IF DOMENIUL MATE PROGRAM INFO ANUL 4
 INSERT INTO study_group VALUES(nextval('study_group_seq'), 49, 'DOCT_INFO_4');
-
---secretary allocation for IF LICENTA DOMENIUL INFO, SPECIALIZAREA INFO, AN 2
-INSERT INTO secretary_allocation VALUES (nextval('secretary_allocation_seq'), 1, 1, 1, 2, 4, 9);
-
---STUDENT FROM IF LICENTA DOMENIUL INFO , INFO , AN 2, GRUPA 231
-INSERT INTO STUDENT VALUES(nextval('student_seq'), 2, 1, 29, 9,4,2,1,1,'DOMNU', 'STUDENT1', '2970911340459', 'TR-2019');
-
---phone numbers for user student 1
-INSERT INTO phone_number VALUES (nextval('phone_number_seq'), 2, '0762261768');
-INSERT INTO phone_number VALUES (nextval('phone_number_seq'), 2, '0769624951');

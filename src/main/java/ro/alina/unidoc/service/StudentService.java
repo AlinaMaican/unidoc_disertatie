@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ro.alina.unidoc.entity.*;
@@ -55,6 +56,8 @@ public class StudentService {
     private final UserRepository userRepository;
     private final StudyGroupRepository studyGroupRepository;
     private final SecretaryAllocationRepository secretaryAllocationRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final FileEncryptionDecryptionService fileEncryptionDecryptionService;
 
     public Page<StudentModel> getAllStudents(final int pageSize, final int pageNumber) {
         //final var specification = getSpecifications(filter);
@@ -132,9 +135,12 @@ public class StudentService {
             File directory = new File(UPLOAD_FOLDER + "\\" + secretaryDocument.getSecretaryAllocation().getId() + "\\student\\"
                     + studentId + "\\");
             if (!directory.exists()) {
-                directory.mkdir();
+                directory.mkdirs();
             }
             Files.write(path, bytes);
+            var student = studentRepository.getOne(studentId);
+            fileEncryptionDecryptionService.encryptFile(path.toString(), student.getCnp());
+
             studentDocumentRepository.findByStudentIdAndSecretaryDocumentId(studentId, secretaryDocumentId).ifPresentOrElse(studentDocument -> {
                 studentDocument.setFilePathName(path.toString());
                 studentDocument.setName(name);
@@ -198,14 +204,17 @@ public class StudentService {
             Path path = Paths.get(UPLOAD_FOLDER_FOR_OWN_DOCUMENTS + "\\" + studentId + "\\" + file.getOriginalFilename());
             File directory = new File(UPLOAD_FOLDER_FOR_OWN_DOCUMENTS + "\\" + studentId + "\\");
             if (!directory.exists()) {
-                directory.mkdir();
+                directory.mkdirs();
             }
             Files.write(path, bytes);
+
+            var student = studentRepository.getOne(studentId);
+            fileEncryptionDecryptionService.encryptFile(path.toString(), student.getCnp());
+
             studentDocumentRepository.findByStudentIdAndFilePathName(studentId, path.toString()).ifPresentOrElse(studentDocument -> {
                 type.set("ERROR");
                 message.set("The file already exists, it is called " + studentDocument.getName());
             }, () -> {
-                var student = studentRepository.getOne(studentId);
                 notificationService.sendSimpleMessage(student.getSecretaryAllocation().getSecretary().getUser().getEmail(), "New document added by a student", "A new document called " + name + " has been uploaded by the student "
                         + student.getLastName() + " " + student.getFirstName() + " from the group " + student.getStudyGroup().getName());
                 var studentDocument = studentDocumentRepository.save(StudentDocument.builder()
@@ -216,7 +225,6 @@ public class StudentService {
                         .dateOfUpload(LocalDateTime.now())
                         .documentType(DocumentType.OWN)
                         .status(DocumentStatusType.IN_PROGRESS)
-                        .seen(false)
                         .build());
                 notificationRepository.save(Notification.builder()
                         .type("SECRETARY")
@@ -325,8 +333,9 @@ public class StudentService {
             StreamSupport.stream(csvParser.spliterator(), false)
                     .forEach(record -> {
                         try {
-                            User user = fromRecordToUserEntity(record);
-                            Optional<StudyGroup> studyGroup = studyGroupRepository.findById(Long.valueOf(record.get(6)));
+                            var generatedPassword = passwordGeneratorService.generatePassayPassword();
+                            User user = fromRecordToUserEntity(record, generatedPassword);
+                            Optional<StudyGroup> studyGroup = studyGroupRepository.findByName(record.get(6));
                             if (userRepository.findByEmail(user.getEmail()).isEmpty() && studyGroup.isPresent()) {
                                 Student student = fromRecordToStudentEntity(record, studyGroup.get());
                                 if (studentRepository.findByCnp(student.getCnp()).isEmpty()) {
@@ -338,7 +347,7 @@ public class StudentService {
                                     studentRepository.save(student);
                                     number.setUser(user);
                                     phoneNumberRepository.save(number);
-                                    notificationService.sendSimpleMessage(user.getEmail(), "Generated password for Unidoc", "Hello! Here is your generated password for the app Unidoc. Use it to change your password, not to login in! The password is " + user.getPassword());
+                                    notificationService.sendSimpleMessage(user.getEmail(), "Generated password for Unidoc", "Hello! Here is your generated password for the app Unidoc. Use it to change your password, not to login in! The password is " + generatedPassword);
                                 }
                             }
 
@@ -352,10 +361,10 @@ public class StudentService {
         }
     }
 
-    public User fromRecordToUserEntity(final CSVRecord csvRecord) {
+    public User fromRecordToUserEntity(final CSVRecord csvRecord, final String generatedPassword) {
         return User.builder()
                 .email(csvRecord.get(4))
-                .password(passwordGeneratorService.generatePassayPassword())
+                .password(passwordEncoder.encode(generatedPassword))
                 .role(UserRole.STUDENT)
                 .isActive(false)
                 .build();

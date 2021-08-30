@@ -2,8 +2,12 @@ package ro.alina.unidoc.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.WebDataBinder;
@@ -12,8 +16,13 @@ import org.springframework.web.multipart.MultipartFile;
 import ro.alina.unidoc.model.*;
 import ro.alina.unidoc.model.filters.StudentFilter;
 import ro.alina.unidoc.model.property_editor.GenericPropertyEditor;
+import ro.alina.unidoc.repository.StudentRepository;
+import ro.alina.unidoc.service.FileEncryptionDecryptionService;
 import ro.alina.unidoc.service.StudentService;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +36,8 @@ import java.util.Optional;
 public class StudentController {
 
     private final StudentService studentService;
+    private final FileEncryptionDecryptionService fileEncryptionDecryptionService;
+    private final StudentRepository studentRepository;
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -109,5 +120,24 @@ public class StudentController {
     @PostMapping(value = "/import")
     public ResponseEntity<Response> uploadStudentsFromCSV(@RequestPart("file") final MultipartFile file) {
         return ResponseEntity.ok(studentService.uploadStudents(file));
+    }
+
+    @PreAuthorize("hasAuthority('SECRETARY') or hasAuthority('STUDENT')")
+    @RequestMapping(value = "/downloadEncryptedPdfDocument", method = RequestMethod.GET, produces = "application/pdf")
+    public ResponseEntity<byte[]> getEncryptedPDF(@RequestParam(value = "filePath") String filePath,
+                                                  @RequestParam(value = "studentId") Long studentId) {
+        try {
+            var student = studentRepository.getOne(studentId);
+            InputStream inputStream = new ByteArrayInputStream(fileEncryptionDecryptionService.decryptFile(filePath, student.getCnp()).toByteArray());
+            byte[] contents = IOUtils.toByteArray(inputStream);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType("application/pdf"));
+            String filename = "test.pdf";
+            headers.setContentDispositionFormData(filename, filename);
+            return new ResponseEntity<>(contents, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return null;
     }
 }
